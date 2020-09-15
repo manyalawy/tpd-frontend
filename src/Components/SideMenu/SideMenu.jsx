@@ -2,7 +2,6 @@ import React from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
@@ -13,17 +12,22 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import PeopleIcon from "@material-ui/icons/People";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 
 import InsightsIcon from "./assets/insightssvg.svg";
 import PsychologyIcon from "./assets/psychology-white-24dp.svg";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import profile from "./assets/profile.png";
+import itworx from "./assets/download.png";
+import Box from "@material-ui/core/Box";
+import HomeIcon from "@material-ui/icons/Home";
+import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
 
 const drawerWidth = 240;
 
@@ -51,6 +55,18 @@ const useStyles = makeStyles((theme) => ({
   navBarIcons: {
     color: "#ffffff",
   },
+  navBarList: {
+    color: "#ffffff",
+    marginLeft: "-20px",
+    fontSize: "29px",
+  },
+  navBarSubList: {
+    color: "#ffffff",
+    fontSize: "16px",
+    marginTop: "-10px",
+    paddingLeft: theme.spacing(10),
+    paddingTop: theme.spacing(2),
+  },
   hide: {
     display: "none",
   },
@@ -61,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     backgroundColor: "#000000",
+    opacity: "0.8",
   },
   drawerHeader: {
     display: "flex",
@@ -86,17 +103,17 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
-  nested: {
-    paddingLeft: theme.spacing(4),
+  button: {
+    margin: theme.spacing(8),
   },
 }));
 
 export default function SideMenu() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [openTalent, setOpenTalent] = React.useState(false);
-  const [openSkills, setOpenSkills] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
+  const [openTalent, setOpenTalent] = React.useState(true);
+  const [openSkills, setOpenSkills] = React.useState(true);
 
   const handleTalentClick = () => {
     setOpenTalent(!openTalent);
@@ -116,14 +133,15 @@ export default function SideMenu() {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
-        position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
+        color="white"
+        position="fixed"
       >
         <Toolbar>
+          {/* items on left of navbar*/}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -133,6 +151,21 @@ export default function SideMenu() {
           >
             <MenuIcon />
           </IconButton>
+          <HomeIcon />
+          <Box mr="auto" ml="auto">
+            <img src={itworx} width={100}></img>
+          </Box>
+          {/* Items on the right side of the navigation bar */}
+          <Box display="flex" alignItems="center" ml="auto">
+            <Box display="flex" alignItems="center">
+              <Link color="primary" color="inherit" href="#">
+                <Typography display="inline">Youssef El Manyalawy</Typography>
+              </Link>
+            </Box>
+            <Box display="flex" alignItems="center" pl={2}>
+              <Avatar src={profile}></Avatar>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -160,23 +193,21 @@ export default function SideMenu() {
             </ListItemIcon>
             <ListItemText
               primary={"Talent Requests"}
-              className={clsx(classes.navBarIcons)}
+              className={clsx(classes.navBarList)}
             />
-            {openTalent ? <ExpandLess /> : <ExpandMore />}
+            {openTalent ? (
+              <ExpandLess className={clsx(classes.navBarIcons)} />
+            ) : (
+              <ExpandMore className={clsx(classes.navBarIcons)} />
+            )}
           </ListItem>
           <Collapse in={openTalent} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemText
-                  primary="Resource Request"
-                  className={clsx(classes.navBarIcons)}
-                />
+              <ListItem button className={clsx(classes.navBarSubList)}>
+                Resource Requests
               </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemText
-                  primary="Release Request"
-                  className={clsx(classes.navBarIcons)}
-                />
+              <ListItem button className={clsx(classes.navBarSubList)}>
+                Release Requests
               </ListItem>
             </List>
           </Collapse>
@@ -190,29 +221,24 @@ export default function SideMenu() {
             </ListItemIcon>
             <ListItemText
               primary={"Skills & Certifications"}
-              className={clsx(classes.navBarIcons)}
+              className={clsx(classes.navBarList)}
             />
-            {openSkills ? <ExpandLess /> : <ExpandMore />}
+            {openSkills ? (
+              <ExpandLess className={clsx(classes.navBarIcons)} />
+            ) : (
+              <ExpandMore className={clsx(classes.navBarIcons)} />
+            )}
           </ListItem>
           <Collapse in={openSkills} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemText
-                  primary="Skills"
-                  className={clsx(classes.navBarIcons)}
-                />
+              <ListItem button className={clsx(classes.navBarSubList)}>
+                Skills
               </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemText
-                  primary="Certifications"
-                  className={clsx(classes.navBarIcons)}
-                />
+              <ListItem button className={clsx(classes.navBarSubList)}>
+                Certifications
               </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemText
-                  primary="Trainings"
-                  className={clsx(classes.navBarIcons)}
-                />
+              <ListItem button className={clsx(classes.navBarSubList)}>
+                Trainings
               </ListItem>
             </List>
           </Collapse>
@@ -222,7 +248,7 @@ export default function SideMenu() {
             </ListItemIcon>
             <ListItemText
               primary={"Employees"}
-              className={clsx(classes.navBarIcons)}
+              className={clsx(classes.navBarList)}
             />
           </ListItem>
           <ListItem button key={"Insights & Analytics"}>
@@ -231,10 +257,18 @@ export default function SideMenu() {
             </ListItemIcon>
             <ListItemText
               primary={"Insights & Analytics"}
-              className={clsx(classes.navBarIcons)}
+              className={clsx(classes.navBarList)}
             />
           </ListItem>
         </List>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+        >
+          Logout
+        </Button>
       </Drawer>
       <main
         className={clsx(classes.content, {
