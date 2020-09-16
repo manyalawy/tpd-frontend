@@ -3,6 +3,16 @@ import ReactDOM from "react-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
+import LoginPage from "./Components/Login/Login.jsx";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 
 const theme = createMuiTheme({
   typography: {
@@ -21,10 +31,50 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <>
+  <Router>
     <ThemeProvider theme={theme}>
-      <SideMenu />
+      {/* <SideMenu /> */}
+      <Switch>
+        <Route path="/public">
+          <LoginPage />
+        </Route>
+        <PrivateRoute path="/home">
+          <SideMenu />
+        </PrivateRoute>
+      </Switch>
     </ThemeProvider>
-  </>,
+  </Router>,
   document.getElementById("root")
 );
+
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    fakeAuth.isAuthenticated = true;
+    setTimeout(cb, 100); // fake async
+  },
+  signout(cb) {
+    fakeAuth.isAuthenticated = false;
+    setTimeout(cb, 100);
+  },
+};
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        fakeAuth.isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}
