@@ -28,6 +28,8 @@ import Box from "@material-ui/core/Box";
 import HomeIcon from "@material-ui/icons/Home";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 
 const drawerWidth = 240;
 
@@ -76,8 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: "#000000",
-    opacity: "0.8",
+    backgroundColor: " rgba(0, 0, 0, 0.8)",
   },
   drawerHeader: {
     display: "flex",
@@ -105,6 +106,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(8),
+    borderRadius: "45%",
+    backgroundColor: "#AC2225",
   },
 }));
 
@@ -196,9 +199,9 @@ export default function SideMenu() {
               className={clsx(classes.navBarList)}
             />
             {openTalent ? (
-              <ExpandLess className={clsx(classes.navBarIcons)} />
+              <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
             ) : (
-              <ExpandMore className={clsx(classes.navBarIcons)} />
+              <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
             )}
           </ListItem>
           <Collapse in={openTalent} timeout="auto" unmountOnExit>
@@ -224,9 +227,9 @@ export default function SideMenu() {
               className={clsx(classes.navBarList)}
             />
             {openSkills ? (
-              <ExpandLess className={clsx(classes.navBarIcons)} />
+              <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
             ) : (
-              <ExpandMore className={clsx(classes.navBarIcons)} />
+              <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
             )}
           </ListItem>
           <Collapse in={openSkills} timeout="auto" unmountOnExit>
