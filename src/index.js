@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
+import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import {
@@ -34,17 +35,8 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <Router>
     <ThemeProvider theme={theme}>
-      <Switch>
-        <Route path="/">
-          <ReleaseForm />
-        </Route>
-        <Route path="/public">
-          <LoginPage />
-        </Route>
-        <PrivateRoute path="/home">
-          <SideMenu />
-        </PrivateRoute>
-      </Switch>
+      <SideMenu />
+      <Resource />
     </ThemeProvider>
   </Router>,
   document.getElementById("root")
