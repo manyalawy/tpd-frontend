@@ -4,7 +4,7 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
-import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
+import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import {
   BrowserRouter as Router,
   Switch,
@@ -36,7 +36,7 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <Switch>
         <Route path="/">
-          <ReleaseForm />
+          <ResourceForm />
         </Route>
         <Route path="/public">
           <LoginPage />
