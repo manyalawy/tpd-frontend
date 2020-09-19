@@ -1,19 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { store, PrivateRoute, history } from "./_helpers";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const theme = createMuiTheme({
   typography: {
@@ -32,21 +26,23 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <Router>
-    <ThemeProvider theme={theme}>
-      <Switch>
-        <Route path="/">
-          <ResourceForm />
-        </Route>
-        <Route path="/public">
-          <LoginPage />
-        </Route>
-        <PrivateRoute path="/home">
-          <SideMenu />
-        </PrivateRoute>
-      </Switch>
-    </ThemeProvider>
-  </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      <ThemeProvider theme={theme}>
+        <Switch>
+          <Route path="/">
+            <ResourceForm />
+          </Route>
+          <Route path="/public">
+            <LoginPage />
+          </Route>
+          <PrivateRoute path="/home">
+            <SideMenu />
+          </PrivateRoute>
+        </Switch>
+      </ThemeProvider>
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
 
@@ -61,23 +57,3 @@ const fakeAuth = {
     setTimeout(cb, 100);
   },
 };
-
-function PrivateRoute({ children, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        fakeAuth.isAuthenticated ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
-}
