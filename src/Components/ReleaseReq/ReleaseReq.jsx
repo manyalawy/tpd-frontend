@@ -73,25 +73,31 @@ const WhiteTextTypography = withStyles({
 function createData(
   RefNo,
   Manager,
+  ResourceName,
+  EmployeeID,
+  EmployeeTitle,
   Function,
-  Title,
-  StartDate,
-  EndDate,
-  Percentage,
+  ReleaseDate,
+  ReleasePercentage,
+  ReleaseReason,
+  Leaving,
   Status,
-  ActionsTaken,
+  ActionTaken,
   Actions
 ) {
   return {
     RefNo,
     Manager,
+    ResourceName,
+    EmployeeID,
+    EmployeeTitle,
     Function,
-    Title,
-    StartDate,
-    EndDate,
-    Percentage,
+    ReleaseDate,
+    ReleasePercentage,
+    ReleaseReason,
+    Leaving,
     Status,
-    ActionsTaken,
+    ActionTaken,
     Actions,
   };
 }
@@ -106,7 +112,10 @@ const rows = [
     35,
     "Frozen yoghurt",
     "Frozen yoghurt",
-    535
+    535,
+    "dscdc",
+    "dxexec",
+    2334334
   ),
 ];
 export default function Resource() {
@@ -118,49 +127,53 @@ export default function Resource() {
       <Box mt={2} height={200} style={{ backgroundColor: "#AC2225" }}>
         <Box pt={15} ml={2}>
           <WhiteTextTypography variant="h3">
-            Resource requests
+            Release requests
           </WhiteTextTypography>
         </Box>
       </Box>
 
-      <Box mx={145} mt={11}>
-        <div className={classes1.root}>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab aria-label="add">
-                <AddIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab color="secondary" aria-label="edit">
-                <GetAppIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab color="primary" aria-label="edit">
-                <FilterListIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
-        </div>
-      </Box>
-
-      <Box width="90%" mt={10} mx="auto">
+      <Box width="90%" mt={20} mx="auto">
         <TableContainer component={Paper}>
+          <div class="tableIcons">
+            <div className={classes1.root}>
+              <ThemeProvider theme={theme}>
+                <Link href="#">
+                  <Fab aria-label="add">
+                    <AddIcon />
+                  </Fab>
+                </Link>
+              </ThemeProvider>
+              <ThemeProvider theme={theme}>
+                <Link href="#">
+                  <Fab color="secondary" aria-label="edit">
+                    <GetAppIcon />
+                  </Fab>
+                </Link>
+              </ThemeProvider>
+              <ThemeProvider theme={theme}>
+                <Link href="#">
+                  <Fab color="primary" aria-label="edit">
+                    <FilterListIcon />
+                  </Fab>
+                </Link>
+              </ThemeProvider>
+            </div>
+          </div>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Ref No.</StyledTableCell>
                 <StyledTableCell align="center">Manager</StyledTableCell>
-                <StyledTableCell align="center">Funtion</StyledTableCell>
-                <StyledTableCell align="center">Title</StyledTableCell>
-                <StyledTableCell align="center">Start Date</StyledTableCell>
-                <StyledTableCell align="center">End Date</StyledTableCell>
-                <StyledTableCell align="center">Percentage</StyledTableCell>
+                <StyledTableCell align="center">Resource Name</StyledTableCell>
+                <StyledTableCell align="center">Employee ID</StyledTableCell>
+                <StyledTableCell align="center">Employee Title</StyledTableCell>
+                <StyledTableCell align="center">Function</StyledTableCell>
+                <StyledTableCell align="center">Release Date</StyledTableCell>
+                <StyledTableCell align="center">
+                  Release Percentage
+                </StyledTableCell>
+                <StyledTableCell align="center">Release Reason</StyledTableCell>
+                <StyledTableCell align="center">Leaving</StyledTableCell>
                 <StyledTableCell align="center">Status</StyledTableCell>
                 <StyledTableCell align="center">Actions taken</StyledTableCell>
                 <StyledTableCell align="center">Actions</StyledTableCell>
@@ -181,25 +194,34 @@ export default function Resource() {
                     {row.Manager}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
+                    {row.ResourceName}
+                  </TableCell>
+                  <TableCell style={{ color: "black" }} align="center">
+                    {row.EmployeeID}
+                  </TableCell>
+                  <TableCell style={{ color: "black" }} align="center">
+                    {row.EmployeeTitle}
+                  </TableCell>
+                  <TableCell style={{ color: "black" }} align="center">
                     {row.Function}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
-                    {row.Title}
+                    {row.ReleaseDate}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
-                    {row.StartDate}
+                    {row.ReleasePercentage}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
-                    {row.EndDate}
+                    {row.ReleaseReason}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
-                    {row.Percentage}
+                    {row.Leaving}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
                     {row.Status}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
-                    {row.ActionsTaken}
+                    {row.ActionTaken}
                   </TableCell>
                   <TableCell style={{ color: "black" }} align="center">
                     {row.Actions}

@@ -1,3 +1,10 @@
 body {
   margin: 0;
 }
+
+.tableIcons {
+  position: relative;
+  margin-left: 87%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

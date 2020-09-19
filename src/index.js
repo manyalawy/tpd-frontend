@@ -6,6 +6,7 @@ import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,7 +16,7 @@ import {
   useHistory,
   useLocation,
 } from "react-router-dom";
-
+import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -36,7 +37,7 @@ ReactDOM.render(
   <Router>
     <ThemeProvider theme={theme}>
       <SideMenu />
-      <Resource />
+      <ReleaseForm />
     </ThemeProvider>
   </Router>,
   document.getElementById("root")
