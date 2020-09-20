@@ -1,12 +1,13 @@
 var path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.jsx",
   mode: "development",
+  entry: {
+    main: "./src/index.js",
+  },
   output: {
-    filename: "./main.js",
+    publicPath: "/dist/",
   },
   module: {
     rules: [
@@ -21,27 +22,22 @@ module.exports = {
         },
       },
       {
-        test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader",
-          },
-        ],
-      },
-      {
         test: /\.css$/,
-        use: {
-          loader: "css-loader",
-          options: {
-            modules: true,
+        use: [
+          "isomorphic-style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+            },
           },
-        },
+          "postcss-loader",
+        ],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: ["file-loader"],
       },
-      { test: /\.ejs$/, loader: "ejs-loader?variable=data" },
     ],
   },
   devServer: {
@@ -60,8 +56,6 @@ module.exports = {
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
-      filename: "./index.html",
     }),
-    new ExtractTextPlugin("styles.css"),
   ],
 };
