@@ -1,0 +1,32 @@
+.title {
+  color: white;
+  margin-top: 5rem;
+  margin-bottom: 7rem;
+  margin-left: 5%;
+}
+
+.formHeaders {
+  margin-bottom: 5rem;
+  margin-top: 2rem;
+}
+
+.form {
+  margin-bottom: 5rem;
+}
+
+.add {
+  margin-top: 2rem;
+}
+
+.add{
+  background-color: #02438E ;
+}
+.sub{
+  background-color: #02438E ;
+  margin-top: 2rem;
+  margin-right: 1rem;
+}
+.canc{
+background-color: #AC2225;
+margin-top: 2rem;
+}
