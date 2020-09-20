@@ -1,364 +1,293 @@
-import "date-fns";
-import React from "react";
-import clsx from "clsx";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import "./ResourceForm.css";
+import Row from "./skillRow.jsx";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    "& > *": {
-      //   width: theme.spacing(140),
-      width: "87.5%",
-      height: "70%",
-      position: "fixed",
-      top: "55%",
-      left: "50%",
-      /* bring your own prefixes */
-      transform: "translate(-50%, -50%)",
-      //   borderRadius: "2%",
-    },
-  },
-  textField: {
-    marginBottom: theme.spacing(3),
-    borderRadius: "0px",
-    boxShadow:
-      "0 0px 8px 0 rgba(0, 0, 0, 0.1), 0 0px 20px 0 rgba(0, 0, 0, 0.1)",
-  },
-  button: {
-    borderRadius: "30px",
-    backgroundColor: "#02438E",
-    fontWeight: "bold",
-    borderColor: "#ffffff",
-    border: "9px solid white",
-    color: "#ffffff",
-    width: "20%",
-    height: "61px",
-    left: "39%",
-    position: "fixed",
-  },
-  exitButton: {
-    // margin: theme.spacing(1),
-    borderRadius: "50%",
-    backgroundColor: "#AC2225",
-    fontWeight: "bold",
-    borderColor: "#ffffff",
-    border: "9px solid white",
-    color: "#ffffff",
-    // width: "20%",
-    height: "55px",
-    fontSize: "30px",
-    fontStyle: "bold",
-    position: "fixed",
-    left: "90%",
-    marginTop: "-2.5%",
-  },
-  title: {
-    color: "#ffffff",
-    fontSize: "28px",
-    marginTop: theme.spacing(7),
-    marginLeft: theme.spacing(10),
-  },
-  box: {
-    height: theme.spacing(41),
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(2),
-  },
-  datePicker: {
-    width: theme.spacing(20),
-    marginTop: theme.spacing(0),
-    marginRight: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-  },
-  propabilityField: {
-    width: theme.spacing(20),
-    marginRight: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-  },
-  reasonField: {
-    width: theme.spacing(40),
-  },
-  listBox: { position: "relative", width: "12rem", marginTop: "8vh" },
-  valueList: {
-    listStyle: "none",
-    marginTop: "4rem",
-    boxShadow: "0px 5px 8px 0px rgba(0, 0, 0, 0.2)",
-    overflow: "hidden",
-    maxHeight: "0",
-    transition: "0.3s ease-in-out",
-  },
-  open: {
-    maxHeight: "320px",
-    overflow: "auto",
-  },
-
-  li: {
-    position: "relative",
-    height: "4rem",
-    backgroundColor: "#fafcfd",
-    padding: "1rem",
-    fontSize: "1.1rem",
-    display: "flex",
-    alignItems: "center",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-    opacity: "1",
-    backgroundColor: "#dcdcdc",
-
-    hover: {
-      backgroundColor: "#ff908b",
-    },
-  },
-  checkBox: {
-    marginLeft: theme.spacing(0),
-  },
-  select: {
-    marginLeft: theme.spacing(0),
-    marginBottom: theme.spacing(2),
-    width: theme.spacing(22),
-  },
-  numberField: {
-    marginLeft: theme.spacing(0),
-    marginBottom: theme.spacing(2),
-    width: theme.spacing(20),
-  },
-}));
+var curr = new Date();
+curr.setDate(curr.getDate() + 3);
+var date = curr.toISOString().substr(0, 10);
 
 export default function ResourceForm() {
-  const classes = useStyles();
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2012-07-15")
-  );
+  const [marked, setMarked] = useState(false);
+  const [skills, setSkills] = useState([]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  var skill = { id: "", cat: "", sub: "" };
+  var handleChangeCat = (event) => {
+    skill.cat = event.target.value;
+    console.log(skill.cat);
   };
+  var handleChangeSub = (event) => {
+    skill.sub = event.target.value;
+  };
+  function handleAdd(event) {
+    document.getElementById("cat").selectedIndex = 0;
+    document.getElementById("sub").selectedIndex = 0;
+
+    skills.push(skill);
+    setSkills([...skills]);
+    event.preventDefault();
+  }
+  function handleDelete(event, indexDelete) {
+    document.getElementById("cat").selectedIndex = 0;
+    document.getElementById("sub").selectedIndex = 0;
+    skills.splice(indexDelete, 1);
+
+    setSkills([...skills]);
+    event.preventDefault();
+  }
 
   return (
     <div>
-      <Typography variant="h2" className={clsx(classes.title)}>
-        Adding A Resource Request
-      </Typography>
-
-      <div className={classes.root}>
-        <Paper elevation={3}>
-          <button className={classes.exitButton}>X</button>
-          <Grid
-            container
-            direction="row"
-            justify="space-around"
-            alignItems="center"
-          >
-            <Box className={clsx(classes.box)}>
-              <InputLabel htmlFor="select-multiple-native">Manager:</InputLabel>
-              <Select
-                native
-                value={"Youssef El Manyalwy"}
-                // onChange={handleChangeMultiple}
-                inputProps={{
-                  id: "select-multiple-native",
-                }}
-                className={classes.select}
-              >
-                {[
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                ].map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
-              <InputLabel htmlFor="select-multiple-native">
-                Function:
-              </InputLabel>
-              <Select
-                native
-                value={"Youssef El Manyalwy"}
-                // onChange={handleChangeMultiple}
-                inputProps={{
-                  id: "select-multiple-native",
-                }}
-                className={classes.select}
-              >
-                {[
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                ].map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
-              <InputLabel htmlFor="select-multiple-native">
-                Job Title:
-              </InputLabel>
-              <Select
-                native
-                value={"Youssef El Manyalwy"}
-                // onChange={handleChangeMultiple}
-                inputProps={{
-                  id: "select-multiple-native",
-                }}
-                className={classes.select}
-              >
-                {[
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                ].map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
-              <br />
-              <FormControlLabel
-                value="start"
-                control={<Checkbox color="primary" />}
-                label="Replacement"
-                labelPlacement="start"
-                className={classes.checkBox}
-              />
-              <br />
-              <TextField
-                label="Replacement For"
-                id="filled-size-small"
-                defaultValue=""
-                variant="filled"
-                size="small"
-                disabled
-              />
-              {/* </Box>
-            <Box className={clsx(classes.box)}> */}
-              <br />
-              <FormControlLabel
-                value="start"
-                control={<Checkbox color="primary" />}
-                label="Core Team Member"
-                labelPlacement="start"
-                className={classes.checkBox}
-              />
-              <br />
-              <TextField
-                id="standard"
-                label="Number of Requests"
+      <div>
+        <h1 className="title">Add release request</h1>
+      </div>
+      <div className="form-width mx-auto form">
+        <form>
+          <h1 className="formHeaders">Request details</h1>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="managerName">Manager</label>
+              <select class="form-control" required>
+                <option value="" disabled selected>
+                  Select Manager
+                </option>
+                <option value="Volkswagen Passat">Volkswagen Passat</option>
+                <option value="Manyal">Manyal</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="function">Function</label>
+              <select class="form-control" required>
+                <option value="" disabled selected>
+                  Select Function
+                </option>
+                <option value="knxksandx">Volkswagen Passat</option>
+                <option value="xdsnjksdxn">Manyal</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="jobTitle">Job Title</label>
+              <select class="form-control" required>
+                <option value="" disabled selected>
+                  Select Title
+                </option>
+                <option value="Volkswagen Passat">Volkswagen Passat</option>
+                <option value="Manyal">Manyal</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="replacmentFor">Replacment for</label>
+              <input
+                type="text"
+                class="form-control"
+                id="replacmentFor"
+                disabled={!marked}
+              ></input>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="numberOfRequests">Number of requests</label>
+              <input
+                min="1"
                 defaultValue="1"
-                className={clsx(classes.numberField)}
-              />
-            </Box>
-            <Box className={clsx(classes.box)}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="dd/MM/yyyy"
-                  margin="normal"
-                  label="Start Date"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                  className={clsx(classes.datePicker)}
-                />
-              </MuiPickersUtilsProvider>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="dd/MM/yyyy"
-                  margin="normal"
-                  label="End Date"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                  className={clsx(classes.datePicker)}
-                />
-              </MuiPickersUtilsProvider>
-              <br />
-              <TextField
-                id="standard"
-                label="Percentage"
-                defaultValue="10%"
-                className={clsx(classes.propabilityField)}
-              />
-              <TextField
-                id="standard"
-                label="Propability"
-                defaultValue="10%"
-                className={clsx(classes.propabilityField)}
-              />
-              <br />
-              <TextField
-                id="standard"
-                label="Related Opportunity"
-                defaultValue="10%"
-                className={clsx(classes.propabilityField)}
-              />
-              <br />
-              <TextField
-                id="outlined-multiline-static"
-                label="Comments"
-                multiline
-                rows={3}
-                defaultValue="Default Value"
-                variant="outlined"
-                className={clsx(classes.reasonField)}
-              />
-            </Box>
-            <Box className={clsx(classes.box)}>
-              <InputLabel htmlFor="select-multiple-native">Skills:</InputLabel>
-              <Select
-                native
-                value={"none"}
-                // onChange={handleChangeMultiple}
-                inputProps={{
-                  id: "select-multiple-native",
-                }}
-                className={classes.select}
-              >
-                {[
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                  "Youssef El Manyalwy",
-                ].map((name) => (
-                  <option key={name} value={name}>
-                    {name}
+                type="number"
+                class="form-control"
+                id="numberOfRequests"
+              ></input>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <div class="form-check">
+                <input
+                  defaultChecked={marked}
+                  onChange={() => setMarked(!marked)}
+                  class="form-check-input"
+                  type="checkbox"
+                  id="replacment"
+                ></input>
+                <label class="form-check-label" for="leaving">
+                  Replacment
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="Leaving"
+                ></input>
+                <label class="form-check-label" for="leaving">
+                  Core Team Member
+                </label>
+              </div>
+            </div>
+          </div>
+          <h1 className="formHeaders">Request details</h1>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label for="probability">Probability</label>
+              <div class="input-group">
+                <input
+                  required
+                  type="number"
+                  class="form-control"
+                  min="10"
+                  max="100"
+                  id="probability"
+                ></input>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="percentage">
+                    %
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="percentage">Percentage</label>
+              <div class="input-group">
+                <input
+                  required
+                  type="number"
+                  class="form-control"
+                  min="10"
+                  max="100"
+                  id="percentage"
+                ></input>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="percentage">
+                    %
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="startDate">Start Date</label>
+              <input
+                required
+                value={date}
+                min={date}
+                type="date"
+                class="form-control"
+                id="releaseDate"
+                placeholder="Enter resource name first"
+              ></input>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="endDate">End Date</label>
+              <input
+                required
+                value={date}
+                min={date}
+                type="date"
+                class="form-control"
+                id="releaseDate"
+                placeholder="Enter resource name first"
+              ></input>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <div class="form-group">
+                <label for="relatedOpportunity">Related Opportunity</label>
+                <textarea
+                  class="form-control"
+                  id="relatedOpportunity"
+                  rows="5"
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea
+                  class="form-control"
+                  id="relatedOpportunity"
+                  rows="5"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <h1 className="formHeaders">Technical skills</h1>
+          <form>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="function">Category</label>
+                <select
+                  class="form-control"
+                  required
+                  onChange={(event) => handleChangeCat(event)}
+                  id="cat"
+                >
+                  <option value="" disabled selected>
+                    Select Category
                   </option>
+                  <option value="app dev">app dev</option>
+                  <option value="web">Web</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="function">Sub-category</label>
+                <select
+                  id="sub"
+                  class="form-control"
+                  required
+                  onChange={(event) => handleChangeSub(event)}
+                >
+                  <option value="" disabled selected>
+                    Select Sub-category
+                  </option>
+                  <option value="Swift">Swift</option>
+                  <option value="Java">Java</option>
+                </select>
+              </div>
+              <div class="form-group col-md-3">
+                <button
+                  type="submit"
+                  class=" add btn btn-primary"
+                  onClick={(event) => handleAdd(event)}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </form>
+          <div className="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Sub-category</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {skills.map((s, index) => (
+                  <tr key={index}>
+                    <td>{s.cat}</td>
+                    <td>{s.sub}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-link"
+                        onClick={(event) => handleDelete(event, index)}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-              </Select>
-            </Box>
-          </Grid>
-          <button className={classes.button}>Submit</button>
-        </Paper>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-primary sub" type="submit">
+            Submit
+          </button>
+          <button type="button" class="btn canc btn-danger">
+            Cancel
+          </button>
+        </form>
       </div>
     </div>
   );

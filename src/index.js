@@ -5,10 +5,13 @@ import { store, PrivateRoute, history } from "./_helpers";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
+import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
-import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
+import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
+import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -26,23 +29,29 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <ThemeProvider theme={theme}>
-        <Switch>
-          <Route path="/">
-            <ResourceForm />
-          </Route>
-          <Route path="/public">
-            <LoginPage />
-          </Route>
-          <PrivateRoute path="/home">
-            <SideMenu />
-          </PrivateRoute>
-        </Switch>
-      </ThemeProvider>
-    </Router>
-  </Provider>,
+  // <Provider store={store}>
+  //   <Router history={history}>
+  //     <ThemeProvider theme={theme}>
+  //       <Switch>
+  //         <Route path="/">
+  //           <ResourceForm />
+  //         </Route>
+  //         <Route path="/public">
+  //           <LoginPage />
+  //         </Route>
+  //         <PrivateRoute path="/home">
+  //           <SideMenu />
+  //         </PrivateRoute>
+  //       </Switch>
+  //     </ThemeProvider>
+  //   </Router>
+  // </Provider>,
+  <Router>
+    <ThemeProvider theme={theme}>
+      <SideMenu />
+      <ResourceForm />
+    </ThemeProvider>
+  </Router>,
   document.getElementById("root")
 );
 
