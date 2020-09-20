@@ -29,23 +29,6 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  // <Provider store={store}>
-  //   <Router history={history}>
-  //     <ThemeProvider theme={theme}>
-  //       <Switch>
-  //         <Route path="/">
-  //           <ResourceForm />
-  //         </Route>
-  //         <Route path="/public">
-  //           <LoginPage />
-  //         </Route>
-  //         <PrivateRoute path="/home">
-  //           <SideMenu />
-  //         </PrivateRoute>
-  //       </Switch>
-  //     </ThemeProvider>
-  //   </Router>
-  // </Provider>,
   <Router>
     <ThemeProvider theme={theme}>
       <SideMenu />
@@ -66,3 +49,21 @@ const fakeAuth = {
     setTimeout(cb, 100);
   },
 };
+
+// <Provider store={store}>
+//   <Router history={history}>
+//     <ThemeProvider theme={theme}>
+//       <Switch>
+//         <Route path="/">
+//           <ResourceForm />
+//         </Route>
+//         <Route path="/public">
+//           <LoginPage />
+//         </Route>
+//         <PrivateRoute path="/home">
+//           <SideMenu />
+//         </PrivateRoute>
+//       </Switch>
+//     </ThemeProvider>
+//   </Router>
+// </Provider>,
