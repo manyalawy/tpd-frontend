@@ -6,7 +6,7 @@ import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
-
+import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import {
   BrowserRouter as Router,
   Switch,
@@ -37,7 +37,7 @@ ReactDOM.render(
   <Router>
     <ThemeProvider theme={theme}>
       <SideMenu />
-      <ReleaseForm />
+      <ResourceForm />
     </ThemeProvider>
   </Router>,
   document.getElementById("root")
