@@ -1,5 +1,6 @@
-import config from "config";
 import { authHeader, handleResponse } from "../_helpers";
+
+const apiUrl = "http://localhost:3000";
 
 export const resourceRequestService = {
   getAll,
@@ -15,7 +16,7 @@ function getAll() {
     headers: authHeader(),
   };
 
-  return fetch(`${config.apiUrl}/resource-request/all`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request/all`, requestOptions).then(
     handleResponse
   );
 }
@@ -27,7 +28,7 @@ function getById(reference_number) {
     body: JSON.stringify({ reference_number: reference_number }),
   };
 
-  return fetch(`${config.apiUrl}/resource-request`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -39,7 +40,7 @@ function create(resourceRequest) {
     body: JSON.stringify(resourceRequest),
   };
 
-  return fetch(`${config.apiUrl}/resource-request`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -51,7 +52,7 @@ function update(resourceRequest) {
     body: JSON.stringify(resourceRequest),
   };
 
-  return fetch(`${config.apiUrl}/resource-request`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -64,7 +65,7 @@ function _delete(reference_number) {
     body: JSON.stringify({ reference_number: reference_number }),
   };
 
-  return fetch(`${config.apiUrl}/resource-request`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
     handleResponse
   );
 }

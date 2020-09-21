@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.js";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
+import TestBackend from "./Components/TestBackend/TestBackend.jsx";
 
 const theme = createMuiTheme({
   typography: {
@@ -34,22 +35,11 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <SideMenu />
       <ResourceForm />
+      <TestBackend />
     </ThemeProvider>
   </Router>,
   document.getElementById("root")
 );
-
-const fakeAuth = {
-  isAuthenticated: false,
-  authenticate(cb) {
-    fakeAuth.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb) {
-    fakeAuth.isAuthenticated = false;
-    setTimeout(cb, 100);
-  },
-};
 
 // <Provider store={store}>
 //   <Router history={history}>

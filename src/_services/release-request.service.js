@@ -1,5 +1,6 @@
-import config from "config";
 import { authHeader, handleResponse } from "../_helpers";
+
+const apiUrl = "http://localhost:3000";
 
 export const releaseRequestService = {
   getAll,
@@ -15,7 +16,7 @@ function getAll() {
     headers: authHeader(),
   };
 
-  return fetch(`${config.apiUrl}/release-request/all`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request/all`, requestOptions).then(
     handleResponse
   );
 }
@@ -27,7 +28,7 @@ function getById(reference_number) {
     body: JSON.stringify({ reference_number: reference_number }),
   };
 
-  return fetch(`${config.apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -39,7 +40,7 @@ function create(releaseRequest) {
     body: JSON.stringify(releaseRequest),
   };
 
-  return fetch(`${config.apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -51,7 +52,7 @@ function update(releaseRequest) {
     body: JSON.stringify(releaseRequest),
   };
 
-  return fetch(`${config.apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request`, requestOptions).then(
     handleResponse
   );
 }
@@ -64,7 +65,7 @@ function _delete(reference_number) {
     body: JSON.stringify({ reference_number: reference_number }),
   };
 
-  return fetch(`${config.apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request`, requestOptions).then(
     handleResponse
   );
 }
