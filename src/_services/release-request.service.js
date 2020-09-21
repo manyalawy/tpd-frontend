@@ -1,6 +1,6 @@
 import { authHeader, handleResponse } from "../_helpers";
 
-const apiUrl = "http://localhost:3000";
+const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
 export const releaseRequestService = {
   getAll,

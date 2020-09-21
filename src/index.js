@@ -31,30 +31,30 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <Router>
-    <ThemeProvider theme={theme}>
-      <SideMenu />
-      <ResourceForm />
-      <TestBackend />
-    </ThemeProvider>
-  </Router>,
+  // <Router>
+  //   <ThemeProvider theme={theme}>
+  //     <SideMenu />
+  //     <ResourceForm />
+  //     <TestBackend />
+  //   </ThemeProvider>
+  // </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      <ThemeProvider theme={theme}>
+        <Switch>
+          <Route path="/">
+            <ResourceForm />
+            <TestBackend />
+          </Route>
+          <Route path="/public">
+            <LoginPage />
+          </Route>
+          <PrivateRoute path="/home">
+            <SideMenu />
+          </PrivateRoute>
+        </Switch>
+      </ThemeProvider>
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
-
-// <Provider store={store}>
-//   <Router history={history}>
-//     <ThemeProvider theme={theme}>
-//       <Switch>
-//         <Route path="/">
-//           <ResourceForm />
-//         </Route>
-//         <Route path="/public">
-//           <LoginPage />
-//         </Route>
-//         <PrivateRoute path="/home">
-//           <SideMenu />
-//         </PrivateRoute>
-//       </Switch>
-//     </ThemeProvider>
-//   </Router>
-// </Provider>,
