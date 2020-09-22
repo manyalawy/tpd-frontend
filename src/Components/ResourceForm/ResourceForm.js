@@ -11,9 +11,8 @@ export default function ResourceForm() {
   const [marked, setMarked] = useState(false);
   const [skills, setSkills] = useState([]);
 
-  var skill = { id:"", cat: "", sub: "" };
+  var skill = { id: "", cat: "", sub: "" };
   var handleChangeCat = (event) => {
-
     skill.cat = event.target.value;
     console.log(skill.cat);
   };
@@ -23,20 +22,18 @@ export default function ResourceForm() {
   function handleAdd(event) {
     document.getElementById("cat").selectedIndex = 0;
     document.getElementById("sub").selectedIndex = 0;
-    
-    
+
     skills.push(skill);
     setSkills([...skills]);
     event.preventDefault();
-    
   }
-  function handleDelete(event,indexDelete){
+  function handleDelete(event, indexDelete) {
     document.getElementById("cat").selectedIndex = 0;
     document.getElementById("sub").selectedIndex = 0;
-    skills.splice(indexDelete,1)
-    
-    setSkills([...skills])
-    event.preventDefault()
+    skills.splice(indexDelete, 1);
+
+    setSkills([...skills]);
+    event.preventDefault();
   }
 
   return (
@@ -223,7 +220,7 @@ export default function ResourceForm() {
                   onChange={(event) => handleChangeCat(event)}
                   id="cat"
                 >
-                  <option  value="" disabled selected>
+                  <option value="" disabled selected>
                     Select Category
                   </option>
                   <option value="app dev">app dev</option>
@@ -233,7 +230,7 @@ export default function ResourceForm() {
               <div class="form-group col-md-4">
                 <label for="function">Sub-category</label>
                 <select
-                  id = "sub"
+                  id="sub"
                   class="form-control"
                   required
                   onChange={(event) => handleChangeSub(event)}
@@ -270,14 +267,26 @@ export default function ResourceForm() {
                   <tr key={index}>
                     <td>{s.cat}</td>
                     <td>{s.sub}</td>
-                    <td><button type="button" class="btn btn-link" onClick={event => handleDelete(event,index)}>Remove</button></td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-link"
+                        onClick={(event) => handleDelete(event, index)}
+                      >
+                        Remove
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <button class="btn btn-primary sub" type="submit">Submit</button>
-          <button type="button" class="btn canc btn-danger">Cancel</button>
+          <button class="btn btn-primary sub" type="submit">
+            Submit
+          </button>
+          <button type="button" class="btn canc btn-danger">
+            Cancel
+          </button>
         </form>
       </div>
     </div>

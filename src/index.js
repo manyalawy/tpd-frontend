@@ -1,22 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { store, PrivateRoute, history } from "./_helpers";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
-import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import ResourceForm from "./Components/ResourceForm/ResourceForm.js";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
+import TestBackend from "./Components/TestBackend/TestBackend.jsx";
+
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -34,43 +31,30 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <Router>
-    <ThemeProvider theme={theme}>
-      <SideMenu />
-      <Resource/>
-    </ThemeProvider>
-  </Router>,
+  // <Router>
+  //   <ThemeProvider theme={theme}>
+  //     <SideMenu />
+  //     <ResourceForm />
+  //     <TestBackend />
+  //   </ThemeProvider>
+  // </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      <ThemeProvider theme={theme}>
+        <Switch>
+          <Route path="/">
+            <ResourceForm />
+            <TestBackend />
+          </Route>
+          <Route path="/public">
+            <LoginPage />
+          </Route>
+          <PrivateRoute path="/home">
+            <SideMenu />
+          </PrivateRoute>
+        </Switch>
+      </ThemeProvider>
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
-
-const fakeAuth = {
-  isAuthenticated: false,
-  authenticate(cb) {
-    fakeAuth.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb) {
-    fakeAuth.isAuthenticated = false;
-    setTimeout(cb, 100);
-  },
-};
-
-function PrivateRoute({ children, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        fakeAuth.isAuthenticated ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
-}
