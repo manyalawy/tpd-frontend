@@ -5,7 +5,7 @@ var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
-export default function ReleaseForm() {
+export default function ReleaseForm(props) {
   return (
     <div>
       <div>
@@ -39,6 +39,7 @@ export default function ReleaseForm() {
               <fieldset disabled>
                 <label for="employeeID">Employee ID</label>
                 <input
+                  disabled={(props.editing = "true" ? "true" : "false")}
                   type="text"
                   class="form-control"
                   id="employeeID"

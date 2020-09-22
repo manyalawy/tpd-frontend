@@ -10,7 +10,7 @@ import LoginPage from "./Components/Login/Login.jsx";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
-import ResourceForm from "./Components/ResourceForm/ResourceForm.js";
+import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 import TestBackend from "./Components/TestBackend/TestBackend.jsx";
 
@@ -43,7 +43,7 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/">
-            <Resource />
+            <ResourceForm editing="no" user="TPD" />
             <TestBackend />
           </Route>
           <Route path="/public">

@@ -31,7 +31,7 @@ export default function Resource() {
     getOptionLabel: (option) => option.status,
   };
   function handleClick() {
-    document.getElementById("filterManager").value = null;
+    document.getElementById("filterManager").value = "";
     document.getElementById("filterTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
