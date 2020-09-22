@@ -43,7 +43,7 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/">
-            <ResourceForm />
+            <Resource />
             <TestBackend />
           </Route>
           <Route path="/public">

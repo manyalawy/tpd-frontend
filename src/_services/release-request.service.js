@@ -2,7 +2,7 @@ import { authHeader, handleResponse } from "../_helpers";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-export const releaseRequestService = {
+export default {
   getAll,
   getById,
   create,

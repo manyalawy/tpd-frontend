@@ -2,7 +2,7 @@ import { authHeader, handleResponse } from "../_helpers";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-export const resourceRequestService = {
+export default {
   getAll,
   getById,
   create,
@@ -10,10 +10,11 @@ export const resourceRequestService = {
   delete: _delete,
 };
 
-function getAll() {
+function getAll(body) {
   const requestOptions = {
-    method: "GET",
-    headers: authHeader(),
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   };
 
   return fetch(`${apiUrl}/resource-request/all`, requestOptions).then(

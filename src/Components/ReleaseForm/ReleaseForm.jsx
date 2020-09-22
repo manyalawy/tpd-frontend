@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./ReleaseForm.css";
-import $ from "jquery";
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
