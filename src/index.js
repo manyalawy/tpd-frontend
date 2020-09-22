@@ -37,7 +37,7 @@ ReactDOM.render(
   <Router>
     <ThemeProvider theme={theme}>
       <SideMenu />
-      <ResourceForm/>
+      <Resource/>
     </ThemeProvider>
   </Router>,
   document.getElementById("root")
