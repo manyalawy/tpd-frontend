@@ -1,0 +1,49 @@
+.resourceTitle {
+  color: white;
+  margin-left: 5%;
+  margin-top: 4rem;
+}
+
+.resourceTable {
+  background-color: white;
+  width: 90%;
+  margin-top: 3rem;
+}
+
+.buttons {
+  margin: 1rem;
+}
+
+.buttonRow {
+  margin-left: 78%;
+}
+
+.addButton {
+  background-color: white;
+  color: black;
+}
+.filterButton {
+  background-color: #f6ec5a;
+  color: black;
+}
+.exportButton {
+}
+.rtm {
+  margin-top: 15rem;
+}
+.filterElement {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.reset {
+  background-color: #ac2225;
+}
+.reset:hover {
+  background-color: #ac2225;
+}
+.filter {
+  background-color: #02438e;
+}
+.filter:hover {
+  background-color: #02438e;
+}

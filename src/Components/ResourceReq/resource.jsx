@@ -1,215 +1,244 @@
 import React from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import { sizing } from "@material-ui/system";
-import Box from "@material-ui/core/Box";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import "./resource.css";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import Link from "@material-ui/core/Link";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import { yellow500 } from "@material-ui/core/colors/yellow";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { ThemeProvider } from "@material-ui/styles";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { useState } from "react";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#F6EC5A",
-    },
-    secondary: {
-      // This is green.A700 as hex.
-      main: "#084791",
-    },
-  },
-});
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
-  },
-}));
-
-const themeDark = createMuiTheme({
-  palette: {
-    background: {
-      default: "#ffffff",
-    },
-    text: {
-      primary: "#ffffff",
-    },
-  },
-});
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: "#AC2225",
-    color: theme.palette.common.white,
-  },
-}))(TableCell);
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF",
-  },
-})(Typography);
-
-function createData(
-  RefNo,
-  Manager,
-  Function,
-  Title,
-  StartDate,
-  EndDate,
-  Percentage,
-  Status,
-  ActionsTaken,
-  Actions
-) {
-  return {
-    RefNo,
-    Manager,
-    Function,
-    Title,
-    StartDate,
-    EndDate,
-    Percentage,
-    Status,
-    ActionsTaken,
-    Actions,
-  };
-}
-const rows = [
-  createData(
-    1,
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    3453535,
-    334534455,
-    35,
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    535
-  ),
-];
 export default function Resource() {
-  const classes = useStyles();
-  const classes1 = useStyles1();
+  const defaultProps = {
+    options: top100Films,
+    getOptionLabel: (option) => option.title,
+  };
+  const statusFilter = {
+    options: status,
+    getOptionLabel: (option) => option.status,
+  };
+  function handleClick() {
+    document.getElementById("filterManager").value = null;
+    document.getElementById("filterTitle").value = "";
+    document.getElementById("filterFunction").value = "";
+    document.getElementById("filterStatus").value = "";
+    document.getElementById("filterCategory").value = "";
+    document.getElementById("filterSubCategory").value = "";
+  }
 
   return (
-    <MuiThemeProvider theme={themeDark}>
-      <Box mt={2} height={200} style={{ backgroundColor: "#AC2225" }}>
-        <Box pt={15} ml={2}>
-          <WhiteTextTypography variant="h3">
-            Resource requests
-          </WhiteTextTypography>
-        </Box>
-      </Box>
-
-      <Box mx={145} mt={11}>
-        <div className={classes1.root}>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab aria-label="add">
-                <AddIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab color="secondary" aria-label="edit">
-                <GetAppIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Link href="#">
-              <Fab color="primary" aria-label="edit">
-                <FilterListIcon />
-              </Fab>
-            </Link>
-          </ThemeProvider>
+    <div>
+      <h1 className="resourceTitle">Resource requests</h1>
+      <div className="row">
+        <div class="col-md-4 offset-md-8">
+          <button class="btn btn-primary buttons addButton" type="submit">
+            Add
+          </button>
+          <button
+            class="btn btn-primary buttons filterButton"
+            type="button"
+            data-toggle="modal"
+            data-target="#exampleModal"
+          >
+            Filter
+          </button>
+          <button class="btn btn-primary buttons" type="submit">
+            Export
+          </button>
         </div>
-      </Box>
+      </div>
+      <div className="table-responsive-lg">
+        <table class="table resourceTable mx-auto table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Ref No.</th>
+              <th scope="col">Manager</th>
+              <th scope="col">Function</th>
+              <th scope="col">Title</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Probability</th>
+              <th scope="col">Percentage</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action Taken</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+              <td>@mdo</td>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="resourceTableFilter"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-lg rtm" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="resourceTableFilter">
+                  Filter
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body row ">
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterManager"
+                    renderInput={(params) => (
+                      <TextField {...params} label="Manager" margin="normal" />
+                    )}
+                  />
+                </div>
 
-      <Box width="90%" mt={10} mx="auto">
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Ref No.</StyledTableCell>
-                <StyledTableCell align="center">Manager</StyledTableCell>
-                <StyledTableCell align="center">Funtion</StyledTableCell>
-                <StyledTableCell align="center">Title</StyledTableCell>
-                <StyledTableCell align="center">Start Date</StyledTableCell>
-                <StyledTableCell align="center">End Date</StyledTableCell>
-                <StyledTableCell align="center">Percentage</StyledTableCell>
-                <StyledTableCell align="center">Status</StyledTableCell>
-                <StyledTableCell align="center">Actions taken</StyledTableCell>
-                <StyledTableCell align="center">Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.RefNo}>
-                  <TableCell
-                    align="center"
-                    style={{ color: "black" }}
-                    component="th"
-                    scope="row"
-                  >
-                    {row.RefNo}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Manager}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Function}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Title}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.StartDate}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.EndDate}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Percentage}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Status}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ActionsTaken}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Actions}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </MuiThemeProvider>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterTitle"
+                    debug
+                    renderInput={(params) => (
+                      <TextField {...params} label="Title" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterFunction"
+                    debug
+                    renderInput={(params) => (
+                      <TextField {...params} label="Function" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...statusFilter}
+                    id="filterStatus"
+                    debug
+                    renderInput={(params) => (
+                      <TextField {...params} label="Status" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterCategory"
+                    debug
+                    renderInput={(params) => (
+                      <TextField {...params} label="Category" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterSubCategory"
+                    debug
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Sub-Category"
+                        margin="normal"
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary filter"
+                  data-dismiss="modal"
+                >
+                  Filter
+                </button>
+                <button
+                  onClick={handleClick}
+                  type="button"
+                  class="btn btn-primary reset"
+                >
+                  Reset Filter
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
+const top100Films = [
+  { title: "The Shawshank Redemption", year: 1994 },
+  { title: "The Godfather", year: 1972 },
+  { title: "The Godfather: Part II", year: 1974 },
+  { title: "The Dark Knight", year: 2008 },
+  { title: "12 Angry Men", year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: "Pulp Fiction", year: 1994 },
+  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
+  { title: "The Good, the Bad and the Ugly", year: 1966 },
+  { title: "Fight Club", year: 1999 },
+  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
+];
+const status = [
+  { status: "Open" },
+  { status: "Cancelled" },
+  { status: "On Hold" },
+  { status: "Moved" },
+  { status: "Pending Hiring Request" },
+  { status: "Hired" },
+  { status: "Pending Outsourcing Request" },
+  { status: "Outsourced" },
+  { status: "Over allocated" },
+];
