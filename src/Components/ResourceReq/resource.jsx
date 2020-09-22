@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./resource.css";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { useState } from "react";
+import resourceServices from "../../_services/resource-request.service";
 
 export default function Resource() {
+  const [resourceRequests, setResourceRequests] = useState([]);
+
+  useEffect(() => {
+    resourceServices
+      .getAll({
+        Page: 0,
+        Limit: 10,
+        Filters: {},
+      })
+      .then((res) => {
+        setResourceRequests(res.ResourceRequests);
+        // console.log(res);
+      });
+  }, []);
+
   const defaultProps = {
     options: top100Films,
     getOptionLabel: (option) => option.title,
@@ -63,45 +78,19 @@ export default function Resource() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td>@mdo</td>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
+            {resourceRequests.map((resourceRequest) => (
+              <tr>
+                <th scope="row">{resourceRequest.reference_number}</th>
+                <td>{resourceRequest.manager_name}</td>
+                <td>{resourceRequest.function}</td>
+                <td>{resourceRequest.title}</td>
+                <td>{resourceRequest.start_date}</td>
+                <td>{resourceRequest.end_date}</td>
+                <td>{resourceRequest.propability}</td>
+                <td>{resourceRequest.percentage}</td>
+                <td>{resourceRequest.status}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
