@@ -43,7 +43,7 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/">
-            <ResourceForm editing="no" user="TPD" />
+            {/* <ReleaseForm user="TPD" editing="yes" /> */}
             <TestBackend />
           </Route>
           <Route path="/public">
