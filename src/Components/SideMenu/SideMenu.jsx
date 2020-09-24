@@ -16,7 +16,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import PeopleIcon from "@material-ui/icons/People";
 import Collapse from "@material-ui/core/Collapse";
-import InsightsIcon from "./assets/insightssvg.svg";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 import PsychologyIcon from "./assets/psychology-white-24dp.svg";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
@@ -163,7 +163,15 @@ export default function SideMenu() {
           >
             <MenuIcon />
           </IconButton>
-          <HomeIcon />
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => history.push("/")}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <HomeIcon />
+          </IconButton>
           <Box display="flex" ml="auto">
             <img src={itworx} width={100}></img>
           </Box>
@@ -265,7 +273,7 @@ export default function SideMenu() {
           </ListItem>
           <ListItem button key={"Insights & Analytics"}>
             <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <img src={InsightsIcon}></img>
+              <AssessmentIcon />
             </ListItemIcon>
             <ListItemText
               primary={"Insights & Analytics"}
