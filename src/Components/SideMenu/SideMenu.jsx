@@ -164,7 +164,7 @@ export default function SideMenu() {
             <MenuIcon />
           </IconButton>
           <HomeIcon />
-          <Box mr="auto" ml="auto">
+          <Box display="flex" ml="auto">
             <img src={itworx} width={100}></img>
           </Box>
           {/* Items on the right side of the navigation bar */}
