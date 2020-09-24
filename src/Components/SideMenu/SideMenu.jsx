@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -15,10 +15,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import PeopleIcon from "@material-ui/icons/People";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
-
 import InsightsIcon from "./assets/insightssvg.svg";
 import PsychologyIcon from "./assets/psychology-white-24dp.svg";
 import Typography from "@material-ui/core/Typography";
@@ -32,6 +29,7 @@ import Button from "@material-ui/core/Button";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import userServices from "../../_services/user.service";
+import { accountProperties } from "../../_helpers";
 
 const drawerWidth = 240;
 
@@ -117,7 +115,7 @@ export default function SideMenu() {
   let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [openTalent, setOpenTalent] = React.useState(true);
   const [openSkills, setOpenSkills] = React.useState(true);
 
@@ -142,6 +140,9 @@ export default function SideMenu() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    console.log(accountProperties());
+  }, []);
   return (
     <div className={classes.root}>
       <AppBar
