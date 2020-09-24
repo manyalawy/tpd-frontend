@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { store, PrivateRoute, history } from "./_helpers";
+import { store, history } from "./_helpers";
+import PrivateRoute from "../src/_helpers/PrivateRoute.jsx";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.js";
@@ -38,23 +39,17 @@ ReactDOM.render(
   //     <TestBackend />
   //   </ThemeProvider>
   // </Router>,
-  <Provider store={store}>
-    <Router history={history}>
-      <ThemeProvider theme={theme}>
-        <Switch>
-          <Route path="/">
-            <Resource />
-            <TestBackend />
-          </Route>
-          <Route path="/public">
-            <LoginPage />
-          </Route>
-          <PrivateRoute path="/home">
-            <SideMenu />
-          </PrivateRoute>
-        </Switch>
-      </ThemeProvider>
-    </Router>
-  </Provider>,
+
+  //<Provider store={store}>
+  <Router history={history}>
+    <ThemeProvider theme={theme}>
+      <Switch>
+        <Route path="/login" component={LoginPage} />
+        <PrivateRoute exact path="/" component={Resource} />
+        <PrivateRoute path="/home" component={SideMenu} />
+      </Switch>
+    </ThemeProvider>
+  </Router>,
+  // </Provider>
   document.getElementById("root")
 );

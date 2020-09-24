@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -30,6 +31,7 @@ import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import userServices from "../../_services/user.service";
 
 const drawerWidth = 240;
 
@@ -112,11 +114,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideMenu() {
+  let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [openTalent, setOpenTalent] = React.useState(true);
   const [openSkills, setOpenSkills] = React.useState(true);
+
+  let logout = () => {
+    userServices.logout();
+    history.push("/");
+  };
 
   const handleTalentClick = () => {
     setOpenTalent(!openTalent);
@@ -269,6 +277,7 @@ export default function SideMenu() {
           variant="contained"
           color="secondary"
           className={classes.button}
+          onClick={logout}
         >
           Logout
         </Button>
