@@ -13,6 +13,7 @@ import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 import TestBackend from "./Components/TestBackend/TestBackend.jsx";
+import Profile from "./Components/Profile/Profile.jsx";
 
 const theme = createMuiTheme({
   typography: {
@@ -43,15 +44,15 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/">
-            {/* <ReleaseForm user="TPD" editing="yes" /> */}
-            <TestBackend />
-          </Route>
-          <Route path="/public">
-            <LoginPage />
-          </Route>
-          <PrivateRoute path="/home">
             <SideMenu />
-          </PrivateRoute>
+            <Resource />
+          </Route>
+          {/* <Route path="/public">
+            <LoginPage />
+          </Route> */}
+          {/* <PrivateRoute path="/home">
+            <SideMenu />
+          </PrivateRoute> */}
         </Switch>
       </ThemeProvider>
     </Router>
