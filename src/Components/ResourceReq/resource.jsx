@@ -31,7 +31,7 @@ export default function Resource() {
     getOptionLabel: (option) => option.status,
   };
   function handleClick() {
-    document.getElementById("filterManager").value = null;
+    document.getElementById("filterManager").value = "";
     document.getElementById("filterTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
@@ -42,25 +42,23 @@ export default function Resource() {
   return (
     <div>
       <h1 className="resourceTitle">Resource requests</h1>
-      <div className="row">
-        <div class="col-md-4 offset-md-8">
-          <button class="btn btn-primary buttons addButton" type="submit">
-            Add
-          </button>
-          <button
-            class="btn btn-primary buttons filterButton"
-            type="button"
-            data-toggle="modal"
-            data-target="#exampleModal"
-          >
-            Filter
-          </button>
-          <button class="btn btn-primary buttons" type="submit">
-            Export
-          </button>
-        </div>
+      <div className="float-right">
+        <button class="btn btn-primary buttons addButton" type="submit">
+          Add
+        </button>
+        <button
+          class="btn btn-primary buttons filterButton"
+          type="button"
+          data-toggle="modal"
+          data-target="#resourceFilterModal"
+        >
+          Filter
+        </button>
+        <button class="btn btn-primary buttons" type="submit">
+          Export
+        </button>
       </div>
-      <div className="table-responsive-lg">
+      <div className="table-responsive-xl">
         <table class="table resourceTable mx-auto table-striped">
           <thead class="thead-dark">
             <tr>
@@ -78,26 +76,38 @@ export default function Resource() {
             </tr>
           </thead>
           <tbody>
-            {resourceRequests.map((resourceRequest) => (
-              <tr>
-                <th scope="row">{resourceRequest.reference_number}</th>
-                <td>{resourceRequest.manager_name}</td>
-                <td>{resourceRequest.function}</td>
-                <td>{resourceRequest.title}</td>
-                <td>{resourceRequest.start_date}</td>
-                <td>{resourceRequest.end_date}</td>
-                <td>{resourceRequest.propability}</td>
-                <td>{resourceRequest.percentage}</td>
-                <td>{resourceRequest.status}</td>
-              </tr>
-            ))}
+            <tr>
+              <th scope="row"></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td className="btn-group">
+                <button type="button" class="btn btn-link">
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-link"
+                  data-toggle="modal"
+                  data-target="#deleteResource"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
       <div>
         <div
           class="modal fade"
-          id="exampleModal"
+          id="resourceFilterModal"
           tabindex="-1"
           role="dialog"
           aria-labelledby="resourceTableFilter"
@@ -200,6 +210,48 @@ export default function Resource() {
                   Reset Filter
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade deleteModal"
+        id="deleteResource"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Delete resource request
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete release request with reference
+              number:
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary">
+                Yes
+              </button>
             </div>
           </div>
         </div>

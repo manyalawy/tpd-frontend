@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./ResourceForm.css";
-import Row from "./skillRow.jsx";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
-export default function ResourceForm() {
+export default function ResourceForm(props) {
   const [marked, setMarked] = useState(false);
   const [skills, setSkills] = useState([]);
-
+  const [selectedStatus, setSelectedStatus] = useState("");
   var skill = { id: "", cat: "", sub: "" };
   var handleChangeCat = (event) => {
     skill.cat = event.target.value;
@@ -35,60 +36,108 @@ export default function ResourceForm() {
     setSkills([...skills]);
     event.preventDefault();
   }
+  function handleStatusChange(event, value) {
+    setSelectedStatus(value.status);
+  }
+
+  const defaultProps = {
+    options: top100Films,
+    getOptionLabel: (option) => option.title,
+  };
+
+  var status = {};
+  if (props.user == "TPD") {
+    status = {
+      options: tpdOptions,
+      getOptionLabel: (option) => option.status,
+    };
+  } else {
+    status = {
+      options: managerOptions,
+      getOptionLabel: (option) => option.status,
+    };
+  }
+
+  var actions = {
+    options: actionsTaken,
+    getOptionLabel: (option) => option.action,
+  };
 
   return (
     <div>
       <div>
-        <h1 className="title">Add release request</h1>
+        <h1 className="title">Add resource request</h1>
       </div>
       <div className="form-width mx-auto form">
         <form>
           <h1 className="formHeaders">Request details</h1>
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="managerName">Manager</label>
-              <select class="form-control" required>
-                <option value="" disabled selected>
-                  Select Manager
-                </option>
-                <option value="Volkswagen Passat">Volkswagen Passat</option>
-                <option value="Manyal">Manyal</option>
-              </select>
+              <Autocomplete
+                {...defaultProps}
+                id="selectManager"
+                debug
+                renderInput={(params) => (
+                  <TextField
+                    required
+                    {...params}
+                    label="Select Manager"
+                    margin="normal"
+                  />
+                )}
+              />
             </div>
             <div class="form-group col-md-4">
-              <label for="function">Function</label>
-              <select class="form-control" required>
-                <option value="" disabled selected>
-                  Select Function
-                </option>
-                <option value="knxksandx">Volkswagen Passat</option>
-                <option value="xdsnjksdxn">Manyal</option>
-              </select>
+              <Autocomplete
+                {...defaultProps}
+                id="selectFunction"
+                debug
+                renderInput={(params) => (
+                  <TextField
+                    required
+                    {...params}
+                    label="Select Function"
+                    margin="normal"
+                  />
+                )}
+              />
             </div>
             <div class="form-group col-md-4">
-              <label for="jobTitle">Job Title</label>
-              <select class="form-control" required>
-                <option value="" disabled selected>
-                  Select Title
-                </option>
-                <option value="Volkswagen Passat">Volkswagen Passat</option>
-                <option value="Manyal">Manyal</option>
-              </select>
+              <Autocomplete
+                {...defaultProps}
+                id="selectTitle"
+                debug
+                renderInput={(params) => (
+                  <TextField
+                    required
+                    {...params}
+                    label="Select Title"
+                    margin="normal"
+                  />
+                )}
+              />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="replacmentFor">Replacment for</label>
-              <input
-                type="text"
-                class="form-control"
-                id="replacmentFor"
+              <Autocomplete
+                {...defaultProps}
                 disabled={!marked}
-              ></input>
+                id="selectReplacmentFor"
+                debug
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select Replacment"
+                    margin="normal"
+                  />
+                )}
+              />
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
               <label for="numberOfRequests">Number of requests</label>
               <input
+                required
                 min="1"
                 defaultValue="1"
                 type="number"
@@ -97,6 +146,7 @@ export default function ResourceForm() {
               ></input>
             </div>
           </div>
+
           <div class="form-row">
             <div class="form-group col-md-4">
               <div class="form-check">
@@ -208,6 +258,106 @@ export default function ResourceForm() {
               </div>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <Autocomplete
+                disabled={props.editing == "yes" ? false : true}
+                onChange={(event, value) => handleStatusChange(event, value)}
+                {...status}
+                id="selectStatus"
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select Status"
+                    margin="normal"
+                  />
+                )}
+              />
+            </div>
+            <div class="form-group col-md-3">
+              <Autocomplete
+                freeSolo
+                disabled={
+                  props.user == "TPD" && props.editing == "yes" ? false : true
+                }
+                {...actions}
+                id="selectActionTaken"
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select Action Taken"
+                    margin="normal"
+                  />
+                )}
+              />
+            </div>
+            <div class="form-group col-md-3">
+              <TextField
+                disabled={
+                  props.user == "TPD" && props.editing == "yes" ? false : true
+                }
+                required={
+                  selectedStatus == "Moved" ||
+                  selectedStatus == "Outsourced" ||
+                  selectedStatus == "Hired" ||
+                  selectedStatus == "Over allocated"
+                }
+                style={{ width: 300 }}
+                label="Select Assigned Resource"
+                margin="normal"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="actualsStartDate">Actual Start Date</label>
+              <input
+                disabled={
+                  props.user == "TPD" && props.editing == "yes" ? false : true
+                }
+                value={date}
+                min={date}
+                type="date"
+                class="form-control"
+                id="actualStartDate"
+              ></input>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="actualsEndDate">Actual End Date</label>
+              <input
+                disabled={
+                  props.user == "TPD" && props.editing == "yes" ? false : true
+                }
+                value={date}
+                min={date}
+                type="date"
+                class="form-control"
+                id="actualEndDate"
+              ></input>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="actualPercentage">Actual Percentage</label>
+              <div class="input-group">
+                <input
+                  disabled={
+                    props.user == "TPD" && props.editing == "true"
+                      ? false
+                      : true
+                  }
+                  type="number"
+                  class="form-control"
+                  min="10"
+                  max="100"
+                  id="percentage"
+                ></input>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="actualPercentage">
+                    %
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <h1 className="formHeaders">Technical skills</h1>
           <form>
@@ -292,3 +442,38 @@ export default function ResourceForm() {
     </div>
   );
 }
+
+const top100Films = [
+  { title: "The Shawshank Redemption", year: 1994 },
+  { title: "The Godfather", year: 1972 },
+  { title: "The Godfather: Part II", year: 1974 },
+  { title: "The Dark Knight", year: 2008 },
+  { title: "12 Angry Men", year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: "Pulp Fiction", year: 1994 },
+];
+
+const tpdOptions = [
+  { status: "Open" },
+  { status: "Cancelled" },
+  { status: "On Hold" },
+  { status: "Moved" },
+  { status: "Pending Hiring Request" },
+  { status: "Hired" },
+  { status: "Pending Outsourcing Request" },
+  { status: "Outsourced" },
+  { status: "Over allocated" },
+];
+
+const managerOptions = [
+  { status: "Open" },
+  { status: "Cancelled" },
+  { status: "On Hold" },
+];
+
+const actionsTaken = [
+  { action: "Assigned from release list" },
+  { action: "Added to Taleo" },
+  { action: "Added to Outsourcing list" },
+  { action: "Assigned as Over allocation" },
+];

@@ -11,8 +11,11 @@ import LoginPage from "./Components/Login/Login.jsx";
 import { Router, Switch, Route } from "react-router-dom";
 
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
-import ResourceForm from "./Components/ResourceForm/ResourceForm.js";
+import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
+
+import Profile from "./Components/Profile/Profile.jsx";
+
 
 const theme = createMuiTheme({
   typography: {

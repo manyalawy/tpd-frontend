@@ -1,255 +1,109 @@
 import React from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import { sizing } from "@material-ui/system";
-import Box from "@material-ui/core/Box";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import Link from "@material-ui/core/Link";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import { yellow500 } from "@material-ui/core/colors/yellow";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { ThemeProvider } from "@material-ui/styles";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import "./ReleaseReq.css";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#F6EC5A",
-    },
-    secondary: {
-      // This is green.A700 as hex.
-      main: "#084791",
-    },
-  },
-});
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
-  },
-}));
-
-const themeDark = createMuiTheme({
-  palette: {
-    background: {
-      default: "#ffffff",
-    },
-    text: {
-      primary: "#ffffff",
-    },
-  },
-});
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: "#ffffff",
-    color: theme.palette.common.white,
-  },
-}))(TableCell);
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF",
-  },
-})(Typography);
-
-function createData(
-  RefNo,
-  Manager,
-  ResourceName,
-  EmployeeID,
-  EmployeeTitle,
-  Function,
-  ReleaseDate,
-  ReleasePercentage,
-  ReleaseReason,
-  Leaving,
-  Status,
-  ActionTaken,
-  Actions
-) {
-  return {
-    RefNo,
-    Manager,
-    ResourceName,
-    EmployeeID,
-    EmployeeTitle,
-    Function,
-    ReleaseDate,
-    ReleasePercentage,
-    ReleaseReason,
-    Leaving,
-    Status,
-    ActionTaken,
-    Actions,
+export default function ReleaseReq() {
+  const defaultProps = {
+    options: top100Films,
+    getOptionLabel: (option) => option.title,
   };
-}
-const rows = [
-  createData(
-    1,
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    3453535,
-    334534455,
-    35,
-    "Frozen yoghurt",
-    "Frozen yoghurt",
-    535,
-    "dscdc",
-    "dxexec",
-    2334334
-  ),
-];
-export default function Resource() {
-  const classes = useStyles();
-  const classes1 = useStyles1();
-
+  const statusFilter = {
+    options: status,
+    getOptionLabel: (option) => option.status,
+  };
+  function resetFilter() {
+    document.getElementById("filterManager").value = "";
+    document.getElementById("filterEmployeeTitle").value = "";
+    document.getElementById("filterFunction").value = "";
+    document.getElementById("filterStatus").value = "";
+    document.getElementById("filterEmployeeName").value = "";
+  }
   return (
-    <MuiThemeProvider theme={themeDark}>
-      <Box mt={2} height={200} style={{ backgroundColor: "#AC2225" }}>
-        <Box pt={15} ml={2}>
-          <WhiteTextTypography variant="h3">
-            Release requests
-          </WhiteTextTypography>
-        </Box>
-      </Box>
+    <div>
+      <h1 className="resourceTitle">Release requests</h1>
 
-      <Box width="90%" mt={20} mx="auto">
-        <TableContainer component={Paper}>
-          <div class="tableIcons">
-            <div className={classes1.root}>
-              <ThemeProvider theme={theme}>
-                <Link href="#">
-                  <Fab aria-label="add">
-                    <AddIcon />
-                  </Fab>
-                </Link>
-              </ThemeProvider>
-              <ThemeProvider theme={theme}>
-                <Link href="#">
-                  <Fab color="secondary" aria-label="edit">
-                    <GetAppIcon />
-                  </Fab>
-                </Link>
-              </ThemeProvider>
-              <ThemeProvider theme={theme}>
+      <div className="float-right">
+        <button class="btn btn-primary buttons addButton" type="submit">
+          Add
+        </button>
+        <button
+          class="btn btn-primary buttons filterButton"
+          type="button"
+          data-toggle="modal"
+          data-target="#releaseFilterModal"
+        >
+          Filter
+        </button>
+        <button class="btn btn-primary buttons" type="submit">
+          Export
+        </button>
+      </div>
+
+      <div className="table-responsive-lg">
+        <table class="table resourceTable mx-auto table-striped table-condensed">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Ref No.</th>
+              <th scope="col">Manager</th>
+              <th scope="col">Resource Name</th>
+              <th scope="col">Employee ID</th>
+              <th scope="col">Employee Title</th>
+              <th scope="col">Function</th>
+              <th scope="col">Release Date</th>
+              <th scope="col">Release Percentage</th>
+              <th scope="col">Release Reason</th>
+              <th scope="col">Leaving</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action Taken</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Hi</th>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td>HIII</td>
+              <td className="btn-group">
+                <button type="button" class="btn btn-link">
+                  Edit
+                </button>
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-link"
                   data-toggle="modal"
-                  data-target="#exampleModal"
+                  data-target="#deleteRelease"
                 >
-                  <Fab color="primary" aria-label="edit">
-                    <FilterListIcon />
-                  </Fab>
+                  Delete
                 </button>
-              </ThemeProvider>
-            </div>
-          </div>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Ref No.</StyledTableCell>
-                <StyledTableCell align="center">Manager</StyledTableCell>
-                <StyledTableCell align="center">Resource Name</StyledTableCell>
-                <StyledTableCell align="center">Employee ID</StyledTableCell>
-                <StyledTableCell align="center">Employee Title</StyledTableCell>
-                <StyledTableCell align="center">Function</StyledTableCell>
-                <StyledTableCell align="center">Release Date</StyledTableCell>
-                <StyledTableCell align="center">
-                  Release Percentage
-                </StyledTableCell>
-                <StyledTableCell align="center">Release Reason</StyledTableCell>
-                <StyledTableCell align="center">Leaving</StyledTableCell>
-                <StyledTableCell align="center">Status</StyledTableCell>
-                <StyledTableCell align="center">Actions taken</StyledTableCell>
-                <StyledTableCell align="center">Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.RefNo}>
-                  <TableCell
-                    align="center"
-                    style={{ color: "black" }}
-                    component="th"
-                    scope="row"
-                  >
-                    {row.RefNo}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Manager}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ResourceName}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.EmployeeID}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.EmployeeTitle}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Function}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ReleaseDate}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ReleasePercentage}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ReleaseReason}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Leaving}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Status}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.ActionTaken}
-                  </TableCell>
-                  <TableCell style={{ color: "black" }} align="center">
-                    {row.Actions}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div
-        class="modal fade"
-        id="exampleModal"
+        class="modal fade releaseFilter"
+        id="releaseFilterModal"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog  modal-lg " role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                Modal title
+                Filter
               </h5>
               <button
                 type="button"
@@ -260,22 +114,146 @@ export default function Resource() {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">...</div>
+            <div class="modal-body">
+              <div className="row">
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterManager"
+                    renderInput={(params) => (
+                      <TextField {...params} label="Manager" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterEmployeeTitle"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Employee Title"
+                        margin="normal"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterFunction"
+                    renderInput={(params) => (
+                      <TextField {...params} label="Function" margin="normal" />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...defaultProps}
+                    id="filterEmployeeName"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Employee Name"
+                        margin="normal"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="filterElement" style={{ width: 200 }}>
+                  <Autocomplete
+                    {...statusFilter}
+                    id="filterStatus"
+                    renderInput={(params) => (
+                      <TextField {...params} label="Status" margin="normal" />
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
             <div class="modal-footer">
               <button
                 type="button"
                 class="btn btn-secondary"
                 data-dismiss="modal"
               >
-                Close
+                Filter
               </button>
-              <button type="button" class="btn btn-primary">
-                Save changes
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={resetFilter}
+              >
+                Reset Filter
               </button>
             </div>
           </div>
         </div>
       </div>
-    </MuiThemeProvider>
+      <div
+        class="modal fade deleteModal"
+        id="deleteRelease"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Delete release request
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete release request with reference
+              number:
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary">
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
+
+const top100Films = [
+  { title: "The Shawshank Redemption", year: 1994 },
+  { title: "The Godfather", year: 1972 },
+  { title: "The Godfather: Part II", year: 1974 },
+  { title: "The Dark Knight", year: 2008 },
+  { title: "12 Angry Men", year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: "Pulp Fiction", year: 1994 },
+  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
+  { title: "The Good, the Bad and the Ugly", year: 1966 },
+  { title: "Fight Club", year: 1999 },
+  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
+];
+
+const status = [
+  { status: "Open" },
+  { status: "Cancelled" },
+  { status: "Moved" },
+  { status: "Left" },
+  { status: "Booked" },
+];
