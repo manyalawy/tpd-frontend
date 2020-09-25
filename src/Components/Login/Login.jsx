@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Logo from "./assets/ITWorx Flat Logo.png";
 import { useHistory, useLocation } from "react-router-dom";
+import userServices from "../../_services/user.service";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,26 +51,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const fakeAuth = {
-  isAuthenticated: false,
-  authenticate(cb) {
-    fakeAuth.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb) {
-    fakeAuth.isAuthenticated = false;
-    setTimeout(cb, 100);
-  },
-};
-
 export default function Login() {
   const classes = useStyles();
+  const [userName, setUserName] = useState(null);
+  const [password, setPassword] = useState(null);
   let history = useHistory();
   let location = useLocation();
 
   let { from } = location.state || { from: { pathname: "/" } };
+
   let login = () => {
-    fakeAuth.authenticate(() => {
+    userServices.login(userName, password).then(() => {
       history.replace(from);
     });
   };
@@ -83,16 +75,27 @@ export default function Login() {
             TPD
           </Typography>
           <TextField
+            value={userName}
             id="outlined-basic"
-            label="Email"
+            label="User Name"
             variant="outlined"
             className={clsx(classes.textField)}
+            onChange={(event) => setUserName(event.target.value)}
+            required
+            error={userName === ""}
+            helperText={userName === "" ? "Field is required" : ""}
           />
           <TextField
             id="outlined-basic"
             label="Password"
             variant="outlined"
+            type="password"
+            autoComplete="current-password"
             className={clsx(classes.textField)}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+            error={password === ""}
+            helperText={password === "" ? "Field is required" : ""}
           />
           <Button
             size="large"
@@ -100,6 +103,7 @@ export default function Login() {
             color="secondary"
             className={classes.button}
             onClick={login}
+            type="submit"
           >
             Login
           </Button>

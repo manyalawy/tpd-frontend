@@ -1,19 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { store, PrivateRoute, history } from "./_helpers";
+import { store, history } from "./_helpers";
+import PrivateRoute from "../src/_helpers/PrivateRoute.jsx";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
-import TestBackend from "./Components/TestBackend/TestBackend.jsx";
+
 import Profile from "./Components/Profile/Profile.jsx";
+
 
 const theme = createMuiTheme({
   typography: {
@@ -31,31 +33,25 @@ const theme = createMuiTheme({
   },
 });
 
+const LoginContainer = () => <Route path="/login" component={LoginPage} />;
+
+const DefaultContainer = () => (
+  <>
+    <SideMenu />
+    <Route exact path="/" component={Resource} />
+  </>
+);
+
 ReactDOM.render(
-  // <Router>
-  //   <ThemeProvider theme={theme}>
-  //     <SideMenu />
-  //     <ResourceForm />
-  //     <TestBackend />
-  //   </ThemeProvider>
-  // </Router>,
-  <Provider store={store}>
-    <Router history={history}>
-      <ThemeProvider theme={theme}>
-        <Switch>
-          <Route path="/">
-            <SideMenu />
-            <Resource />
-          </Route>
-          {/* <Route path="/public">
-            <LoginPage />
-          </Route> */}
-          {/* <PrivateRoute path="/home">
-            <SideMenu />
-          </PrivateRoute> */}
-        </Switch>
-      </ThemeProvider>
-    </Router>
-  </Provider>,
+  //<Provider store={store}>
+  <Router history={history}>
+    <ThemeProvider theme={theme}>
+      <Switch>
+        <Route exact path="/login" component={LoginContainer} />
+        <PrivateRoute component={DefaultContainer} />
+      </Switch>
+    </ThemeProvider>
+  </Router>,
+  // </Provider>
   document.getElementById("root")
 );
