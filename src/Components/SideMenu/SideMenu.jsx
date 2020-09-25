@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -14,11 +15,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import PeopleIcon from "@material-ui/icons/People";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
-
-import InsightsIcon from "./assets/insightssvg.svg";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 import PsychologyIcon from "./assets/psychology-white-24dp.svg";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
@@ -30,6 +28,8 @@ import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import userServices from "../../_services/user.service";
+import { accountProperties } from "../../_helpers";
 
 const drawerWidth = 240;
 
@@ -112,11 +112,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideMenu() {
+  let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [openTalent, setOpenTalent] = React.useState(true);
   const [openSkills, setOpenSkills] = React.useState(true);
+
+  let logout = () => {
+    userServices.logout();
+    history.push("/");
+  };
 
   const handleTalentClick = () => {
     setOpenTalent(!openTalent);
@@ -134,6 +140,9 @@ export default function SideMenu() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    console.log(accountProperties());
+  }, []);
   return (
     <div className={classes.root}>
       <AppBar
@@ -154,8 +163,16 @@ export default function SideMenu() {
           >
             <MenuIcon />
           </IconButton>
-          <HomeIcon />
-          <Box mr="auto" ml="auto">
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => history.push("/")}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <HomeIcon />
+          </IconButton>
+          <Box display="flex" ml="auto">
             <img src={itworx} width={100}></img>
           </Box>
           {/* Items on the right side of the navigation bar */}
@@ -256,7 +273,7 @@ export default function SideMenu() {
           </ListItem>
           <ListItem button key={"Insights & Analytics"}>
             <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <img src={InsightsIcon}></img>
+              <AssessmentIcon />
             </ListItemIcon>
             <ListItemText
               primary={"Insights & Analytics"}
@@ -269,6 +286,7 @@ export default function SideMenu() {
           variant="contained"
           color="secondary"
           className={classes.button}
+          onClick={logout}
         >
           Logout
         </Button>

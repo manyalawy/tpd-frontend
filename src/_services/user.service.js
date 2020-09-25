@@ -2,7 +2,7 @@ import { authHeader, handleResponse } from "../_helpers";
 
 const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-export const userService = {
+export default {
   login,
   logout,
   register,
@@ -16,16 +16,16 @@ function login(username, password) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ user_name: username, password }),
   };
 
-  return fetch(`${apiUrl}/users/authenticate`, requestOptions)
+  return fetch(`${apiUrl}/user/signIn`, requestOptions)
     .then(handleResponse)
-    .then((user) => {
+    .then((data) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
-      localStorage.setItem("user", JSON.stringify(user));
+      if (!data.error) localStorage.setItem("user", JSON.stringify(data.token));
 
-      return user;
+      return data.token;
     });
 }
 

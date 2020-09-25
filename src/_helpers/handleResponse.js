@@ -1,4 +1,4 @@
-import { userService } from "../_services/user.service";
+import userServices from "../_services/user.service";
 
 export function handleResponse(response) {
   return response.text().then((text) => {
@@ -6,7 +6,7 @@ export function handleResponse(response) {
     if (!response.ok) {
       if (response.status === 401) {
         // auto logout if 401 response returned from api
-        userService.logout();
+        userServices.logout();
         //TODO
         // eslint-disable-next-line no-restricted-globals
         location.reload(true);
