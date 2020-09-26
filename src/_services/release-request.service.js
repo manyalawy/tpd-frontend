@@ -10,10 +10,11 @@ export default {
   delete: _delete,
 };
 
-function getAll() {
+function getAll(body) {
   const requestOptions = {
-    method: "GET",
-    headers: authHeader(),
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   };
 
   return fetch(`${apiUrl}/release-request/all`, requestOptions).then(
@@ -23,12 +24,12 @@ function getAll() {
 
 function getById(reference_number) {
   const requestOptions = {
-    method: "GET",
+    method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify({ reference_number: reference_number }),
   };
 
-  return fetch(`${apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request/one`, requestOptions).then(
     handleResponse
   );
 }
@@ -62,7 +63,9 @@ function _delete(reference_number) {
   const requestOptions = {
     method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify({
+      ReleaseRequest: { reference_number: reference_number },
+    }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(

@@ -4,13 +4,13 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import resourceServices from "../../_services/resource-request.service";
+import resourceService from "../../_services/resource-request.service";
 
 export default function Resource() {
   const [resourceRequests, setResourceRequests] = useState([]);
 
   useEffect(() => {
-    resourceServices
+    resourceService
       .getAll({
         Page: 0,
         Limit: 10,
@@ -54,6 +54,7 @@ export default function Resource() {
         >
           Filter
         </button>
+
         <button class="btn btn-primary buttons" type="submit">
           Export
         </button>

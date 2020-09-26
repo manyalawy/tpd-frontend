@@ -16,7 +16,6 @@ import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 
 import Profile from "./Components/Profile/Profile.jsx";
 
-
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -38,7 +37,8 @@ const LoginContainer = () => <Route path="/login" component={LoginPage} />;
 const DefaultContainer = () => (
   <>
     <SideMenu />
-    <Route exact path="/" component={Resource} />
+    <Route exact path="/release-requests" component={Release} />
+    <Route exact path="/release-requests/add" component={ReleaseForm} />
   </>
 );
 

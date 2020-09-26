@@ -1,43 +1,169 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/Add";
+import FilterIcon from "./assets/filter_alt-24px.svg";
+import ExportIcon from "./assets/file-export-solid.svg";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+
 import "./ReleaseReq.css";
 
+//Services
+import releaseRequestService from "../../_services/release-request.service";
+import managerService from "../../_services/manager.service";
+import employeeService from "../../_services/employee.service";
+
 export default function ReleaseReq() {
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  };
-  const statusFilter = {
-    options: status,
-    getOptionLabel: (option) => option.status,
-  };
+  let history = useHistory();
+  //Handle Table
+  const [releaseRequests, setReleaseRequests] = useState([]);
+  //Handle Delete
+  const [idToDelete, setIdToDelete] = useState();
+  const [deleted, setDeleted] = useState(false);
+  //Handle Filters
+  const [filtered, setFiltered] = useState(false);
+  const [managerFilterList, setManagerFilterList] = useState([]);
+  const [selectedManager, setSelectedManager] = useState();
+
+  const [titleFilterList, setTitleFilterList] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState();
+
+  const [functionFilterList, setFunctionFilterList] = useState([]);
+  const [selectedFunction, setSelectedFunction] = useState();
+
+  const [employeeFilterList, setEmployeeFilterList] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState();
+
+  const [selectedStatus, setSelectedStatus] = useState();
+
+  //Once for all Filter Lists
+  useEffect(() => {
+    managerService.getAll().then((res) => {
+      setManagerFilterList(res.managers);
+    });
+    employeeService.getAllNames().then((res) => {
+      setEmployeeFilterList(res.Names);
+    });
+    employeeService.getAllTitles().then((res) => {
+      setTitleFilterList(res.Titles);
+    });
+    employeeService.getAllFunctions().then((res) => {
+      setFunctionFilterList(res.Functions);
+    });
+  }, []);
+
+  //With every Update to re-render Table with filtration or after deletion
+  useEffect(() => {
+    const managerFilterProperty = selectedManager
+      ? { manager_name: selectedManager }
+      : "";
+    const titleFilterProperty = selectedTitle
+      ? { employee_title: selectedTitle }
+      : "";
+    const functionFilterProperty = selectedFunction
+      ? { function: selectedFunction }
+      : "";
+    const employeeFilterProperty = selectedEmployee
+      ? { employee_name: selectedEmployee }
+      : "";
+
+    const statusFilterProperty = selectedStatus
+      ? { request_status: selectedStatus }
+      : "";
+    const Filters = {
+      ...managerFilterProperty,
+      ...titleFilterProperty,
+      ...functionFilterProperty,
+      ...employeeFilterProperty,
+      ...statusFilterProperty,
+    };
+    releaseRequestService
+      .getAll({
+        Page: 0,
+        Limit: 10,
+        Filters,
+      })
+      .then((res) => {
+        setReleaseRequests(res.ReleaseRequests);
+      });
+  }, [deleted, filtered]);
+
   function resetFilter() {
     document.getElementById("filterManager").value = "";
     document.getElementById("filterEmployeeTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
     document.getElementById("filterEmployeeName").value = "";
+    setSelectedManager("");
+    setSelectedTitle("");
+    setSelectedFunction("");
+    setSelectedEmployee("");
+    setSelectedStatus("");
   }
+
+  const deleteRequest = () => {
+    releaseRequestService.delete(idToDelete).then(() => {
+      setDeleted(!deleted);
+    });
+  };
+
+  const editRequest = () => {
+    history.push("/release-requests/add");
+  };
+
   return (
     <div>
-      <h1 className="resourceTitle">Release requests</h1>
+      <h1 className="resourceTitle">Release Requests</h1>
 
       <div className="float-right">
-        <button class="btn btn-primary buttons addButton" type="submit">
-          Add
-        </button>
-        <button
-          class="btn btn-primary buttons filterButton"
-          type="button"
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => history.push("/release-requests/add")}
+          edge="start"
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "10px",
+            color: "#000000",
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          style={{
+            backgroundColor: "#F6EC5A",
+            margin: "10px",
+            color: "#000000",
+          }}
           data-toggle="modal"
           data-target="#releaseFilterModal"
         >
-          Filter
-        </button>
-        <button class="btn btn-primary buttons" type="submit">
-          Export
-        </button>
+          <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+        </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          style={{
+            backgroundColor: "#084791",
+            margin: "10px",
+            color: "#ffffff",
+          }}
+        >
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </IconButton>
       </div>
 
       <div className="table-responsive-lg">
@@ -50,6 +176,7 @@ export default function ReleaseReq() {
               <th scope="col">Employee ID</th>
               <th scope="col">Employee Title</th>
               <th scope="col">Function</th>
+              <th scope="col">TODO PROBABLITY</th>
               <th scope="col">Release Date</th>
               <th scope="col">Release Percentage</th>
               <th scope="col">Release Reason</th>
@@ -60,33 +187,55 @@ export default function ReleaseReq() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">Hi</th>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td>HIII</td>
-              <td className="btn-group">
-                <button type="button" class="btn btn-link">
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-link"
-                  data-toggle="modal"
-                  data-target="#deleteRelease"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+            {releaseRequests.map((releaseRequest) => (
+              <tr>
+                <th scope="row">{releaseRequest.reference_number}</th>
+                <td>{releaseRequest.manager_name}</td>
+                <td>{releaseRequest.employee_name}</td>
+                <td>{releaseRequest.employee_title}</td>
+                <td>{releaseRequest.function}</td>
+                <td>{releaseRequest.title}</td>
+                <td>{releaseRequest.release_date}</td>
+                <td>{releaseRequest.release_percentage}</td>
+                <td>{releaseRequest.release_reason}</td>
+                <td>{releaseRequest.leaving}</td>
+                <td>{releaseRequest.request_status}</td>
+                <td>TODO</td>
+                <td>TODO</td>
+
+                <td className="btn-group">
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      margin: "10px",
+                      color: "#000000",
+                    }}
+                    onClick={() => editRequest()}
+                  >
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      margin: "10px",
+                      color: "#000000",
+                    }}
+                    onClick={() =>
+                      setIdToDelete(releaseRequest.reference_number)
+                    }
+                  >
+                    <DeleteForeverIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -118,16 +267,20 @@ export default function ReleaseReq() {
               <div className="row">
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterManager"
                     renderInput={(params) => (
                       <TextField {...params} label="Manager" margin="normal" />
                     )}
+                    value={selectedManager}
+                    options={managerFilterList}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(event, value) => {
+                      setSelectedManager(value.name);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterEmployeeTitle"
                     renderInput={(params) => (
                       <TextField
@@ -136,20 +289,30 @@ export default function ReleaseReq() {
                         margin="normal"
                       />
                     )}
+                    value={selectedTitle}
+                    options={titleFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedTitle(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterFunction"
                     renderInput={(params) => (
                       <TextField {...params} label="Function" margin="normal" />
                     )}
+                    value={selectedFunction}
+                    options={functionFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedFunction(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterEmployeeName"
                     renderInput={(params) => (
                       <TextField
@@ -158,15 +321,25 @@ export default function ReleaseReq() {
                         margin="normal"
                       />
                     )}
+                    value={selectedEmployee}
+                    options={employeeFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedEmployee(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...statusFilter}
+                    options={status}
+                    getOptionLabel={(option) => option}
                     id="filterStatus"
                     renderInput={(params) => (
                       <TextField {...params} label="Status" margin="normal" />
                     )}
+                    onChange={(event, value) => {
+                      setSelectedStatus(value);
+                    }}
                   />
                 </div>
               </div>
@@ -176,13 +349,14 @@ export default function ReleaseReq() {
                 type="button"
                 class="btn btn-secondary"
                 data-dismiss="modal"
+                onClick={() => setFiltered(!filtered)}
               >
                 Filter
               </button>
               <button
                 type="button"
                 class="btn btn-primary"
-                onClick={resetFilter}
+                onClick={() => resetFilter()}
               >
                 Reset Filter
               </button>
@@ -215,7 +389,7 @@ export default function ReleaseReq() {
             </div>
             <div class="modal-body">
               Are you sure you want to delete release request with reference
-              number:
+              number: {idToDelete}
             </div>
             <div class="modal-footer">
               <button
@@ -225,7 +399,14 @@ export default function ReleaseReq() {
               >
                 Cancel
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={() => {
+                  deleteRequest();
+                }}
+                data-dismiss="modal"
+              >
                 Yes
               </button>
             </div>
@@ -236,24 +417,4 @@ export default function ReleaseReq() {
   );
 }
 
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
-  { title: "The Good, the Bad and the Ugly", year: 1966 },
-  { title: "Fight Club", year: 1999 },
-  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
-];
-
-const status = [
-  { status: "Open" },
-  { status: "Cancelled" },
-  { status: "Moved" },
-  { status: "Left" },
-  { status: "Booked" },
-];
+const status = ["Open", "Cancelled", "Moved", "Left", "Booked"];

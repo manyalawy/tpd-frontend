@@ -61,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
     color: "#ffffff",
     marginLeft: "-20px",
     fontSize: "29px",
+    "&:hover": {
+      color: "#F6EC5A",
+    },
   },
   navBarSubList: {
     color: "#ffffff",
@@ -68,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "-10px",
     paddingLeft: theme.spacing(10),
     paddingTop: theme.spacing(2),
+    "&:hover": {
+      color: "#F6EC5A",
+    },
   },
   hide: {
     display: "none",
@@ -118,6 +124,8 @@ export default function SideMenu() {
   const [open, setOpen] = React.useState(false);
   const [openTalent, setOpenTalent] = React.useState(true);
   const [openSkills, setOpenSkills] = React.useState(true);
+  const [accountRoles, setAccountRoles] = React.useState([]);
+  const [accountId, setAccountId] = React.useState("");
 
   let logout = () => {
     userServices.logout();
@@ -141,7 +149,9 @@ export default function SideMenu() {
   };
 
   useEffect(() => {
-    console.log(accountProperties());
+    const payload = accountProperties();
+    setAccountId(payload.id);
+    setAccountRoles(payload.roles);
   }, []);
   return (
     <div className={classes.root}>
@@ -168,7 +178,7 @@ export default function SideMenu() {
             aria-label="open drawer"
             onClick={() => history.push("/")}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton, open)}
           >
             <HomeIcon />
           </IconButton>
@@ -179,7 +189,14 @@ export default function SideMenu() {
           <Box display="flex" alignItems="center" ml="auto">
             <Box display="flex" alignItems="center">
               <Link color="primary" color="inherit" href="#">
-                <Typography display="inline">Youssef El Manyalawy</Typography>
+                <Typography display="inline">
+                  Youssef El Manyalawy
+                  {accountRoles.includes("tdp")
+                    ? " / TPD"
+                    : accountRoles.includes("manager")
+                    ? " / Manager"
+                    : " / Employee"}
+                </Typography>
               </Link>
             </Box>
             <Box display="flex" alignItems="center" pl={2}>

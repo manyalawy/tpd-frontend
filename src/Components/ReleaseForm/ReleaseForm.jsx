@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./ReleaseForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { set } from "date-fns";
+
+//Services
+import releaseRequestService from "../../_services/release-request.service";
+import managerService from "../../_services/manager.service";
+import employeeService from "../../_services/employee.service";
 
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
@@ -13,10 +18,44 @@ export default function ReleaseForm(props) {
   const [action, setAction] = useState(null);
   const [checked, setChecked] = useState(false);
   const [statusSelected, setStatusSelected] = useState(null);
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  };
+
+  //Handle Filters(DropDownlists)
+  const [filtered, setFiltered] = useState(false);
+  const [managerFilterList, setManagerFilterList] = useState([]);
+  const [selectedManager, setSelectedManager] = useState();
+  const [employeeFilterList, setEmployeeFilterList] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState();
+
+  const [selectedTitle, setSelectedTitle] = useState();
+  const [selectedFunction, setSelectedFunction] = useState();
+  const [selectedId, setSelectedId] = useState();
+
+  //Once for all Filter Lists
+  useEffect(() => {
+    managerService.getAll().then((res) => {
+      setManagerFilterList(res.managers);
+    });
+    employeeService.getAllNames().then((res) => {
+      setEmployeeFilterList(res.Names);
+    });
+  }, []);
+
+  //when employee name is changed
+  useEffect(() => {
+    if (selectedEmployee)
+      employeeService
+        .getAll({
+          Page: 0,
+          Limit: 10,
+          Filters: { name: selectedEmployee },
+        })
+        .then((res) => {
+          setSelectedId(res.Employees[0].id);
+          setSelectedTitle(res.Employees[0].title);
+          setSelectedFunction(res.Employees[0].function);
+        });
+  }, [selectedEmployee]);
+
   const status = {
     options: statusOptions,
     getOptionLabel: (option) => option.status,
@@ -49,14 +88,13 @@ export default function ReleaseForm(props) {
   return (
     <div>
       <div>
-        <h1 className="title">Add release request</h1>
+        <h1 className="title">Add Release Request</h1>
       </div>
       <div className="form-width mx-auto">
         <form>
           <div class="form-row">
             <div class="form-group col-md-3">
               <Autocomplete
-                {...defaultProps}
                 id="selectManager"
                 autoComplete
                 renderInput={(params) => (
@@ -67,11 +105,16 @@ export default function ReleaseForm(props) {
                     margin="normal"
                   />
                 )}
+                value={selectedManager}
+                options={managerFilterList}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, value) => {
+                  setSelectedManager(value.name);
+                }}
               />
             </div>
             <div class="form-group col-md-3">
               <Autocomplete
-                {...defaultProps}
                 id="selectResourcaName"
                 autoComplete
                 renderInput={(params) => (
@@ -83,6 +126,12 @@ export default function ReleaseForm(props) {
                     margin="normal"
                   />
                 )}
+                value={selectedEmployee}
+                options={employeeFilterList}
+                getOptionLabel={(option) => option}
+                onChange={(event, value) => {
+                  setSelectedEmployee(value);
+                }}
               />
             </div>
 
@@ -95,6 +144,7 @@ export default function ReleaseForm(props) {
                   class="form-control"
                   id="employeeID"
                   placeholder="Enter resource name first"
+                  value={selectedId}
                 ></input>
               </fieldset>
             </div>
@@ -110,6 +160,7 @@ export default function ReleaseForm(props) {
                   class="form-control"
                   id="employeeTitle"
                   placeholder="Enter resource name first"
+                  value={selectedTitle}
                 ></input>
               </fieldset>
             </div>
@@ -121,6 +172,7 @@ export default function ReleaseForm(props) {
                   class="form-control"
                   id="function"
                   placeholder="Enter resource name first"
+                  value={selectedFunction}
                 ></input>
               </fieldset>
             </div>
