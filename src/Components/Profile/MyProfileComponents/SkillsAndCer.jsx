@@ -1,5 +1,5 @@
 import React from "react";
-import mySkillsForm from "./mySkillsForm";
+import "../Profile.css";
 
 export default function SkillsAndCer() {
   return (

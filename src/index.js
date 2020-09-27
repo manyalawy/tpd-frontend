@@ -16,7 +16,6 @@ import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 
 import Profile from "./Components/Profile/Profile.jsx";
 
-
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -38,7 +37,7 @@ const LoginContainer = () => <Route path="/login" component={LoginPage} />;
 const DefaultContainer = () => (
   <>
     <SideMenu />
-    <Route exact path="/" component={Resource} />
+    <Route exact path="/" component={Profile} />
   </>
 );
 
@@ -47,8 +46,9 @@ ReactDOM.render(
   <Router history={history}>
     <ThemeProvider theme={theme}>
       <Switch>
-        <Route exact path="/login" component={LoginContainer} />
-        <PrivateRoute component={DefaultContainer} />
+        {/* <Route exact path="/login" component={LoginContainer} /> */}
+        {/* <PrivateRoute component={DefaultContainer} /> */}
+        <Profile />
       </Switch>
     </ThemeProvider>
   </Router>,
