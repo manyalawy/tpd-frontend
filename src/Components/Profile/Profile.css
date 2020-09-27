@@ -32,23 +32,23 @@
 .basicInfo {
   margin-left: 10%;
   margin-right: 10%;
-  height: 300px;
+
+  height: 100vh;
 }
 /* -----------------skills and certifications------------------------- */
-
+.mySkills {
+  margin-top: 4rem;
+}
 .addMySkill {
   margin-top: 2rem;
 }
-.skillsAndCer {
-  margin-left: 10%;
-  margin-right: 10%;
-}
+
 .invisible {
   visibility: hidden;
 }
 
-.certifications {
-  margin-top: 4rem;
+.MyCertifications {
+  margin-top: 6rem;
 }
 
 .addMyCertification {
@@ -62,7 +62,7 @@
 }
 
 .trainings {
-  margin-top: 4rem;
+  margin-top: 6rem;
 }
 
 .myTrainingsTitle {

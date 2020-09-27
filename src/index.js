@@ -15,7 +15,7 @@ import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 
 import Profile from "./Components/Profile/Profile.jsx";
-
+import Employees from "./Components/Employees";
 
 const theme = createMuiTheme({
   typography: {
@@ -38,7 +38,7 @@ const LoginContainer = () => <Route path="/login" component={LoginPage} />;
 const DefaultContainer = () => (
   <>
     <SideMenu />
-    <Route exact path="/" component={Resource} />
+    <Route exact path="/" component={Profile} />
   </>
 );
 
@@ -47,8 +47,9 @@ ReactDOM.render(
   <Router history={history}>
     <ThemeProvider theme={theme}>
       <Switch>
-        <Route exact path="/login" component={LoginContainer} />
-        <PrivateRoute component={DefaultContainer} />
+        {/* <Route exact path="/login" component={LoginContainer} /> */}
+        {/* <PrivateRoute component={DefaultContainer} /> */}
+        <Employees />
       </Switch>
     </ThemeProvider>
   </Router>,
