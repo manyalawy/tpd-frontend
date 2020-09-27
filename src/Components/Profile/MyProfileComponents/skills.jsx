@@ -105,7 +105,7 @@ export default function Skills() {
               <Autocomplete
                 {...defaultProps}
                 id="skillName"
-                clearOnEscape
+                debug
                 onChange={(event, value) => setSkillName(value.title)}
                 renderInput={(params) => (
                   <TextField

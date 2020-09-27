@@ -123,7 +123,7 @@ export default function Certificates() {
               onChange={(event, value) => setCerName(value)}
               {...defaultProps}
               id="certificationName"
-              clearOnEscape
+              debug
               renderInput={(params) => (
                 <TextField
                   required
