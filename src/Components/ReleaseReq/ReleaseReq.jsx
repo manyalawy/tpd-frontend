@@ -8,6 +8,7 @@ import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import Pagination from "@material-ui/lab/Pagination";
 
 import "./ReleaseReq.css";
 
@@ -16,7 +17,10 @@ import releaseRequestService from "../../_services/release-request.service";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 
+import { useSnackbar } from "notistack";
+
 export default function ReleaseReq() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let history = useHistory();
   //Handle Table
   const [releaseRequests, setReleaseRequests] = useState([]);
@@ -38,6 +42,8 @@ export default function ReleaseReq() {
   const [selectedEmployee, setSelectedEmployee] = useState();
 
   const [selectedStatus, setSelectedStatus] = useState();
+
+  const [selectedPage, setSelectedPage] = useState(1);
 
   //Once for all Filter Lists
   useEffect(() => {
@@ -82,14 +88,14 @@ export default function ReleaseReq() {
     };
     releaseRequestService
       .getAll({
-        Page: 0,
+        Page: selectedPage - 1,
         Limit: 10,
         Filters,
       })
       .then((res) => {
         setReleaseRequests(res.ReleaseRequests);
       });
-  }, [deleted, filtered]);
+  }, [deleted, filtered, selectedPage]);
 
   function resetFilter() {
     document.getElementById("filterManager").value = "";
@@ -107,6 +113,41 @@ export default function ReleaseReq() {
   const deleteRequest = () => {
     releaseRequestService.delete(idToDelete).then(() => {
       setDeleted(!deleted);
+      enqueueSnackbar("Request Deleted Successfully", {
+        variant: "success",
+      });
+    });
+  };
+
+  const exportRequests = () => {
+    const managerFilterProperty = selectedManager
+      ? { manager_name: selectedManager }
+      : "";
+    const titleFilterProperty = selectedTitle
+      ? { employee_title: selectedTitle }
+      : "";
+    const functionFilterProperty = selectedFunction
+      ? { function: selectedFunction }
+      : "";
+    const employeeFilterProperty = selectedEmployee
+      ? { employee_name: selectedEmployee }
+      : "";
+
+    const statusFilterProperty = selectedStatus
+      ? { request_status: selectedStatus }
+      : "";
+    const Filters = {
+      ...managerFilterProperty,
+      ...titleFilterProperty,
+      ...functionFilterProperty,
+      ...employeeFilterProperty,
+      ...statusFilterProperty,
+    };
+    releaseRequestService.export({
+      Filters,
+    });
+    enqueueSnackbar("Requests Exported Successfully", {
+      variant: "success",
     });
   };
 
@@ -158,6 +199,7 @@ export default function ReleaseReq() {
             margin: "10px",
             color: "#ffffff",
           }}
+          onClick={() => exportRequests()}
         >
           <img
             style={{
@@ -232,6 +274,8 @@ export default function ReleaseReq() {
                     onClick={() =>
                       setIdToDelete(releaseRequest.reference_number)
                     }
+                    data-toggle="modal"
+                    data-target="#deleteRelease"
                   >
                     <DeleteForeverIcon />
                   </IconButton>
@@ -240,6 +284,16 @@ export default function ReleaseReq() {
             ))}
           </tbody>
         </table>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination
+            count={100}
+            color="primary"
+            onChange={(event, value) => {
+              console.log(value);
+              setSelectedPage(value);
+            }}
+          />
+        </div>
       </div>
 
       <div
@@ -351,7 +405,12 @@ export default function ReleaseReq() {
                 type="button"
                 class="btn btn-secondary"
                 data-dismiss="modal"
-                onClick={() => setFiltered(!filtered)}
+                onClick={() => {
+                  setFiltered(!filtered);
+                  enqueueSnackbar("Requests Filtered Successfully", {
+                    variant: "success",
+                  });
+                }}
               >
                 Filter
               </button>

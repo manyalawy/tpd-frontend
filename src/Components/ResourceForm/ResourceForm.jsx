@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import managerService from "../../_services/manager.service";
 import { set, sub } from "date-fns";
+
+//Services
+import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 
 var curr = new Date();
@@ -123,7 +125,7 @@ export default function ResourceForm(props) {
   return (
     <div>
       <div>
-        <h1 className="title">Add resource request</h1>
+        <h1 className="title">Add Resource Request</h1>
       </div>
       <div className="form-width mx-auto form">
         <form>
@@ -256,7 +258,7 @@ export default function ResourceForm(props) {
               </div>
             </div>
           </div>
-          <h1 className="formHeaders">Request details</h1>
+          <h1 className="formHeaders">Assignement</h1>
           <div class="form-row">
             <div class="form-group col-md-2">
               <label for="probability">Probability</label>

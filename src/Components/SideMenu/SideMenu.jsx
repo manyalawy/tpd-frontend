@@ -30,7 +30,7 @@ import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import userServices from "../../_services/user.service";
 import { accountProperties } from "../../_helpers";
-
+import { useSnackbar } from "notistack";
 import Release from "../ReleaseReq/ReleaseReq.jsx";
 
 const drawerWidth = 240;
@@ -120,6 +120,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideMenu() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -190,7 +191,12 @@ export default function SideMenu() {
           {/* Items on the right side of the navigation bar */}
           <Box display="flex" alignItems="center" ml="auto">
             <Box display="flex" alignItems="center">
-              <Link color="primary" color="inherit" href="#">
+              <Link
+                color="primary"
+                color="inherit"
+                href="#"
+                onClick={() => history.push("/profile")}
+              >
                 <Typography display="inline">
                   Youssef El Manyalawy
                   {accountRoles.includes("tdp")
@@ -315,7 +321,7 @@ export default function SideMenu() {
           [classes.contentShift]: open,
         })}
       >
-        {/* <Release /> */}
+        {/* {pages.pages} */}
       </main>
     </div>
   );

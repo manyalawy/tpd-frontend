@@ -8,6 +8,7 @@ export default {
   create,
   update,
   delete: _delete,
+  export: _export,
 };
 
 function getAll(body) {
@@ -63,10 +64,27 @@ function _delete(reference_number) {
   const requestOptions = {
     method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify({
+      ResourceRequest: { reference_number: reference_number },
+    }),
   };
 
   return fetch(`${apiUrl}/resource-request`, requestOptions).then(
     handleResponse
+  );
+}
+
+function _export(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/resource-request/exportAll`, requestOptions).then(
+    (res) => {
+      res.text().then((text) => FileDownload(text, "ResourceRequests.csv"));
+    }
   );
 }
