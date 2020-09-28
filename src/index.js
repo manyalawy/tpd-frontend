@@ -8,7 +8,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import { Router, Switch, Route } from "react-router-dom";
-//Release & Resource Components
+
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
@@ -18,6 +18,7 @@ import Profile from "./Components/Profile/Profile.jsx";
 
 import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
+import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
 
 const theme = createMuiTheme({
   typography: {
@@ -46,7 +47,6 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests" component={Resource} />
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
-
   </>
 );
 
@@ -57,7 +57,7 @@ ReactDOM.render(
       <Switch>
         {/* <Route exact path="/login" component={LoginContainer} /> */}
         {/* <PrivateRoute component={DefaultContainer} /> */}
-        <SkillListing />
+        <ResourceForm />
       </Switch>
     </ThemeProvider>
   </Router>,
