@@ -9,9 +9,13 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import BasicInfo from "./BasicInfo.jsx";
-import SkillsAndCer from "./SkillsAndCer.jsx";
+import BasicInfo from "./MyProfileComponents/BasicInfo.jsx";
 
+import Container from "@material-ui/core/Container";
+import Skills from "./MyProfileComponents/skills.jsx";
+import Certificates from "./MyProfileComponents/certificates";
+import Trainings from "./MyProfileComponents/Trainings";
+import Assigments from "./MyProfileComponents/Assigments.jsx";
 export default function Profile() {
   const theme = useTheme();
 
@@ -59,10 +63,13 @@ export default function Profile() {
             <BasicInfo />
           </TabPanel>
           <TabPanel value={tab} index={1} dir={theme.direction}>
-            <SkillsAndCer />
+            <Skills />
+            <Certificates />
+            <Trainings />
           </TabPanel>
+
           <TabPanel value={tab} index={2} dir={theme.direction}>
-            Item Three
+            <Assigments />
           </TabPanel>
         </SwipeableViews>
       </div>
@@ -82,9 +89,9 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <Container>
+          <Box>{children}</Box>
+        </Container>
       )}
     </div>
   );
