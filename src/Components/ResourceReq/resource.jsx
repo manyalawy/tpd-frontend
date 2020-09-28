@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import "./resource.css";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -6,58 +8,191 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import resourceService from "../../_services/resource-request.service";
 
+import IconButton from "@material-ui/core/IconButton";
+import FilterIcon from "../assets/filter_alt-24px.svg";
+import ExportIcon from "../assets/file-export-solid.svg";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+
+//Services
+import resourceRequestService from "../../_services/resource-request.service";
+import managerService from "../../_services/manager.service";
+import employeeService from "../../_services/employee.service";
+import skillService from "../../_services/skill.service";
+
 export default function Resource() {
+  let history = useHistory();
+  //Handle Delete
+  const [idToDelete, setIdToDelete] = useState();
+  const [deleted, setDeleted] = useState(false);
+  //Handle Filters
+  const [filtered, setFiltered] = useState(false);
+  const [managerFilterList, setManagerFilterList] = useState([]);
+  const [selectedManager, setSelectedManager] = useState();
+
+  const [titleFilterList, setTitleFilterList] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState();
+
+  const [functionFilterList, setFunctionFilterList] = useState([]);
+  const [selectedFunction, setSelectedFunction] = useState();
+
+  const [categoryFilterList, setCategoryFilterList] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
+
+  const [subcategoryFilterList, setSubcategoryFilterList] = useState([]);
+  const [selectedSubcategory, setSelectedSubcategory] = useState();
+
+  const [selectedStatus, setSelectedStatus] = useState();
+
   const [resourceRequests, setResourceRequests] = useState([]);
 
+  //Once for all Filter Lists
   useEffect(() => {
-    resourceService
+    managerService.getAll().then((res) => {
+      setManagerFilterList(res.managers);
+    });
+    employeeService.getAllTitles().then((res) => {
+      setTitleFilterList(res.Titles);
+    });
+    employeeService.getAllFunctions().then((res) => {
+      setFunctionFilterList(res.Functions);
+    });
+    skillService.getAllCategories().then((res) => {
+      setCategoryFilterList(res.Categories);
+    });
+    skillService.getAllSubcategories().then((res) => {
+      setSubcategoryFilterList(res.Subcategories);
+    });
+  }, []);
+
+  //with every category select subcategories change accordingly
+  useEffect(() => {
+    skillService.getAllSubcategories({ selectedCategory }).then((res) => {
+      setSubcategoryFilterList(res.Subcategories);
+    });
+  }, [selectedCategory]);
+
+  //With every Update to re-render Table with filtration or after deletion
+  useEffect(() => {
+    const managerFilterProperty = selectedManager
+      ? { manager_name: selectedManager }
+      : "";
+    const titleFilterProperty = selectedTitle
+      ? { employee_title: selectedTitle }
+      : "";
+    const functionFilterProperty = selectedFunction
+      ? { function: selectedFunction }
+      : "";
+
+    const statusFilterProperty = selectedStatus
+      ? { request_status: selectedStatus }
+      : "";
+    //TODO property name
+    const categoryFilterProperty = selectedCategory
+      ? { request_status: selectedCategory }
+      : "";
+    //TODO property name
+    const subcategoryFilterProperty = selectedSubcategory
+      ? { request_status: selectedSubcategory }
+      : "";
+
+    const Filters = {
+      ...managerFilterProperty,
+      ...titleFilterProperty,
+      ...functionFilterProperty,
+      ...statusFilterProperty,
+      ...categoryFilterProperty,
+      ...subcategoryFilterProperty,
+    };
+
+    resourceRequestService
       .getAll({
         Page: 0,
         Limit: 10,
-        Filters: {},
+        Filters,
       })
       .then((res) => {
         setResourceRequests(res.ResourceRequests);
-        // console.log(res);
       });
-  }, []);
+  }, [deleted, filtered]);
 
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  };
-  const statusFilter = {
-    options: status,
-    getOptionLabel: (option) => option.status,
-  };
-  function handleClick() {
+  function resetFilter() {
     document.getElementById("filterManager").value = "";
     document.getElementById("filterTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
     document.getElementById("filterCategory").value = "";
     document.getElementById("filterSubCategory").value = "";
+    setSelectedCategory();
+    setSelectedFunction();
+    setSelectedManager();
+    setSelectedStatus();
+    setSelectedSubcategory();
+    setSelectedTitle();
   }
+
+  const deleteRequest = () => {
+    resourceRequestService.delete(idToDelete).then(() => {
+      setDeleted(!deleted);
+    });
+  };
+
+  const editRequest = (reference_number) => {
+    history.push({
+      pathname: "/resource-requests/edit",
+      state: { reference_number, editing: true },
+    });
+  };
 
   return (
     <div>
-      <h1 className="resourceTitle">Resource requests</h1>
+      <h1 className="resourceTitle">Resource Requests</h1>
       <div className="float-right">
-        <button class="btn btn-primary buttons addButton" type="submit">
-          Add
-        </button>
-        <button
-          class="btn btn-primary buttons filterButton"
-          type="button"
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => history.push("/resource-requests/add")}
+          edge="start"
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "10px",
+            color: "#000000",
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          style={{
+            backgroundColor: "#F6EC5A",
+            margin: "10px",
+            color: "#000000",
+          }}
           data-toggle="modal"
           data-target="#resourceFilterModal"
         >
-          Filter
-        </button>
-
-        <button class="btn btn-primary buttons" type="submit">
-          Export
-        </button>
+          <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+        </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          style={{
+            backgroundColor: "#084791",
+            margin: "10px",
+            color: "#ffffff",
+          }}
+        >
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </IconButton>
       </div>
       <div className="table-responsive-xl">
         <table class="table resourceTable mx-auto table-striped">
@@ -77,31 +212,53 @@ export default function Resource() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row"></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td className="btn-group">
-                <button type="button" class="btn btn-link">
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-link"
-                  data-toggle="modal"
-                  data-target="#deleteResource"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+            {resourceRequests.map((resourceRequest) => (
+              <tr>
+                <th scope="row">{resourceRequest.reference_number}</th>
+                <td>{resourceRequest.manager_name}</td>
+                <td>{resourceRequest.function}</td>
+                <td>{resourceRequest.title}</td>
+                <td>{resourceRequest.start_date}</td>
+                <td>{resourceRequest.end_date}</td>
+                <td>{resourceRequest.propability}</td>
+                <td>{resourceRequest.percentage}</td>
+                <td>{resourceRequest.status}</td>
+                <td>TODO Actions Taken</td>
+                <td className="btn-group">
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      margin: "10px",
+                      color: "#000000",
+                    }}
+                    onClick={() =>
+                      editRequest(resourceRequest.reference_number)
+                    }
+                  >
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      margin: "10px",
+                      color: "#000000",
+                    }}
+                    onClick={() =>
+                      setIdToDelete(resourceRequest.reference_number)
+                    }
+                  >
+                    <DeleteForeverIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -132,57 +289,80 @@ export default function Resource() {
               <div class="modal-body row ">
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterManager"
                     renderInput={(params) => (
                       <TextField {...params} label="Manager" margin="normal" />
                     )}
+                    value={selectedManager}
+                    options={managerFilterList}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(event, value) => {
+                      setSelectedManager(value.name);
+                    }}
                   />
                 </div>
 
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterTitle"
                     debug
                     renderInput={(params) => (
                       <TextField {...params} label="Title" margin="normal" />
                     )}
+                    value={selectedTitle}
+                    options={titleFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedTitle(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterFunction"
                     debug
                     renderInput={(params) => (
                       <TextField {...params} label="Function" margin="normal" />
                     )}
+                    value={selectedFunction}
+                    options={functionFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedFunction(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...statusFilter}
+                    options={status}
+                    getOptionLabel={(option) => option.status}
+                    value={selectedStatus}
                     id="filterStatus"
-                    debug
                     renderInput={(params) => (
                       <TextField {...params} label="Status" margin="normal" />
                     )}
+                    onChange={(event, value) => {
+                      setSelectedStatus(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterCategory"
                     debug
                     renderInput={(params) => (
                       <TextField {...params} label="Category" margin="normal" />
                     )}
+                    value={selectedCategory}
+                    options={categoryFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      setSelectedCategory(value);
+                    }}
                   />
                 </div>
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
-                    {...defaultProps}
                     id="filterSubCategory"
                     debug
                     renderInput={(params) => (
@@ -192,6 +372,12 @@ export default function Resource() {
                         margin="normal"
                       />
                     )}
+                    value={selectedSubcategory}
+                    options={subcategoryFilterList}
+                    getOptionLabel={(option) => option}
+                    onChange={(event, value) => {
+                      selectedSubcategory(value);
+                    }}
                   />
                 </div>
               </div>
@@ -200,11 +386,12 @@ export default function Resource() {
                   type="button"
                   class="btn btn-secondary filter"
                   data-dismiss="modal"
+                  onClick={() => setFiltered(!filtered)}
                 >
                   Filter
                 </button>
                 <button
-                  onClick={handleClick}
+                  onClick={() => resetFilter()}
                   type="button"
                   class="btn btn-primary reset"
                 >
@@ -240,7 +427,7 @@ export default function Resource() {
             </div>
             <div class="modal-body">
               Are you sure you want to delete release request with reference
-              number:
+              number: {idToDelete}
             </div>
             <div class="modal-footer">
               <button
@@ -250,7 +437,13 @@ export default function Resource() {
               >
                 Cancel
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={() => {
+                  deleteRequest();
+                }}
+              >
                 Yes
               </button>
             </div>
@@ -260,19 +453,7 @@ export default function Resource() {
     </div>
   );
 }
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
-  { title: "The Good, the Bad and the Ugly", year: 1966 },
-  { title: "Fight Club", year: 1999 },
-  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
-];
+
 const status = [
   { status: "Open" },
   { status: "Cancelled" },

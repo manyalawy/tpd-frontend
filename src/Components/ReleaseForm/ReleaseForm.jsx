@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 import "./ReleaseForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { set } from "date-fns";
 
 //Services
 import releaseRequestService from "../../_services/release-request.service";
@@ -17,10 +15,8 @@ var date = curr.toISOString().substr(0, 10);
 export default function ReleaseForm(props) {
   const [action, setAction] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [statusSelected, setStatusSelected] = useState(null);
 
   //Handle Filters(DropDownlists)
-  const [filtered, setFiltered] = useState(false);
   const [managerFilterList, setManagerFilterList] = useState([]);
   const [selectedManager, setSelectedManager] = useState();
   const [employeeFilterList, setEmployeeFilterList] = useState([]);
@@ -30,6 +26,14 @@ export default function ReleaseForm(props) {
   const [selectedFunction, setSelectedFunction] = useState();
   const [selectedId, setSelectedId] = useState();
 
+  //Handle Inputs
+  const [reasonInput, setReasonInput] = useState();
+  const [propabilityInput, setPropabilityInput] = useState();
+  const [percentageInput, setPercentageInput] = useState();
+  const [dateInput, setDateInput] = useState();
+  const [leavingInput, setLeavingInput] = useState(false);
+  const [statusSelected, setStatusSelected] = useState();
+
   //Once for all Filter Lists
   useEffect(() => {
     managerService.getAll().then((res) => {
@@ -38,6 +42,28 @@ export default function ReleaseForm(props) {
     employeeService.getAllNames().then((res) => {
       setEmployeeFilterList(res.Names);
     });
+    if (props.location?.state?.editing)
+      releaseRequestService
+        .getById({
+          ReleaseRequest: {
+            reference_number: props.location.state.reference_number,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          setSelectedEmployee(res.ReleaseRequest.employee_name);
+          setSelectedManager(res.ReleaseRequest.manager_name);
+          setSelectedTitle(res.ReleaseRequest.title);
+          setSelectedFunction(res.ReleaseRequest.function);
+          setSelectedId(res.ReleaseRequest.employee_id);
+
+          setStatusSelected(res.ReleaseRequest.request_status);
+          setReasonInput(res.ReleaseRequest.release_reason);
+          setPropabilityInput(res.ReleaseRequest.propability);
+          setPercentageInput(res.ReleaseRequest.release_percentage);
+          setLeavingInput(res.ReleaseRequest.leaving);
+          setDateInput(res.ReleaseRequest.release_date);
+        });
   }, []);
 
   //when employee name is changed
@@ -50,9 +76,9 @@ export default function ReleaseForm(props) {
           Filters: { name: selectedEmployee },
         })
         .then((res) => {
-          setSelectedId(res.Employees[0].id);
-          setSelectedTitle(res.Employees[0].title);
-          setSelectedFunction(res.Employees[0].function);
+          setSelectedId(res.Employees[0]?.id);
+          setSelectedTitle(res.Employees[0]?.title);
+          setSelectedFunction(res.Employees[0]?.function);
         });
   }, [selectedEmployee]);
 
@@ -65,17 +91,18 @@ export default function ReleaseForm(props) {
     getOptionLabel: (option) => option.action,
   };
   function handleCheck(event) {
-    if (event.target.checked && props.editing == "yes") {
+    if (event.target.checked && props.location?.state?.editing) {
       setAction({ action: "Added to leaving list" });
 
       setChecked(true);
+      setLeavingInput(true);
       setStatusSelected({ status: "Leaving" });
     } else {
       setChecked(false);
+      setLeavingInput(false);
     }
   }
   function handleActionChange(value) {
-    console.log(value);
     setAction(value);
     if (value.action == "Added to leaving list") {
       setStatusSelected({ status: "Leaving" });
@@ -85,10 +112,44 @@ export default function ReleaseForm(props) {
     }
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const ReleaseRequest = {
+      manager_name: selectedManager,
+      employee_name: selectedEmployee,
+      employee_title: selectedTitle,
+      function: selectedFunction,
+      title: selectedTitle,
+      release_date: dateInput,
+      propability: propabilityInput,
+      release_reason: reasonInput,
+      release_percentage: percentageInput,
+      leaving: leavingInput,
+      request_status: statusSelected,
+    };
+    if (props.location?.state?.editing) {
+      const reference_number = props.location?.state?.reference_number;
+      releaseRequestService
+        .update({ ...ReleaseRequest, reference_number })
+        .then((res) => {
+          console.log("Request Successfully updated");
+        });
+    } else {
+      releaseRequestService.create(ReleaseRequest).then((res) => {
+        console.log("Request Successfully created");
+      });
+    }
+  };
+
   return (
     <div>
       <div>
-        <h1 className="title">Add Release Request</h1>
+        <h1 className="title">
+          {props.location?.state?.editing ? "Edit" : "Add"} Release Request
+          {props.location?.state?.editing
+            ? ":" + props.location?.state?.reference_number
+            : ""}
+        </h1>
       </div>
       <div className="form-width mx-auto">
         <form>
@@ -145,6 +206,9 @@ export default function ReleaseForm(props) {
                   id="employeeID"
                   placeholder="Enter resource name first"
                   value={selectedId}
+                  onChange={(event) => {
+                    setSelectedId(event.target.value);
+                  }}
                 ></input>
               </fieldset>
             </div>
@@ -161,6 +225,9 @@ export default function ReleaseForm(props) {
                   id="employeeTitle"
                   placeholder="Enter resource name first"
                   value={selectedTitle}
+                  onChange={(event) => {
+                    setSelectedTitle(event.target.value);
+                  }}
                 ></input>
               </fieldset>
             </div>
@@ -173,6 +240,9 @@ export default function ReleaseForm(props) {
                   id="function"
                   placeholder="Enter resource name first"
                   value={selectedFunction}
+                  onChange={(event) => {
+                    setSelectedFunction(event.target.value);
+                  }}
                 ></input>
               </fieldset>
             </div>
@@ -183,6 +253,10 @@ export default function ReleaseForm(props) {
                   class="form-control"
                   id="releaseReason"
                   rows="5"
+                  value={reasonInput}
+                  onChange={(event) => {
+                    setReasonInput(event.target.value);
+                  }}
                 ></textarea>
               </div>
             </div>
@@ -198,6 +272,10 @@ export default function ReleaseForm(props) {
                   min="10"
                   max="100"
                   id="probability"
+                  value={propabilityInput}
+                  onChange={(event) => {
+                    setPropabilityInput(event.target.value);
+                  }}
                 ></input>
                 <div class="input-group-append">
                   <span class="input-group-text" id="percentage">
@@ -217,6 +295,10 @@ export default function ReleaseForm(props) {
                   min="10"
                   max="100"
                   id="releasePercentage"
+                  value={percentageInput}
+                  onChange={(event) => {
+                    setPercentageInput(event.target.value);
+                  }}
                 ></input>
                 <div class="input-group-append">
                   <span class="input-group-text" id="percentage">
@@ -229,11 +311,14 @@ export default function ReleaseForm(props) {
               <label for="releaseDate">Release Date</label>
               <input
                 required
-                value={date}
+                value={dateInput}
                 min={date}
                 type="date"
                 class="form-control"
                 id="releaseDate"
+                onChange={(event) => {
+                  setDateInput(event.target.value);
+                }}
               ></input>
             </div>
           </div>
@@ -244,9 +329,12 @@ export default function ReleaseForm(props) {
               <label for="actualReleaseDate">Actual Release Date</label>
               <input
                 disabled={
-                  props.editing == "yes" && props.user == "TPD" ? false : true
+                  props.location?.state?.editing &&
+                  props.location?.state?.user == "TPD"
+                    ? false
+                    : true
                 }
-                value={props.editing == "yes" ? date : null}
+                value={props.location?.state?.editing ? date : null}
                 min={date}
                 type="date"
                 class="form-control"
@@ -261,8 +349,8 @@ export default function ReleaseForm(props) {
                 id="selectStatus"
                 disabled={
                   checked == false &&
-                  props.editing == "yes" &&
-                  props.user == "TPD"
+                  props.location?.state?.editing &&
+                  props.location?.state?.user == "TPD"
                     ? false
                     : true
                 }
@@ -285,8 +373,8 @@ export default function ReleaseForm(props) {
                 value={action}
                 disabled={
                   checked == false &&
-                  props.user == "TPD" &&
-                  props.editing == "yes"
+                  props.location?.state?.user == "TPD" &&
+                  props.location?.state?.editing
                     ? false
                     : true
                 }
@@ -314,8 +402,11 @@ export default function ReleaseForm(props) {
               Leaving
             </label>
           </div>
-          <button class="btn btnBlue btn-primary" type="submit">
-            {props.editing == "yes"
+          <button
+            class="btn btnBlue btn-primary"
+            onClick={(e) => handleSubmit(e)}
+          >
+            {props.location?.state?.editing
               ? "Edit Release Request"
               : "Add Release Request"}
           </button>
@@ -327,13 +418,7 @@ export default function ReleaseForm(props) {
     </div>
   );
 }
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-];
+
 const statusOptions = [
   { status: "Open" },
   { status: "Cancelled" },

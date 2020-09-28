@@ -4,8 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
-import FilterIcon from "./assets/filter_alt-24px.svg";
-import ExportIcon from "./assets/file-export-solid.svg";
+import FilterIcon from "../assets/filter_alt-24px.svg";
+import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
@@ -110,8 +110,11 @@ export default function ReleaseReq() {
     });
   };
 
-  const editRequest = () => {
-    history.push("/release-requests/add");
+  const editRequest = (reference_number) => {
+    history.push({
+      pathname: "/release-requests/edit",
+      state: { reference_number, editing: true },
+    });
   };
 
   return (
@@ -176,7 +179,6 @@ export default function ReleaseReq() {
               <th scope="col">Employee ID</th>
               <th scope="col">Employee Title</th>
               <th scope="col">Function</th>
-              <th scope="col">TODO PROBABLITY</th>
               <th scope="col">Release Date</th>
               <th scope="col">Release Percentage</th>
               <th scope="col">Release Reason</th>
@@ -192,16 +194,16 @@ export default function ReleaseReq() {
                 <th scope="row">{releaseRequest.reference_number}</th>
                 <td>{releaseRequest.manager_name}</td>
                 <td>{releaseRequest.employee_name}</td>
-                <td>{releaseRequest.employee_title}</td>
-                <td>{releaseRequest.function}</td>
+                <td>{releaseRequest.employee_id}</td>
                 <td>{releaseRequest.title}</td>
+                <td>{releaseRequest.function}</td>
+
                 <td>{releaseRequest.release_date}</td>
                 <td>{releaseRequest.release_percentage}</td>
                 <td>{releaseRequest.release_reason}</td>
                 <td>{releaseRequest.leaving}</td>
                 <td>{releaseRequest.request_status}</td>
-                <td>TODO</td>
-                <td>TODO</td>
+                <td>{releaseRequest.release_requests_actions[0]?.action}</td>
 
                 <td className="btn-group">
                   <IconButton
@@ -213,7 +215,7 @@ export default function ReleaseReq() {
                       margin: "10px",
                       color: "#000000",
                     }}
-                    onClick={() => editRequest()}
+                    onClick={() => editRequest(releaseRequest.reference_number)}
                   >
                     <EditIcon />
                   </IconButton>

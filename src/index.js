@@ -6,11 +6,11 @@ import PrivateRoute from "../src/_helpers/PrivateRoute.jsx";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
-import Resource from "./Components/ResourceReq/resource.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import { Router, Switch, Route } from "react-router-dom";
-
+//Release & Resource Components
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
+import Resource from "./Components/ResourceReq/resource.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 
@@ -39,6 +39,10 @@ const DefaultContainer = () => (
     <SideMenu />
     <Route exact path="/release-requests" component={Release} />
     <Route exact path="/release-requests/add" component={ReleaseForm} />
+    <Route exact path="/release-requests/edit" component={ReleaseForm} />
+    <Route exact path="/resource-requests" component={Resource} />
+    <Route exact path="/resource-requests/add" component={ResourceForm} />
+    <Route exact path="/resource-requests/edit" component={ResourceForm} />
   </>
 );
 

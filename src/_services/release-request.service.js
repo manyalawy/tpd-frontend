@@ -22,11 +22,11 @@ function getAll(body) {
   );
 }
 
-function getById(reference_number) {
+function getById(body) {
   const requestOptions = {
     method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify(body),
   };
 
   return fetch(`${apiUrl}/release-request/one`, requestOptions).then(
@@ -38,7 +38,7 @@ function create(releaseRequest) {
   const requestOptions = {
     method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(releaseRequest),
+    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(
@@ -50,7 +50,7 @@ function update(releaseRequest) {
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(releaseRequest),
+    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(

@@ -31,6 +31,8 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import userServices from "../../_services/user.service";
 import { accountProperties } from "../../_helpers";
 
+import Release from "../ReleaseReq/ReleaseReq.jsx";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -312,7 +314,9 @@ export default function SideMenu() {
         className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}
-      ></main>
+      >
+        {/* <Release /> */}
+      </main>
     </div>
   );
 }
