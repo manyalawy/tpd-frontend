@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import managerService from "../../_services/manager.service";
+import { set, sub } from "date-fns";
+import employeeService from "../../_services/employee.service";
 
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
 export default function ResourceForm(props) {
+  //handling inputs
   const [marked, setMarked] = useState(false);
   const [skills, setSkills] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [editingMode, setEditingMode] = useState(false);
+  const [selectedManager, setSelectedManager] = useState("");
+  const [selectedFunction, setSelectedFunction] = useState("");
+  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedReplacment, setSelectedReplacment] = useState("");
+  const [numberOfRequests, setNumberOfRequests] = useState(1);
+
+  //handling dropdown lists
+  const [managers, setManagers] = useState([]);
+  const [replacments, setReplacments] = useState([]);
+  const [functions, setFunctions] = useState([]);
+  const [titles, setTitiles] = useState([]);
+
   var skill = { id: "", cat: "", sub: "" };
   var handleChangeCat = (event) => {
     skill.cat = event.target.value;
@@ -19,14 +36,18 @@ export default function ResourceForm(props) {
   var handleChangeSub = (event) => {
     skill.sub = event.target.value;
   };
-  function handleAdd(event) {
-    document.getElementById("cat").selectedIndex = 0;
-    document.getElementById("sub").selectedIndex = 0;
 
-    skills.push(skill);
-    setSkills([...skills]);
-    event.preventDefault();
+  //handle add button in form
+  function handleAdd(event) {
+    if (skill.cat != "" && skill.sub != "") {
+      document.getElementById("cat").selectedIndex = 0;
+      document.getElementById("sub").selectedIndex = 0;
+      skills.push(skill);
+      setSkills([...skills]);
+      event.preventDefault();
+    }
   }
+  //handle deleting skill from form
   function handleDelete(event, indexDelete) {
     document.getElementById("cat").selectedIndex = 0;
     document.getElementById("sub").selectedIndex = 0;
@@ -44,6 +65,7 @@ export default function ResourceForm(props) {
     getOptionLabel: (option) => option.title,
   };
 
+  //dropdown arrays
   var status = {};
   if (props.user == "TPD") {
     status = {
@@ -56,12 +78,48 @@ export default function ResourceForm(props) {
       getOptionLabel: (option) => option.status,
     };
   }
+  const managersDropDownList = {
+    options: managers,
+    getOptionLabel: (option) => option.name,
+  };
+  const replacmentDropDownList = {
+    options: replacments,
+    getOptionLabel: (option) => option,
+  };
+  const functionsDropdownList = {
+    options: functions,
+    getOptionLabel: (option) => option,
+  };
+
+  const titleDropDownList = {
+    options: titles,
+    getOptionLabel: (option) => option,
+  };
 
   var actions = {
     options: actionsTaken,
     getOptionLabel: (option) => option.action,
   };
 
+  //use effects
+  useEffect(() => {
+    managerService.getAll().then((res) => {
+      setManagers(res.managers);
+    });
+    employeeService.getAllFunctions().then((res) => {
+      setFunctions(res.Functions);
+    });
+    employeeService.getAllTitles().then((res) => {
+      setTitiles(res.Titles);
+    });
+  }, []);
+  useEffect(() => {
+    if (selectedManager != "") {
+      employeeService.getAllNames().then((res) => {
+        setReplacments(res.Names);
+      });
+    }
+  }, [selectedManager]);
   return (
     <div>
       <div>
@@ -73,9 +131,14 @@ export default function ResourceForm(props) {
           <div class="form-row">
             <div class="form-group col-md-4">
               <Autocomplete
-                {...defaultProps}
+                onChange={(event, value) =>
+                  value == null
+                    ? setSelectedManager("")
+                    : setSelectedManager(value.name)
+                }
+                {...managersDropDownList}
                 id="selectManager"
-                debug
+                clearOnEscape
                 renderInput={(params) => (
                   <TextField
                     required
@@ -88,9 +151,14 @@ export default function ResourceForm(props) {
             </div>
             <div class="form-group col-md-4">
               <Autocomplete
-                {...defaultProps}
+                onChange={(event, value) =>
+                  value == null
+                    ? setSelectedFunction("")
+                    : setSelectedFunction(value)
+                }
+                {...functionsDropdownList}
                 id="selectFunction"
-                debug
+                clearOnEscape
                 renderInput={(params) => (
                   <TextField
                     required
@@ -103,9 +171,12 @@ export default function ResourceForm(props) {
             </div>
             <div class="form-group col-md-4">
               <Autocomplete
-                {...defaultProps}
+                onChange={(event, value) =>
+                  value == null ? setSelectedTitle("") : setSelectedTitle(value)
+                }
+                {...titleDropDownList}
                 id="selectTitle"
-                debug
+                clearOnEscape
                 renderInput={(params) => (
                   <TextField
                     required
@@ -120,8 +191,16 @@ export default function ResourceForm(props) {
           <div class="form-row">
             <div class="form-group col-md-4">
               <Autocomplete
-                {...defaultProps}
-                disabled={!marked}
+                defaultValue={"hi"}
+                onChange={(event, value) =>
+                  value == null
+                    ? setSelectedReplacment("")
+                    : setSelectedReplacment(value)
+                }
+                {...replacmentDropDownList}
+                disabled={
+                  marked == true && selectedManager != "" ? false : true
+                }
                 id="selectReplacmentFor"
                 debug
                 renderInput={(params) => (
@@ -136,6 +215,11 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-2">
               <label for="numberOfRequests">Number of requests</label>
               <input
+                onChange={(event) =>
+                  event.target.value == null
+                    ? setNumberOfRequests("")
+                    : setNumberOfRequests(event.target.value)
+                }
                 required
                 min="1"
                 defaultValue="1"
