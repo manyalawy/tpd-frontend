@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+
+//Services
+import managerService from "../../_services/manager.service";
+import employeeService from "../../_services/employee.service";
 
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
@@ -11,6 +15,66 @@ export default function ResourceForm(props) {
   const [marked, setMarked] = useState(false);
   const [skills, setSkills] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
+
+  const [managerFilterList, setManagerFilterList] = useState([]);
+  const [selectedManager, setSelectedManager] = useState();
+
+  const [titleFilterList, setTitleFilterList] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState();
+
+  const [functionFilterList, setFunctionFilterList] = useState([]);
+  const [selectedFunction, setSelectedFunction] = useState();
+
+  // const [employeeFilterList, setEmployeeFilterList] = useState([]);
+  // const [selectedEmployee, setSelectedEmployee] = useState();
+
+  // const [selectedId, setSelectedId] = useState();
+
+  //Handle Inputs
+  const [reasonInput, setReasonInput] = useState();
+  const [propabilityInput, setPropabilityInput] = useState();
+  const [percentageInput, setPercentageInput] = useState();
+  const [dateInput, setDateInput] = useState();
+  const [leavingInput, setLeavingInput] = useState(false);
+  const [statusSelected, setStatusSelected] = useState();
+
+  //Once for all Filter Lists
+  useEffect(() => {
+    managerService.getAll().then((res) => {
+      setManagerFilterList(res.managers);
+    });
+
+    employeeService.getAllFunctions().then((res) => {
+      setFunctionFilterList(res.Names);
+    });
+
+    employeeService.getAllTitles().then((res) => {
+      setTitleFilterList(res.Names);
+    });
+    // if (props.location?.state?.editing)
+    //   releaseRequestService
+    //     .getById({
+    //       ReleaseRequest: {
+    //         reference_number: props.location.state.reference_number,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       console.log(res);
+    //       setSelectedEmployee(res.ReleaseRequest.employee_name);
+    //       setSelectedManager(res.ReleaseRequest.manager_name);
+    //       setSelectedTitle(res.ReleaseRequest.title);
+    //       setSelectedFunction(res.ReleaseRequest.function);
+    //       setSelectedId(res.ReleaseRequest.employee_id);
+
+    //       setStatusSelected(res.ReleaseRequest.request_status);
+    //       setReasonInput(res.ReleaseRequest.release_reason);
+    //       setPropabilityInput(res.ReleaseRequest.propability);
+    //       setPercentageInput(res.ReleaseRequest.release_percentage);
+    //       setLeavingInput(res.ReleaseRequest.leaving);
+    //       setDateInput(res.ReleaseRequest.release_date);
+    //     });
+  }, []);
+
   var skill = { id: "", cat: "", sub: "" };
   var handleChangeCat = (event) => {
     skill.cat = event.target.value;
@@ -65,7 +129,7 @@ export default function ResourceForm(props) {
   return (
     <div>
       <div>
-        <h1 className="title">Add resource request</h1>
+        <h1 className="title">Add Resource Request</h1>
       </div>
       <div className="form-width mx-auto form">
         <form>
@@ -172,7 +236,7 @@ export default function ResourceForm(props) {
               </div>
             </div>
           </div>
-          <h1 className="formHeaders">Request details</h1>
+          <h1 className="formHeaders">Assignement</h1>
           <div class="form-row">
             <div class="form-group col-md-2">
               <label for="probability">Probability</label>
