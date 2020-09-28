@@ -10,10 +10,11 @@ export default {
   delete: _delete,
 };
 
-function getAll() {
+function getAll(body) {
   const requestOptions = {
-    method: "GET",
-    headers: authHeader(),
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   };
 
   return fetch(`${apiUrl}/release-request/all`, requestOptions).then(
@@ -21,14 +22,14 @@ function getAll() {
   );
 }
 
-function getById(reference_number) {
+function getById(body) {
   const requestOptions = {
-    method: "GET",
+    method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify(body),
   };
 
-  return fetch(`${apiUrl}/release-request`, requestOptions).then(
+  return fetch(`${apiUrl}/release-request/one`, requestOptions).then(
     handleResponse
   );
 }
@@ -37,7 +38,7 @@ function create(releaseRequest) {
   const requestOptions = {
     method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(releaseRequest),
+    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(
@@ -49,7 +50,7 @@ function update(releaseRequest) {
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(releaseRequest),
+    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(
@@ -62,7 +63,9 @@ function _delete(reference_number) {
   const requestOptions = {
     method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify({
+      ReleaseRequest: { reference_number: reference_number },
+    }),
   };
 
   return fetch(`${apiUrl}/release-request`, requestOptions).then(

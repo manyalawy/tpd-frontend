@@ -19,7 +19,7 @@ function login(username, password) {
     body: JSON.stringify({ user_name: username, password }),
   };
 
-  return fetch(`${apiUrl}/user/signIn`, requestOptions)
+  return fetch(`${apiUrl}/auth/signIn`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
