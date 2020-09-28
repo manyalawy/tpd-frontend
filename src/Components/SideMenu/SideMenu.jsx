@@ -190,7 +190,12 @@ export default function SideMenu() {
           {/* Items on the right side of the navigation bar */}
           <Box display="flex" alignItems="center" ml="auto">
             <Box display="flex" alignItems="center">
-              <Link color="primary" color="inherit" href="#">
+              <Link
+                color="primary"
+                color="inherit"
+                href="#"
+                onClick={() => history.push("/profile")}
+              >
                 <Typography display="inline">
                   Youssef El Manyalawy
                   {accountRoles.includes("tdp")
@@ -315,7 +320,7 @@ export default function SideMenu() {
           [classes.contentShift]: open,
         })}
       >
-        {/* <Release /> */}
+        {/* {pages.pages} */}
       </main>
     </div>
   );
