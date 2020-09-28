@@ -15,7 +15,8 @@ import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 
 import Profile from "./Components/Profile/Profile.jsx";
-import Employees from "./Components/Employees";
+import Employees from "./Components/Employees/Employees";
+import SkillListing from "./Components/SkillListing/skillListing";
 
 const theme = createMuiTheme({
   typography: {
@@ -49,7 +50,7 @@ ReactDOM.render(
       <Switch>
         {/* <Route exact path="/login" component={LoginContainer} /> */}
         {/* <PrivateRoute component={DefaultContainer} /> */}
-        <Employees />
+        <SkillListing />
       </Switch>
     </ThemeProvider>
   </Router>,

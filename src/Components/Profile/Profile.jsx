@@ -10,7 +10,7 @@ import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import BasicInfo from "./MyProfileComponents/BasicInfo.jsx";
-import SkillsAndCer from "./MyProfileComponents/SkillsAndCer.jsx";
+
 import Container from "@material-ui/core/Container";
 import Skills from "./MyProfileComponents/skills.jsx";
 import Certificates from "./MyProfileComponents/certificates";
