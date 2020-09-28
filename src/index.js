@@ -8,6 +8,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import SideMenu from "./Components/SideMenu/SideMenu.jsx";
 import LoginPage from "./Components/Login/Login.jsx";
 import { Router, Switch, Route } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
 //Release & Resource Components
 import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
@@ -54,11 +55,18 @@ ReactDOM.render(
   //<Provider store={store}>
   <Router history={history}>
     <ThemeProvider theme={theme}>
-      <Switch>
-        <Route exact path="/login" component={LoginContainer} />
-        <PrivateRoute component={DefaultContainer} />
-        {/* <SkillListing /> */}
-      </Switch>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <Switch>
+          <Route exact path="/login" component={LoginContainer} />
+          <PrivateRoute component={DefaultContainer} />
+        </Switch>
+      </SnackbarProvider>
     </ThemeProvider>
   </Router>,
   // </Provider>

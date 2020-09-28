@@ -17,7 +17,10 @@ import releaseRequestService from "../../_services/release-request.service";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 
+import { useSnackbar } from "notistack";
+
 export default function ReleaseReq() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let history = useHistory();
   //Handle Table
   const [releaseRequests, setReleaseRequests] = useState([]);
@@ -110,6 +113,9 @@ export default function ReleaseReq() {
   const deleteRequest = () => {
     releaseRequestService.delete(idToDelete).then(() => {
       setDeleted(!deleted);
+      enqueueSnackbar("Request Deleted Successfully", {
+        variant: "success",
+      });
     });
   };
 
@@ -139,6 +145,9 @@ export default function ReleaseReq() {
     };
     releaseRequestService.export({
       Filters,
+    });
+    enqueueSnackbar("Requests Exported Successfully", {
+      variant: "success",
     });
   };
 
@@ -396,7 +405,12 @@ export default function ReleaseReq() {
                 type="button"
                 class="btn btn-secondary"
                 data-dismiss="modal"
-                onClick={() => setFiltered(!filtered)}
+                onClick={() => {
+                  setFiltered(!filtered);
+                  enqueueSnackbar("Requests Filtered Successfully", {
+                    variant: "success",
+                  });
+                }}
               >
                 Filter
               </button>

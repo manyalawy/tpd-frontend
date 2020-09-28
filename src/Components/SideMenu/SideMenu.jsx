@@ -30,7 +30,7 @@ import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import userServices from "../../_services/user.service";
 import { accountProperties } from "../../_helpers";
-
+import { useSnackbar } from "notistack";
 import Release from "../ReleaseReq/ReleaseReq.jsx";
 
 const drawerWidth = 240;
@@ -120,6 +120,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideMenu() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();

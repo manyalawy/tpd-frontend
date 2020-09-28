@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import "./ReleaseForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -8,11 +10,16 @@ import releaseRequestService from "../../_services/release-request.service";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 
+import { useSnackbar } from "notistack";
+
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
 export default function ReleaseForm(props) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  let history = useHistory();
+
   const [action, setAction] = useState(null);
   const [checked, setChecked] = useState(false);
 
@@ -32,7 +39,7 @@ export default function ReleaseForm(props) {
   const [percentageInput, setPercentageInput] = useState();
   const [dateInput, setDateInput] = useState();
   const [leavingInput, setLeavingInput] = useState(false);
-  const [statusSelected, setStatusSelected] = useState();
+  const [statusSelected, setStatusSelected] = useState("Open");
 
   //Once for all Filter Lists
   useEffect(() => {
@@ -124,7 +131,7 @@ export default function ReleaseForm(props) {
       propability: propabilityInput,
       release_reason: reasonInput,
       release_percentage: percentageInput,
-      leaving: leavingInput,
+      leaving: leavingInput ? "y" : "n",
       request_status: statusSelected,
     };
     if (props.location?.state?.editing) {
@@ -132,11 +139,29 @@ export default function ReleaseForm(props) {
       releaseRequestService
         .update({ ...ReleaseRequest, reference_number })
         .then((res) => {
-          console.log("Request Successfully updated");
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Request Successfully Updated", {
+              variant: "success",
+            });
+            history.push("/release-requests");
+          }
         });
     } else {
       releaseRequestService.create(ReleaseRequest).then((res) => {
-        console.log("Request Successfully created");
+        if (res.error) {
+          enqueueSnackbar(res.error, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar("Request Successfully created", {
+            variant: "success",
+          });
+          history.push("/release-requests");
+        }
       });
     }
   };
