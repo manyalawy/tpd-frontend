@@ -19,6 +19,7 @@ import Profile from "./Components/Profile/Profile.jsx";
 
 import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
+import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
 
 const theme = createMuiTheme({
   typography: {

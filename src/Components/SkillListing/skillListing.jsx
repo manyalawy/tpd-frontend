@@ -12,42 +12,37 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import Box from "@material-ui/core/Box";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
-import clsx from "clsx";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
+import skillService from "../../_services/skill.service";
+
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const columns = [
   { id: "skillName", label: "Skill Name", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
 
-function createData(skill, action) {
-  return { skill, action };
+function createData(skill) {
+  return { skill };
 }
 
-const rows = [
-  createData("Java"),
-  createData("nide"),
-  createData("khara bel kosbara"),
-];
+const rows = [];
 
 const useStyles = makeStyles({
   root: {
     width: "40%",
     marginTop: "5rem",
+    marginBottom: "5rem",
   },
   searchBar: {
     backgroundColor: "white",
@@ -71,19 +66,18 @@ const useStyles = makeStyles({
     width: "20px",
   },
 });
+var unchanged = [];
 
 export default function StickyHeadTable() {
   const [open, setOpen] = React.useState(false);
   const [skill, setSkill] = React.useState();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const classes = useStyles();
+  const [skillsTable, setSkillsTable] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  };
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const classes = useStyles();
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -101,10 +95,34 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
   const handleAdd = () => {
+    console.log(unchanged);
     if (skill != null && skill !== "") {
       setOpen(false);
     }
   };
+  const handleSearch = (value) => {
+    value = value.toLowerCase();
+    var newSkills = [];
+    for (let index = 0; index < unchanged.length; index++) {
+      if (unchanged[index].toLowerCase().includes(value)) {
+        var x = { skill: unchanged[index] };
+        newSkills.push(x);
+      }
+    }
+    setSkillsTable(newSkills);
+  };
+
+  React.useEffect(() => {
+    skillService.getAllCategories().then((res) => {
+      const allSkill = res.Categories;
+      unchanged = allSkill;
+
+      for (let index = 0; index < allSkill.length; index++) {
+        rows.push(createData(allSkill[index]));
+      }
+      setSkillsTable(rows);
+    });
+  }, []);
 
   return (
     <div>
@@ -112,6 +130,7 @@ export default function StickyHeadTable() {
       {/* <Box component="div" display="inline"> */}
       <div style={{ display: "inline" }}>
         <OutlinedInput
+          onChange={(event) => handleSearch(event.target.value)}
           className={classes.searchBar}
           id="outlined-adornment-weight"
           endAdornment={
@@ -148,7 +167,7 @@ export default function StickyHeadTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {skillsTable
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
@@ -156,7 +175,7 @@ export default function StickyHeadTable() {
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.skill}
                       >
                         <TableCell>{row.skill}</TableCell>
 
@@ -167,6 +186,13 @@ export default function StickyHeadTable() {
                             onClick={() => setOpen(true)}
                           >
                             <EditIcon />
+                          </Button>
+                          <Button
+                            href="#text-buttons"
+                            color="primary"
+                            onClick={() => setOpen(true)}
+                          >
+                            <DeleteIcon />
                           </Button>
                         </TableCell>
                       </TableRow>
