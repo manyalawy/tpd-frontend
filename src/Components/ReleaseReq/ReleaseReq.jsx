@@ -42,8 +42,6 @@ export default function ReleaseReq() {
 
   const [selectedPage, setSelectedPage] = useState(1);
 
-  const [exportData, setExportData] = useState("");
-
   //Once for all Filter Lists
   useEffect(() => {
     managerService.getAll().then((res) => {
@@ -267,6 +265,8 @@ export default function ReleaseReq() {
                     onClick={() =>
                       setIdToDelete(releaseRequest.reference_number)
                     }
+                    data-toggle="modal"
+                    data-target="#deleteRelease"
                   >
                     <DeleteForeverIcon />
                   </IconButton>

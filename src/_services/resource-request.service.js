@@ -64,7 +64,9 @@ function _delete(reference_number) {
   const requestOptions = {
     method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify({
+      ResourceRequest: { reference_number: reference_number },
+    }),
   };
 
   return fetch(`${apiUrl}/resource-request`, requestOptions).then(

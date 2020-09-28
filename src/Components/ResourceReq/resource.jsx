@@ -13,6 +13,7 @@ import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import Pagination from "@material-ui/lab/Pagination";
 
 //Services
 import resourceRequestService from "../../_services/resource-request.service";
@@ -45,6 +46,8 @@ export default function Resource() {
   const [selectedStatus, setSelectedStatus] = useState();
 
   const [resourceRequests, setResourceRequests] = useState([]);
+
+  const [selectedPage, setSelectedPage] = useState(1);
 
   //Once for all Filter Lists
   useEffect(() => {
@@ -107,14 +110,14 @@ export default function Resource() {
 
     resourceRequestService
       .getAll({
-        Page: 0,
+        Page: selectedPage - 1,
         Limit: 10,
         Filters,
       })
       .then((res) => {
         setResourceRequests(res.ResourceRequests);
       });
-  }, [deleted, filtered]);
+  }, [deleted, filtered, selectedPage]);
 
   function resetFilter() {
     document.getElementById("filterManager").value = "";
@@ -290,6 +293,8 @@ export default function Resource() {
                     onClick={() =>
                       setIdToDelete(resourceRequest.reference_number)
                     }
+                    data-toggle="modal"
+                    data-target="#deleteResource"
                   >
                     <DeleteForeverIcon />
                   </IconButton>
@@ -298,6 +303,16 @@ export default function Resource() {
             ))}
           </tbody>
         </table>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination
+            count={100}
+            color="primary"
+            onChange={(event, value) => {
+              console.log(value);
+              setSelectedPage(value);
+            }}
+          />
+        </div>
       </div>
       <div>
         <div
@@ -480,6 +495,7 @@ export default function Resource() {
                 onClick={() => {
                   deleteRequest();
                 }}
+                data-dismiss="modal"
               >
                 Yes
               </button>
