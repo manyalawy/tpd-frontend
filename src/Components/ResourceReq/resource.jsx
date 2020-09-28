@@ -144,6 +144,42 @@ export default function Resource() {
     });
   };
 
+  const exportRequests = () => {
+    const managerFilterProperty = selectedManager
+      ? { manager_name: selectedManager }
+      : "";
+    const titleFilterProperty = selectedTitle
+      ? { employee_title: selectedTitle }
+      : "";
+    const functionFilterProperty = selectedFunction
+      ? { function: selectedFunction }
+      : "";
+
+    const statusFilterProperty = selectedStatus
+      ? { request_status: selectedStatus }
+      : "";
+    //TODO property name
+    const categoryFilterProperty = selectedCategory
+      ? { request_status: selectedCategory }
+      : "";
+    //TODO property name
+    const subcategoryFilterProperty = selectedSubcategory
+      ? { request_status: selectedSubcategory }
+      : "";
+
+    const Filters = {
+      ...managerFilterProperty,
+      ...titleFilterProperty,
+      ...functionFilterProperty,
+      ...statusFilterProperty,
+      ...categoryFilterProperty,
+      ...subcategoryFilterProperty,
+    };
+    resourceRequestService.export({
+      Filters,
+    });
+  };
+
   return (
     <div>
       <h1 className="resourceTitle">Resource Requests</h1>
@@ -184,6 +220,7 @@ export default function Resource() {
             margin: "10px",
             color: "#ffffff",
           }}
+          onClick={() => exportRequests()}
         >
           <img
             style={{

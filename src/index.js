@@ -46,7 +46,6 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests" component={Resource} />
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
-
   </>
 );
 
@@ -55,9 +54,9 @@ ReactDOM.render(
   <Router history={history}>
     <ThemeProvider theme={theme}>
       <Switch>
-        {/* <Route exact path="/login" component={LoginContainer} /> */}
-        {/* <PrivateRoute component={DefaultContainer} /> */}
-        <SkillListing />
+        <Route exact path="/login" component={LoginContainer} />
+        <PrivateRoute component={DefaultContainer} />
+        {/* <SkillListing /> */}
       </Switch>
     </ThemeProvider>
   </Router>,
