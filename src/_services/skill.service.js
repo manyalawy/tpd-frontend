@@ -5,6 +5,7 @@ const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 export default {
   getAllCategories,
   getAllSubcategories,
+  getAllSkills,
 };
 
 function getAllSubcategories(body) {
@@ -28,4 +29,14 @@ function getAllCategories() {
   return fetch(`${apiUrl}/skill/categories`, requestOptions).then(
     handleResponse
   );
+}
+
+function getAllSkills(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
