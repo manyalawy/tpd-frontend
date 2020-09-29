@@ -64,7 +64,7 @@ ReactDOM.render(
         }}
       >
         <Switch>
-          <Route exact path="/login" component={LoginContainer} />
+          <Route exact path="/login" component={ResourceForm} />
           <PrivateRoute component={DefaultContainer} />
         </Switch>
       </SnackbarProvider>
