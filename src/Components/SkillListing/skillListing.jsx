@@ -68,18 +68,26 @@ const useStyles = makeStyles({
 });
 var unchanged = [];
 
-export default function StickyHeadTable() {
+export default function SkillListing() {
   const [open, setOpen] = React.useState(false);
-  const [skill, setSkill] = React.useState();
   const theme = useTheme();
   const [skillsTable, setSkillsTable] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
+  const [selectedSkill, setSelectedSkill] = React.useState(null);
+  const [editMode, setEditMode] = React.useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    setTimeout(() => {
+      setEditMode(false);
+    }, 400);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -87,18 +95,25 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
-  const handleClickOpen = () => {
+  const handleEdit = (skill) => {
+    setEditMode(true);
     setOpen(true);
+    setSelectedSkill(skill);
   };
 
   const handleClose = () => {
+    setEditMode(false);
     setOpen(false);
   };
   const handleAdd = () => {
-    console.log(unchanged);
-    if (skill != null && skill !== "") {
+    if (selectedSkill != null && selectedSkill !== "") {
+      if (editMode == true) {
+      } else {
+      }
       setOpen(false);
     }
+
+    setEditMode(false);
   };
   const handleSearch = (value) => {
     value = value.toLowerCase();
@@ -169,7 +184,7 @@ export default function StickyHeadTable() {
               <TableBody>
                 {skillsTable
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
+                  .map((row, i) => {
                     return (
                       <TableRow
                         hover
@@ -183,7 +198,7 @@ export default function StickyHeadTable() {
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={() => setOpen(true)}
+                            onClick={(event) => handleEdit(row.skill)}
                           >
                             <EditIcon />
                           </Button>
@@ -221,7 +236,8 @@ export default function StickyHeadTable() {
         <DialogTitle id="responsive-dialog-title">Skills form</DialogTitle>
         <DialogContent>
           <TextField
-            onChange={(event) => setSkill(event.target.value)}
+            value={selectedSkill}
+            onChange={(event) => setSelectedSkill(event.target.value)}
             required
             id="skillName"
             label="Skill name"
@@ -229,9 +245,9 @@ export default function StickyHeadTable() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleAdd} color="primary">
-            Add skill
+            {editMode == true ? "Edit" : "Add"}
           </Button>
-          <Button onClick={() => setOpen(false)} color="primary" autoFocus>
+          <Button onClick={handleCancel} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
