@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -16,11 +18,16 @@ import employeeService from "../../_services/employee.service";
 import skillService from "../../_services/skill.service";
 import resourceRequest from "../../_services/resource-request.service";
 
+import { useSnackbar } from "notistack";
+
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
 export default function ResourceForm(props) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  let history = useHistory();
+
   //handling inputs
   const [replacmentCheck, setReplamentCheck] = useState(false);
   const [skills, setSkills] = useState([]);
@@ -111,7 +118,16 @@ export default function ResourceForm(props) {
         },
       })
       .then((res) => {
-        console.log(res);
+        if (res.error) {
+          enqueueSnackbar(res.error, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar("Request Successfully created", {
+            variant: "success",
+          });
+          history.push("/resource-requests");
+        }
       });
   };
 
