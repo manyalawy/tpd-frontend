@@ -3,10 +3,18 @@ import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { set, sub } from "date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 //Services
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
+import skillService from "../../_services/skill.service";
+import resourceRequest from "../../_services/resource-request.service";
 
 var curr = new Date();
 curr.setDate(curr.getDate() + 3);
@@ -14,45 +22,54 @@ var date = curr.toISOString().substr(0, 10);
 
 export default function ResourceForm(props) {
   //handling inputs
-  const [marked, setMarked] = useState(false);
+  const [replacmentCheck, setReplamentCheck] = useState(false);
   const [skills, setSkills] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [editingMode, setEditingMode] = useState(false);
-  const [selectedManager, setSelectedManager] = useState("");
-  const [selectedFunction, setSelectedFunction] = useState("");
-  const [selectedTitle, setSelectedTitle] = useState("");
-  const [selectedReplacment, setSelectedReplacment] = useState("");
-  const [numberOfRequests, setNumberOfRequests] = useState(1);
+  const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedFunction, setSelectedFunction] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState(null);
+  const [selectedReplacment, setSelectedReplacment] = useState(null);
+  const [numberOfRequests, setNumberOfRequests] = useState(null);
+  const [coreTeam, setCoreTeam] = useState(false);
+  const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+  const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
+  const [selectedPercentage, setSelectedPercentage] = React.useState(null);
+  const [selectedProbability, setSelectedProbability] = React.useState(null);
+  const [selectedrelatedOpp, setSelectedRelatedOpp] = React.useState(null);
+  const [selectedComment, setSelectedComment] = React.useState(null);
+  const [
+    selectedAssignedResource,
+    setSelectedAssignedResource,
+  ] = React.useState(null);
+  const [selectedAction, setSelectedAction] = React.useState(null);
+  const [selectedCat, setSelectedCat] = useState(null);
+  const [selectedSubCat, setSelectedSubCat] = useState(null);
 
   //handling dropdown lists
   const [managers, setManagers] = useState([]);
   const [replacments, setReplacments] = useState([]);
   const [functions, setFunctions] = useState([]);
   const [titles, setTitiles] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCat, setSubCat] = useState([]);
 
   var skill = { id: "", cat: "", sub: "" };
-  var handleChangeCat = (event) => {
-    skill.cat = event.target.value;
-    console.log(skill.cat);
-  };
-  var handleChangeSub = (event) => {
-    skill.sub = event.target.value;
-  };
 
   //handle add button in form
-  function handleAdd(event) {
-    if (skill.cat != "" && skill.sub != "") {
-      document.getElementById("cat").selectedIndex = 0;
-      document.getElementById("sub").selectedIndex = 0;
+  function handleAddSkill(event) {
+    event.preventDefault();
+    if (selectedCat != null && selectedSubCat != null) {
+      skill.cat = selectedCat;
+      skill.sub = selectedSubCat;
       skills.push(skill);
       setSkills([...skills]);
-      event.preventDefault();
+      setSelectedSubCat(null);
+      setSelectedCat(null);
     }
   }
   //handle deleting skill from form
   function handleDelete(event, indexDelete) {
-    document.getElementById("cat").selectedIndex = 0;
-    document.getElementById("sub").selectedIndex = 0;
     skills.splice(indexDelete, 1);
 
     setSkills([...skills]);
@@ -61,6 +78,50 @@ export default function ResourceForm(props) {
   function handleStatusChange(event, value) {
     setSelectedStatus(value.status);
   }
+
+  const handleStartDateChange = (date) => {
+    setSelectedStartDate(date);
+  };
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
+  };
+
+  const handleSubmit = () => {
+    var rep = replacmentCheck == true ? "y" : "n";
+    resourceRequest
+      .create({
+        ResourceRequest: {
+          manager_name: selectedManager,
+          function: selectedFunction,
+          title: selectedTitle,
+          start_date: selectedStartDate,
+          replacement_for: " ",
+          replacement: rep,
+          core_team_member: "y",
+
+          requests_count: parseInt(numberOfRequests),
+
+          comments: selectedComment,
+
+          percentage: parseInt(selectedPercentage),
+          propability: parseInt(selectedProbability),
+
+          end_date: selectedEndDate,
+          related_Opportunity: selectedrelatedOpp,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
+  const handleCategoryChange = (value) => {
+    setSubCat([]);
+    setSelectedCat(value);
+    skillService.getAllSubcategories({ category: value }).then((res) => {
+      setSubCat(res.Subcategories);
+    });
+  };
 
   const defaultProps = {
     options: top100Films,
@@ -84,6 +145,10 @@ export default function ResourceForm(props) {
     options: managers,
     getOptionLabel: (option) => option.name,
   };
+  const subCatDropDownLst = {
+    options: subCat,
+    getOptionLabel: (option) => option,
+  };
   const replacmentDropDownList = {
     options: replacments,
     getOptionLabel: (option) => option,
@@ -97,6 +162,10 @@ export default function ResourceForm(props) {
     options: titles,
     getOptionLabel: (option) => option,
   };
+  const categoriesDropDownList = {
+    options: categories,
+    getOptionLabel: (option) => option,
+  };
 
   var actions = {
     options: actionsTaken,
@@ -107,12 +176,16 @@ export default function ResourceForm(props) {
   useEffect(() => {
     managerService.getAll().then((res) => {
       setManagers(res.managers);
+      console.log(managers);
     });
     employeeService.getAllFunctions().then((res) => {
       setFunctions(res.Functions);
     });
     employeeService.getAllTitles().then((res) => {
       setTitiles(res.Titles);
+    });
+    skillService.getAllCategories().then((res) => {
+      setCategories(res.Categories);
     });
   }, []);
   useEffect(() => {
@@ -133,9 +206,10 @@ export default function ResourceForm(props) {
           <div class="form-row">
             <div class="form-group col-md-4">
               <Autocomplete
+                defaultValue={selectedManager}
                 onChange={(event, value) =>
                   value == null
-                    ? setSelectedManager("")
+                    ? setSelectedManager(null)
                     : setSelectedManager(value.name)
                 }
                 {...managersDropDownList}
@@ -153,9 +227,10 @@ export default function ResourceForm(props) {
             </div>
             <div class="form-group col-md-4">
               <Autocomplete
+                defaultValue={selectedFunction}
                 onChange={(event, value) =>
                   value == null
-                    ? setSelectedFunction("")
+                    ? setSelectedFunction(null)
                     : setSelectedFunction(value)
                 }
                 {...functionsDropdownList}
@@ -173,8 +248,11 @@ export default function ResourceForm(props) {
             </div>
             <div class="form-group col-md-4">
               <Autocomplete
+                defaultValue={selectedTitle}
                 onChange={(event, value) =>
-                  value == null ? setSelectedTitle("") : setSelectedTitle(value)
+                  value == null
+                    ? setSelectedTitle(null)
+                    : setSelectedTitle(value)
                 }
                 {...titleDropDownList}
                 id="selectTitle"
@@ -193,15 +271,17 @@ export default function ResourceForm(props) {
           <div class="form-row">
             <div class="form-group col-md-4">
               <Autocomplete
-                defaultValue={"hi"}
+                defaultValue={selectedReplacment}
                 onChange={(event, value) =>
                   value == null
-                    ? setSelectedReplacment("")
+                    ? setSelectedReplacment(null)
                     : setSelectedReplacment(value)
                 }
                 {...replacmentDropDownList}
                 disabled={
-                  marked == true && selectedManager != "" ? false : true
+                  replacmentCheck == true && selectedManager != ""
+                    ? false
+                    : true
                 }
                 id="selectReplacmentFor"
                 debug
@@ -217,14 +297,14 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-2">
               <label for="numberOfRequests">Number of requests</label>
               <input
+                value={numberOfRequests}
                 onChange={(event) =>
-                  event.target.value == null
-                    ? setNumberOfRequests("")
+                  event.target.value == ""
+                    ? setNumberOfRequests(null)
                     : setNumberOfRequests(event.target.value)
                 }
                 required
                 min="1"
-                defaultValue="1"
                 type="number"
                 class="form-control"
                 id="numberOfRequests"
@@ -236,8 +316,8 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-4">
               <div class="form-check">
                 <input
-                  defaultChecked={marked}
-                  onChange={() => setMarked(!marked)}
+                  defaultChecked={replacmentCheck}
+                  onChange={() => setReplamentCheck(!replacmentCheck)}
                   class="form-check-input"
                   type="checkbox"
                   id="replacment"
@@ -251,6 +331,8 @@ export default function ResourceForm(props) {
                   class="form-check-input"
                   type="checkbox"
                   id="Leaving"
+                  defaultChecked={coreTeam}
+                  onChange={(event) => setCoreTeam(event.target.checked)}
                 ></input>
                 <label class="form-check-label" for="leaving">
                   Core Team Member
@@ -264,6 +346,12 @@ export default function ResourceForm(props) {
               <label for="probability">Probability</label>
               <div class="input-group">
                 <input
+                  value={selectedProbability}
+                  onChange={(event) =>
+                    event.target.value == ""
+                      ? setSelectedProbability(null)
+                      : setSelectedProbability(event.target.value)
+                  }
                   required
                   type="number"
                   class="form-control"
@@ -282,6 +370,12 @@ export default function ResourceForm(props) {
               <label for="percentage">Percentage</label>
               <div class="input-group">
                 <input
+                  value={selectedPercentage}
+                  onChange={(event) =>
+                    event.target.value == ""
+                      ? setSelectedPercentage(null)
+                      : setSelectedPercentage(event.target.value)
+                  }
                   required
                   type="number"
                   class="form-control"
@@ -297,28 +391,38 @@ export default function ResourceForm(props) {
               </div>
             </div>
             <div class="form-group col-md-3">
-              <label for="startDate">Start Date</label>
-              <input
-                required
-                value={date}
-                min={date}
-                type="date"
-                class="form-control"
-                id="releaseDate"
-                placeholder="Enter resource name first"
-              ></input>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="Start Date"
+                  value={selectedStartDate}
+                  onChange={handleStartDateChange}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </MuiPickersUtilsProvider>
             </div>
             <div class="form-group col-md-3">
-              <label for="endDate">End Date</label>
-              <input
-                required
-                value={date}
-                min={date}
-                type="date"
-                class="form-control"
-                id="releaseDate"
-                placeholder="Enter resource name first"
-              ></input>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="End Date"
+                  value={selectedEndDate}
+                  onChange={handleEndDateChange}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </MuiPickersUtilsProvider>
             </div>
           </div>
           <div class="form-row">
@@ -326,6 +430,10 @@ export default function ResourceForm(props) {
               <div class="form-group">
                 <label for="relatedOpportunity">Related Opportunity</label>
                 <textarea
+                  onChange={(event) =>
+                    setSelectedRelatedOpp(event.target.value)
+                  }
+                  value={selectedrelatedOpp}
                   class="form-control"
                   id="relatedOpportunity"
                   rows="5"
@@ -336,6 +444,8 @@ export default function ResourceForm(props) {
               <div class="form-group">
                 <label for="comments">Comments</label>
                 <textarea
+                  onChange={(event) => setSelectedComment(event.target.value)}
+                  value={selectedComment}
                   class="form-control"
                   id="relatedOpportunity"
                   rows="5"
@@ -348,6 +458,7 @@ export default function ResourceForm(props) {
               <Autocomplete
                 disabled={props.editing == "yes" ? false : true}
                 onChange={(event, value) => handleStatusChange(event, value)}
+                defaultValue={selectedStatus}
                 {...status}
                 id="selectStatus"
                 renderInput={(params) => (
@@ -365,6 +476,8 @@ export default function ResourceForm(props) {
                 disabled={
                   props.user == "TPD" && props.editing == "yes" ? false : true
                 }
+                onChange={(event, value) => setSelectedAction(value)}
+                defaultValue={selectedAction}
                 {...actions}
                 id="selectActionTaken"
                 renderInput={(params) => (
@@ -386,6 +499,9 @@ export default function ResourceForm(props) {
                   selectedStatus == "Outsourced" ||
                   selectedStatus == "Hired" ||
                   selectedStatus == "Over allocated"
+                }
+                onChange={(event) =>
+                  setSelectedAssignedResource(event.target.value)
                 }
                 style={{ width: 300 }}
                 label="Select Assigned Resource"
@@ -448,40 +564,49 @@ export default function ResourceForm(props) {
           <form>
             <div class="form-row">
               <div class="form-group col-md-4">
-                <label for="function">Category</label>
-                <select
-                  class="form-control"
-                  required
-                  onChange={(event) => handleChangeCat(event)}
-                  id="cat"
-                >
-                  <option value="" disabled selected>
-                    Select Category
-                  </option>
-                  <option value="app dev">app dev</option>
-                  <option value="web">Web</option>
-                </select>
+                <Autocomplete
+                  clearOnEscape
+                  onChange={(event, value) => handleCategoryChange(value)}
+                  defaultValue={selectedCat}
+                  {...categoriesDropDownList}
+                  id="selectCat"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Category"
+                      margin="normal"
+                    />
+                  )}
+                />
               </div>
               <div class="form-group col-md-4">
-                <label for="function">Sub-category</label>
-                <select
-                  id="sub"
-                  class="form-control"
-                  required
-                  onChange={(event) => handleChangeSub(event)}
-                >
-                  <option value="" disabled selected>
-                    Select Sub-category
-                  </option>
-                  <option value="Swift">Swift</option>
-                  <option value="Java">Java</option>
-                </select>
+                <Autocomplete
+                  clearOnEscape
+                  onChange={(event, value) =>
+                    value == null
+                      ? setSelectedSubCat(null)
+                      : setSelectedSubCat(value)
+                  }
+                  disabled={selectedCat == null ? true : false}
+                  defaultValue={selectedSubCat}
+                  value={selectedSubCat}
+                  {...subCatDropDownLst}
+                  onChange={(event, value) => setSelectedSubCat(value)}
+                  id="selectSubCat"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select SubCategory"
+                      margin="normal"
+                    />
+                  )}
+                />
               </div>
               <div class="form-group col-md-3">
                 <button
                   type="submit"
                   class=" add btn btn-primary"
-                  onClick={(event) => handleAdd(event)}
+                  onClick={(event) => handleAddSkill(event)}
                 >
                   Add
                 </button>
@@ -516,7 +641,11 @@ export default function ResourceForm(props) {
               </tbody>
             </table>
           </div>
-          <button class="btn btn-primary sub" type="submit">
+          <button
+            class="btn btn-primary sub"
+            type="submit"
+            onClick={handleSubmit}
+          >
             Submit
           </button>
           <button type="button" class="btn canc btn-danger">
