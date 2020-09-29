@@ -152,9 +152,8 @@ export default function SideMenu() {
   };
 
   useEffect(() => {
-    const payload = accountProperties();
-    setAccountId(payload.id);
-    setAccountRoles(payload.roles);
+    setAccountId(accountProperties().id);
+    setAccountRoles(accountProperties().roles);
   }, []);
   return (
     <div className={classes.root}>
@@ -199,9 +198,9 @@ export default function SideMenu() {
               >
                 <Typography display="inline">
                   Youssef El Manyalawy
-                  {accountRoles.includes("tdp")
-                    ? " / TPD"
-                    : accountRoles.includes("manager")
+                  {accountRoles.includes("TPD Team")
+                    ? " / TPD Team"
+                    : accountRoles.includes("Manager")
                     ? " / Manager"
                     : " / Employee"}
                 </Typography>
