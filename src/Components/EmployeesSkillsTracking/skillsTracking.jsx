@@ -22,6 +22,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
+import ExportIcon from "../assets/file-export-solid.svg";
 
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
@@ -51,13 +52,16 @@ const useStyles = makeStyles({
     marginLeft: "5rem",
     fontSize: " 60px",
   },
-  filtterButton: {
-    backgroundColor: "white",
+  buttons: {
     color: "black",
     marginLeft: "90%",
   },
   select: {
     width: "20px",
+  },
+  exportButton: {
+    color: "black",
+    marginLeft: "6px",
   },
 });
 
@@ -71,6 +75,10 @@ export default function StickyHeadTable() {
   const defaultProps = {
     options: top100Films,
     getOptionLabel: (option) => option.title,
+  };
+  const skillsStatus = {
+    options: statusOptions,
+    getOptionLabel: (option) => option,
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -89,24 +97,27 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
   const handleReset = () => {
-    document.getElementById("selectWorkGroup").value = "";
     document.getElementById("selectName").value = "";
-    document.getElementById("selectTitle").value = "";
-    document.getElementById("selectFunction").value = "";
+    document.getElementById("selectSkillsStatus").value = "";
   };
 
   return (
     <div>
-      <h1 className={classes.title}>Empolyees</h1>
-
-      <Fab
-        className={classes.filtterButton}
-        color="primary"
-        aria-label="filter"
-        onClick={() => setOpen(true)}
-      >
-        <FilterListIcon />
-      </Fab>
+      <h1 className={classes.title}>Employee Skills Tracking</h1>
+      <div className={classes.buttons}>
+        <Fab aria-label="filter" onClick={() => setOpen(true)}>
+          <FilterListIcon />
+        </Fab>
+        <Fab aria-label="export" className={classes.exportButton}>
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </Fab>
+      </div>
       <Grid container justify="center" alignItems="center">
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
@@ -170,56 +181,28 @@ export default function StickyHeadTable() {
           <Autocomplete
             {...defaultProps}
             id="selectName"
-            disableCloseOnSelect
+            clearOnEscape
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
                 className={classes.select}
                 {...params}
-                label="Name"
+                label="Employee Name"
                 margin="normal"
               />
             )}
           />
 
           <Autocomplete
-            {...defaultProps}
-            id="selectTitle"
-            disableCloseOnSelect
+            {...skillsStatus}
+            id="selectSkillsStatus"
+            clearOnEscape
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
                 className={classes.select}
                 {...params}
-                label="Title"
-                margin="normal"
-              />
-            )}
-          />
-          <Autocomplete
-            {...defaultProps}
-            id="selectWorkGroup"
-            disableCloseOnSelect
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Workgroup"
-                margin="normal"
-              />
-            )}
-          />
-          <Autocomplete
-            {...defaultProps}
-            id="selectFunction"
-            disableCloseOnSelect
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Function"
+                label="Skills Status"
                 margin="normal"
               />
             )}
@@ -344,3 +327,5 @@ const top100Films = [
   { title: "3 Idiots", year: 2009 },
   { title: "Monty Python and the Holy Grail", year: 1975 },
 ];
+
+const statusOptions = ["Last Updated", "Non-registered"];

@@ -49,6 +49,7 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
     <Route exact path="/profile" component={Profile} />
+    <Route exact path="/skillTracking" component={SkillsTracking} />
   </>
 );
 
