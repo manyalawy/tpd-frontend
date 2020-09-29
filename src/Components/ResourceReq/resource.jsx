@@ -14,6 +14,15 @@ import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import Pagination from "@material-ui/lab/Pagination";
+import HistoryIcon from "@material-ui/icons/History";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 
 //Services
 import resourceRequestService from "../../_services/resource-request.service";
@@ -21,7 +30,15 @@ import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 import skillService from "../../_services/skill.service";
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
 export default function Resource() {
+  const classes = useStyles();
+
   let history = useHistory();
   //Handle Delete
   const [idToDelete, setIdToDelete] = useState();
@@ -49,6 +66,10 @@ export default function Resource() {
 
   const [selectedPage, setSelectedPage] = useState(1);
 
+  const [idActions, setIdActions] = useState();
+
+  const [requestActions, setRequestActions] = useState([]);
+
   //Once for all Filter Lists
   useEffect(() => {
     managerService.getAll().then((res) => {
@@ -67,6 +88,19 @@ export default function Resource() {
       setSubcategoryFilterList(res.Subcategories);
     });
   }, []);
+
+  //used for actions of a specific request
+  useEffect(() => {
+    resourceRequestService
+      .getById({ ResourceRequest: { reference_number: idActions } })
+      .then((res) => {
+        setRequestActions(
+          res.ResourceRequest?.resource_requests_actions
+            ? res.ResourceRequest.resource_requests_actions
+            : []
+        );
+      });
+  }, [idActions]);
 
   //with every category select subcategories change accordingly
   useEffect(() => {
@@ -291,12 +325,13 @@ export default function Resource() {
                       color: "#000000",
                     }}
                     onClick={() =>
-                      setIdToDelete(resourceRequest.reference_number)
+                      // setIdToDelete(resourceRequest.reference_number)
+                      setIdActions(resourceRequest.reference_number)
                     }
                     data-toggle="modal"
                     data-target="#deleteResource"
                   >
-                    <DeleteForeverIcon />
+                    <HistoryIcon />
                   </IconButton>
                 </td>
               </tr>
@@ -462,11 +497,15 @@ export default function Resource() {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog" role="document">
+        <div
+          class="modal-dialog"
+          role="document"
+          style={{ maxWidth: "1000px" }}
+        >
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                Delete resource request
+                Resource Request : {idActions} Actions History
               </h5>
               <button
                 type="button"
@@ -478,8 +517,36 @@ export default function Resource() {
               </button>
             </div>
             <div class="modal-body">
-              Are you sure you want to delete release request with reference
-              number: {idToDelete}
+              <TableContainer component={Paper}>
+                <Table
+                  className={classes.table}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Action Date</TableCell>
+                      <TableCell align="right">Action Owner</TableCell>
+                      <TableCell align="right">Status</TableCell>
+                      <TableCell align="right">Action Note</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {requestActions.map((action) => (
+                      <TableRow key={"test"}>
+                        <TableCell component="th" scope="row">
+                          {action.createdAt}
+                        </TableCell>
+                        <TableCell align="right">RafiqTPD</TableCell>
+                        <TableCell align="right">{action.action}</TableCell>
+                        <TableCell align="right">
+                          {action.action_note}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div>
             <div class="modal-footer">
               <button
@@ -489,7 +556,7 @@ export default function Resource() {
               >
                 Cancel
               </button>
-              <button
+              {/* <button
                 type="button"
                 class="btn btn-primary"
                 onClick={() => {
@@ -498,7 +565,7 @@ export default function Resource() {
                 data-dismiss="modal"
               >
                 Yes
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

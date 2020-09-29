@@ -23,11 +23,11 @@ function getAll(body) {
   );
 }
 
-function getById(reference_number) {
+function getById(body) {
   const requestOptions = {
-    method: "GET",
+    method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ reference_number: reference_number }),
+    body: JSON.stringify(body),
   };
 
   return fetch(`${apiUrl}/resource-request`, requestOptions).then(

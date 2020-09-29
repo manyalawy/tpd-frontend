@@ -9,6 +9,15 @@ import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import Pagination from "@material-ui/lab/Pagination";
+import HistoryIcon from "@material-ui/icons/History";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 
 import "./ReleaseReq.css";
 
@@ -19,7 +28,14 @@ import employeeService from "../../_services/employee.service";
 
 import { useSnackbar } from "notistack";
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
 export default function ReleaseReq() {
+  const classes = useStyles();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let history = useHistory();
   //Handle Table
@@ -45,6 +61,10 @@ export default function ReleaseReq() {
 
   const [selectedPage, setSelectedPage] = useState(1);
 
+  const [idActions, setIdActions] = useState();
+
+  const [requestActions, setRequestActions] = useState([]);
+
   //Once for all Filter Lists
   useEffect(() => {
     managerService.getAll().then((res) => {
@@ -60,6 +80,19 @@ export default function ReleaseReq() {
       setFunctionFilterList(res.Functions);
     });
   }, []);
+
+  //used for actions of a specific request
+  useEffect(() => {
+    releaseRequestService
+      .getById({ ReleaseRequest: { reference_number: idActions } })
+      .then((res) => {
+        setRequestActions(
+          res.ReleaseRequest?.release_requests_actions
+            ? res.ReleaseRequest.release_requests_actions
+            : []
+        );
+      });
+  }, [idActions]);
 
   //With every Update to re-render Table with filtration or after deletion
   useEffect(() => {
@@ -272,12 +305,12 @@ export default function ReleaseReq() {
                       color: "#000000",
                     }}
                     onClick={() =>
-                      setIdToDelete(releaseRequest.reference_number)
+                      setIdActions(releaseRequest.reference_number)
                     }
                     data-toggle="modal"
                     data-target="#deleteRelease"
                   >
-                    <DeleteForeverIcon />
+                    <HistoryIcon />
                   </IconButton>
                 </td>
               </tr>
@@ -433,11 +466,15 @@ export default function ReleaseReq() {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog" role="document">
+        <div
+          class="modal-dialog"
+          role="document"
+          style={{ maxWidth: "1000px" }}
+        >
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                Delete release request
+                Release Request : {idActions} Actions History
               </h5>
               <button
                 type="button"
@@ -449,8 +486,36 @@ export default function ReleaseReq() {
               </button>
             </div>
             <div class="modal-body">
-              Are you sure you want to delete release request with reference
-              number: {idToDelete}
+              <TableContainer component={Paper}>
+                <Table
+                  className={classes.table}
+                  size="small"
+                  aria-label="a dense table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Action Date</TableCell>
+                      <TableCell align="right">Action Owner</TableCell>
+                      <TableCell align="right">Status</TableCell>
+                      <TableCell align="right">Action Note</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {requestActions.map((action) => (
+                      <TableRow key={"test"}>
+                        <TableCell component="th" scope="row">
+                          {action.createdAt}
+                        </TableCell>
+                        <TableCell align="right">"TODO Owner"</TableCell>
+                        <TableCell align="right">{action.action}</TableCell>
+                        <TableCell align="right">
+                          {action.action_note}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div>
             <div class="modal-footer">
               <button
@@ -460,7 +525,7 @@ export default function ReleaseReq() {
               >
                 Cancel
               </button>
-              <button
+              {/* <button
                 type="button"
                 class="btn btn-primary"
                 onClick={() => {
@@ -469,7 +534,7 @@ export default function ReleaseReq() {
                 data-dismiss="modal"
               >
                 Yes
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
