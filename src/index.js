@@ -20,6 +20,7 @@ import Profile from "./Components/Profile/Profile.jsx";
 import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
 import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
+import SkillsHistory from "./Components/EmployeeSkillHistory/skillsHistory";
 
 const theme = createMuiTheme({
   typography: {
@@ -49,7 +50,8 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
     <Route exact path="/profile" component={Profile} />
-    <Route exact path="/skillTracking" component={SkillsTracking} />
+    <Route exact path="/skill-Tracking" component={SkillsTracking} />
+    <Route exact path="/skills-history" component={SkillsHistory} />
   </>
 );
 
