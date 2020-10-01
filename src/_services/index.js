@@ -4,3 +4,4 @@ export * from "./release-request.service";
 export * from "./manager.service";
 export * from "./employee.service";
 export * from "./skill.service";
+export * from "./certification.service";

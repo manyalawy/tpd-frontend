@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -23,6 +24,8 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
 import ExportIcon from "../assets/file-export-solid.svg";
+import skillsService from "../../_services/skill.service";
+import employeeService from "../../_services/employee.service";
 
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
@@ -77,14 +80,30 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  };
-  const skillsStatus = {
-    options: statusOptions,
+
+  // Filte options
+  const [employeesNames, setEmployeeNames] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [functions, setFunctions] = useState([]);
+  const [titles, settitles] = useState([]);
+
+  const namesOptions = {
+    options: employeesNames,
     getOptionLabel: (option) => option,
   };
+  const skillsOptions = {
+    options: skills,
+    getOptionLabel: (option) => option.skill_name,
+  };
+  const functionsOptions = {
+    options: functions,
+    getOptionLabel: (option) => option,
+  };
+  const titlesOptions = {
+    options: titles,
+    getOptionLabel: (option) => option,
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -107,6 +126,24 @@ export default function StickyHeadTable() {
     document.getElementById("selectFunction").value = "";
     document.getElementById("selectTitle").value = "";
   };
+
+  useEffect(() => {
+    employeeService.getAllNames().then((res) => {
+      setEmployeeNames(res.Names);
+    });
+
+    employeeService.getAllFunctions().then((res) => {
+      setFunctions(res.Functions);
+    });
+
+    employeeService.getAllTitles().then((res) => {
+      settitles(res.Titles);
+    });
+
+    skillsService.getAllSkills().then((res) => {
+      setSkills(res.Skills);
+    });
+  }, []);
 
   return (
     <div>
@@ -185,7 +222,7 @@ export default function StickyHeadTable() {
         </DialogTitle>
         <DialogContent>
           <Autocomplete
-            {...defaultProps}
+            {...namesOptions}
             id="selectName"
             clearOnEscape
             renderInput={(params) => (
@@ -200,7 +237,7 @@ export default function StickyHeadTable() {
           />
 
           <Autocomplete
-            {...skillsStatus}
+            {...skillsOptions}
             id="selectSkills"
             clearOnEscape
             renderInput={(params) => (
@@ -214,7 +251,7 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
-            {...skillsStatus}
+            {...functionsOptions}
             id="selectFunction"
             clearOnEscape
             renderInput={(params) => (
@@ -228,7 +265,7 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
-            {...skillsStatus}
+            {...titlesOptions}
             id="selectTitle"
             clearOnEscape
             renderInput={(params) => (
@@ -262,5 +299,3 @@ const top100Films = [
   { title: "The Dark Knight", year: 2008 },
   { title: "12 Angry Men", year: 1957 },
 ];
-
-const statusOptions = ["Last Updated", "Non-registered"];

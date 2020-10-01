@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -23,22 +23,26 @@ import EditIcon from "@material-ui/icons/Edit";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
-import skillService from "../../_services/skill.service";
-
 import DeleteIcon from "@material-ui/icons/Delete";
+import certificationService from "../../../_services/certification.service.js";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const columns = [
-  { id: "skillName", label: "Skill Name", minWidth: 170 },
+  { id: "cerName", label: "Certification Name", minWidth: 170 },
+  { id: "cerProvider", label: "Certification Provider", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
 ];
 
-function createData(skill, id) {
-  return { skill, id };
+function createData(provider, id) {
+  return { provider, id };
 }
 
-var rows = [];
+const rows = [];
 
 const useStyles = makeStyles({
+  certificates: {
+    marginTop: "6rem",
+  },
   root: {
     width: "40%",
     marginTop: "5rem",
@@ -68,17 +72,24 @@ const useStyles = makeStyles({
 });
 var unchanged = [];
 
+var providers = [];
+
 export default function SkillListing() {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
-  const [skillsTable, setSkillsTable] = React.useState([]);
+  const [providersTable, setProvidersTable] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
-  const [selectedSkill, setSelectedSkill] = React.useState(null);
+  const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [editMode, setEditMode] = React.useState(false);
-  const [selectedID, setselectedID] = useState();
+  const [selectedProvideID, setSelectedProviderID] = React.useState();
+
+  const cerProvidersOptions = {
+    options: providersTable,
+    getOptionLabel: (option) => option.certification_provider_name,
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -96,31 +107,51 @@ export default function SkillListing() {
     setPage(0);
   };
 
-  const handleEdit = (skill, id) => {
+  const handleEdit = (provider, id) => {
     setEditMode(true);
     setOpen(true);
-    setSelectedSkill(skill);
-    setselectedID(id);
+    setSelectedProvider(provider);
+
+    setSelectedProviderID(id);
   };
 
   const handleClose = () => {
     setEditMode(false);
     setOpen(false);
+    setSelectedProvider("?");
   };
   const handleAdd = () => {
-    if (selectedSkill != null && selectedSkill !== "") {
+    if (selectedProvider != null && selectedProvider !== "") {
       if (editMode == true) {
-        skillService
-          .editSkill({
-            Skill: {
-              skill_id: parseInt(selectedID),
-              skill_name: selectedSkill,
+        certificationService
+          .editProvider({
+            CertificationProvider: {
+              certification_provider_id: parseInt(selectedProvideID),
+              certification_provider_name: selectedProvider,
             },
           })
           .then((res) => {
-            refresh();
+            certificationService.getAllProviders().then((res) => {
+              setProvidersTable(res.CertificateProviders);
+              unchanged = res.CertificateProviders;
+            });
           });
       } else {
+        setSelectedProvider("");
+        certificationService
+          .addProvider({
+            CertificationProvider: {
+              certification_provider_name: selectedProvider,
+            },
+          })
+          .then((res) => {
+            if (!res.error) {
+              certificationService.getAllProviders().then((res) => {
+                setProvidersTable(res.CertificateProviders);
+                unchanged = res.CertificateProviders;
+              });
+            }
+          });
       }
       setOpen(false);
       setEditMode(false);
@@ -128,37 +159,49 @@ export default function SkillListing() {
   };
   const handleSearch = (value) => {
     value = value.toLowerCase();
-    var newSkills = [];
+    var newProviders = [];
     for (let index = 0; index < unchanged.length; index++) {
-      if (unchanged[index].skill.toLowerCase().includes(value)) {
-        var x = { skill: unchanged[index].skill, id: unchanged[index].id };
-        newSkills.push(x);
+      if (
+        unchanged[index].certification_provider_name
+          .toLowerCase()
+          .includes(value)
+      ) {
+        var x = unchanged[index];
+        newProviders.push(x);
       }
     }
-    setSkillsTable(newSkills);
+    setProvidersTable(newProviders);
+  };
+
+  const handleAddProvider = () => {
+    setSelectedProvider("");
+    setOpen(true);
+  };
+
+  const handleDelete = (provider, id) => {
+    certificationService
+      .deleteProvider({
+        CertificationProvider: {
+          certification_provider_id: parseInt(id),
+        },
+      })
+      .then((res) => {
+        certificationService.getAllProviders().then((res) => {
+          setProvidersTable(res.CertificateProviders);
+        });
+      });
   };
 
   React.useEffect(() => {
-    refresh();
+    certificationService.getAllProviders().then((res) => {
+      setProvidersTable(res.CertificateProviders);
+      unchanged = res.CertificateProviders;
+    });
   }, []);
 
-  function refresh() {
-    skillService.getAllSkills().then((res) => {
-      const allSkill = res.Skills;
-      rows = [];
-      for (let index = 0; index < allSkill.length; index++) {
-        rows.push(
-          createData(allSkill[index].skill_name, allSkill[index].skill_id)
-        );
-      }
-      setSkillsTable(rows);
-      unchanged = rows;
-    });
-  }
-
   return (
-    <div>
-      <h1 className={classes.title}>Skills list</h1>
+    <div className={classes.certificates}>
+      <h1 className={classes.title}>Certifications List</h1>
       {/* <Box component="div" display="inline"> */}
       <div style={{ display: "inline" }}>
         <OutlinedInput
@@ -179,7 +222,7 @@ export default function SkillListing() {
         <Fab
           className={classes.filtterButton}
           aria-label="filter"
-          onClick={() => setOpen(true)}
+          onClick={handleAddProvider}
         >
           <AddIcon />
         </Fab>
@@ -199,7 +242,7 @@ export default function SkillListing() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {skillsTable
+                {providersTable
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, i) => {
                     return (
@@ -207,22 +250,32 @@ export default function SkillListing() {
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.id}
+                        key={row.certification_provider_id}
                       >
-                        <TableCell>{row.skill}</TableCell>
+                        <TableCell>{row.certification_provider_name}</TableCell>
 
                         <TableCell>
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={(event) => handleEdit(row.skill, row.id)}
+                            onClick={(event) =>
+                              handleEdit(
+                                row.certification_provider_name,
+                                row.certification_provider_id
+                              )
+                            }
                           >
                             <EditIcon />
                           </Button>
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={() => setOpen(true)}
+                            onClick={() =>
+                              handleDelete(
+                                row.certification_provider_name,
+                                row.certification_provider_id
+                              )
+                            }
                           >
                             <DeleteIcon />
                           </Button>
@@ -250,14 +303,26 @@ export default function SkillListing() {
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">Skills form</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">Providers form</DialogTitle>
         <DialogContent>
           <TextField
-            value={selectedSkill}
-            onChange={(event) => setSelectedSkill(event.target.value)}
+            value={selectedProvider}
+            onChange={(event) => setSelectedProvider(event.target.value)}
             required
-            id="skillName"
-            label="Skill name"
+            id="certificateName"
+            label="Certificate Name"
+          />
+          <Autocomplete
+            {...cerProvidersOptions}
+            id="disable-clearable"
+            disableClearable
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Certificate Provider"
+                margin="normal"
+              />
+            )}
           />
         </DialogContent>
         <DialogActions>
@@ -272,13 +337,3 @@ export default function SkillListing() {
     </div>
   );
 }
-
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
