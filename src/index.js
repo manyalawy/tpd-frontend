@@ -14,7 +14,6 @@ import ReleaseForm from "./Components/ReleaseForm/ReleaseForm.jsx";
 import Resource from "./Components/ResourceReq/resource.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
-
 import Profile from "./Components/Profile/Profile.jsx";
 
 import Employees from "./Components/Employees/Employees";
@@ -22,6 +21,7 @@ import SkillListing from "./Components/SkillListing/skillListing";
 import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
 import SkillsHistory from "./Components/EmployeeSkillHistory/skillsHistory";
 import Certifications from "./Components/Certifications/certifications";
+import TPDGuard from "./Components/Guards/TPDGuard.js";
 
 const theme = createMuiTheme({
   typography: {
@@ -51,10 +51,21 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
     <Route exact path="/profile" component={Profile} />
-    <Route exact path="/skill-Tracking" component={SkillsTracking} />
-    <Route exact path="/skills-history" component={SkillsHistory} />
-    <Route exact path="/certifications-list" component={Certifications} />
-    <Route exact path="/skills-listing" component={SkillListing} />
+    <TPDGuard>
+      {" "}
+      <Route exact path="/skill-Tracking" component={SkillsTracking} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/skills-history" component={SkillsHistory} />{" "}
+    </TPDGuard>
+    <TPDGuard>
+      {" "}
+      <Route exact path="/certifications-list" component={Certifications} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/skills-listing" component={SkillListing} />
+    </TPDGuard>
+    s
   </>
 );
 

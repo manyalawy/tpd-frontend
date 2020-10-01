@@ -24,8 +24,10 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
 import skillService from "../../_services/skill.service";
+import { accountProperties } from "../../_helpers/accountProperties";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import { parse } from "date-fns";
 
 const columns = [
   { id: "skillName", label: "Skill Name", minWidth: 170 },
@@ -121,10 +123,25 @@ export default function SkillListing() {
             refresh();
           });
       } else {
+        skillService
+          .addSkill({
+            Skill: {
+              skill_name: selectedSkill,
+            },
+          })
+          .then((res) => {
+            refresh();
+          });
       }
       setOpen(false);
       setEditMode(false);
     }
+  };
+
+  const handleDelete = (id) => {
+    skillService.deleteSkill({ skill_id: parseInt(id) }).then((res) => {
+      refresh();
+    });
   };
   const handleSearch = (value) => {
     value = value.toLowerCase();
@@ -222,7 +239,7 @@ export default function SkillListing() {
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={() => setOpen(true)}
+                            onClick={() => handleDelete(row.id)}
                           >
                             <DeleteIcon />
                           </Button>

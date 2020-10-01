@@ -11,6 +11,9 @@ export default {
   addEmployeeSkill,
   deleteEmployeeSkill,
   editEmployeeSkill,
+  deleteSkill,
+  getSkillHistory,
+  export: _export,
 };
 
 function getAllSubcategories(body) {
@@ -51,6 +54,7 @@ function addSkill(body) {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
 
 function editSkill(body) {
@@ -69,8 +73,16 @@ function editEmployeeSkill(body) {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
-
   return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+}
+
+function deleteSkill(body) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
 
 function addEmployeeSkill(body) {
@@ -79,8 +91,17 @@ function addEmployeeSkill(body) {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
-
   return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+}
+
+function getSkillHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/history`, requestOptions).then(handleResponse);
 }
 
 function deleteEmployeeSkill(body) {
@@ -89,6 +110,18 @@ function deleteEmployeeSkill(body) {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
-
   return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+}
+
+function _export(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/history/export`, requestOptions).then((res) => {
+    res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+  });
 }
