@@ -25,6 +25,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
 import certificationService from "../../../_services/certification.service.js";
+import ImportExportIcon from "@material-ui/icons/ImportExport";
 
 const columns = [
   { id: "cerProv", label: "Certificate Provider", minWidth: 170 },
@@ -166,6 +167,10 @@ export default function SkillListing() {
     setOpen(true);
   };
 
+  const exportProviders = () => {
+    certificationService.export();
+  };
+
   const handleDelete = (provider, id) => {
     certificationService
       .deleteProvider({
@@ -214,6 +219,13 @@ export default function SkillListing() {
           onClick={handleAddProvider}
         >
           <AddIcon />
+        </Fab>
+        <Fab
+          className={classes.filtterButton}
+          aria-label="filter"
+          onClick={exportProviders}
+        >
+          <ImportExportIcon />
         </Fab>
       </div>
       {/* </Box> */}

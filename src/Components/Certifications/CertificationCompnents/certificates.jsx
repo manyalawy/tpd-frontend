@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -84,7 +84,9 @@ export default function SkillListing() {
   const classes = useStyles();
   const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [editMode, setEditMode] = React.useState(false);
-  const [selectedProvideID, setSelectedProviderID] = React.useState();
+  const [certificatesTable, setcertificatesTable] = useState([]);
+  const [selectedCerName, setselectedCerName] = useState("");
+  const [row, setrow] = useState(null);
 
   const cerProvidersOptions = {
     options: providersTable,
@@ -107,54 +109,61 @@ export default function SkillListing() {
     setPage(0);
   };
 
-  const handleEdit = (provider, id) => {
+  const handleEdit = (row) => {
+    console.log(row);
+    setselectedCerName(row.certification_name);
+    setSelectedProvider(row.certification_provider);
     setEditMode(true);
     setOpen(true);
-    setSelectedProvider(provider);
-
-    setSelectedProviderID(id);
+    setrow(row);
   };
 
   const handleClose = () => {
     setEditMode(false);
     setOpen(false);
-    setSelectedProvider("?");
+    setselectedCerName("");
+    setSelectedProvider(null);
+    setrow(null);
   };
   const handleAdd = () => {
-    if (selectedProvider != null && selectedProvider !== "") {
-      if (editMode == true) {
+    if (
+      selectedCerName != "" &&
+      selectedCerName != null &&
+      selectedProvider != null &&
+      selectedProvider != ""
+    ) {
+      if (editMode == false) {
         certificationService
-          .editProvider({
-            CertificationProvider: {
-              certification_provider_id: parseInt(selectedProvideID),
-              certification_provider_name: selectedProvider,
+          .addCertificate({
+            Certification: {
+              certification_provider_id: parseInt(
+                selectedProvider.certification_provider_id
+              ),
+              certification_name: selectedCerName,
             },
           })
-          .then((res) => {
-            certificationService.getAllProviders().then((res) => {
-              setProvidersTable(res.CertificateProviders);
-              unchanged = res.CertificateProviders;
-            });
-          });
+          .then((res) => refresh());
       } else {
-        setSelectedProvider("");
         certificationService
-          .addProvider({
-            CertificationProvider: {
-              certification_provider_name: selectedProvider,
+          .editCertificates({
+            Certification: {
+              id: parseInt(row.certification_id),
+              certification_name: selectedCerName,
+              certification_provider_id: parseInt(
+                row.certification_provider.certification_provider_id
+              ),
             },
           })
           .then((res) => {
-            if (!res.error) {
-              certificationService.getAllProviders().then((res) => {
-                setProvidersTable(res.CertificateProviders);
-                unchanged = res.CertificateProviders;
-              });
-            }
+            console.log(res);
+            refresh();
           });
       }
-      setOpen(false);
       setEditMode(false);
+      setOpen(false);
+      setselectedCerName(null);
+      setSelectedProvider(null);
+      setrow(null);
     }
   };
   const handleSearch = (value) => {
@@ -162,7 +171,7 @@ export default function SkillListing() {
     var newProviders = [];
     for (let index = 0; index < unchanged.length; index++) {
       if (
-        unchanged[index].certification_provider_name
+        unchanged[index].certification_provider.certification_provider_name
           .toLowerCase()
           .includes(value)
       ) {
@@ -170,34 +179,41 @@ export default function SkillListing() {
         newProviders.push(x);
       }
     }
-    setProvidersTable(newProviders);
+    setcertificatesTable(newProviders);
   };
 
   const handleAddProvider = () => {
-    setSelectedProvider("");
+    setSelectedProvider(null);
     setOpen(true);
   };
 
-  const handleDelete = (provider, id) => {
+  const handleDelete = (row) => {
     certificationService
-      .deleteProvider({
-        CertificationProvider: {
-          certification_provider_id: parseInt(id),
+      .deleteCertificate({
+        Certification: {
+          id: parseInt(row.certification_id),
         },
       })
       .then((res) => {
-        certificationService.getAllProviders().then((res) => {
-          setProvidersTable(res.CertificateProviders);
-        });
+        console.log(res);
+        refresh();
       });
   };
 
   React.useEffect(() => {
     certificationService.getAllProviders().then((res) => {
       setProvidersTable(res.CertificateProviders);
-      unchanged = res.CertificateProviders;
     });
+
+    refresh();
   }, []);
+
+  function refresh() {
+    certificationService.getCertificates({ Filters: {} }).then((res) => {
+      setcertificatesTable(res.Certifications);
+      unchanged = res.Certifications;
+    });
+  }
 
   return (
     <div className={classes.certificates}>
@@ -242,40 +258,31 @@ export default function SkillListing() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {providersTable
+                {certificatesTable
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, i) => {
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.certification_provider_id}
-                      >
-                        <TableCell>{row.certification_provider_name}</TableCell>
+                      <TableRow hover role="checkbox" tabIndex={-1} key={i}>
+                        <TableCell>{row.certification_name}</TableCell>
+                        <TableCell>
+                          {
+                            row.certification_provider
+                              .certification_provider_name
+                          }
+                        </TableCell>
 
                         <TableCell>
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={(event) =>
-                              handleEdit(
-                                row.certification_provider_name,
-                                row.certification_provider_id
-                              )
-                            }
+                            onClick={() => handleEdit(row)}
                           >
                             <EditIcon />
                           </Button>
                           <Button
                             href="#text-buttons"
                             color="primary"
-                            onClick={() =>
-                              handleDelete(
-                                row.certification_provider_name,
-                                row.certification_provider_id
-                              )
-                            }
+                            onClick={() => handleDelete(row)}
                           >
                             <DeleteIcon />
                           </Button>
@@ -302,24 +309,31 @@ export default function SkillListing() {
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
+        disableBackdropClick={true}
       >
         <DialogTitle id="responsive-dialog-title">Providers form</DialogTitle>
         <DialogContent>
           <TextField
-            value={selectedProvider}
-            onChange={(event) => setSelectedProvider(event.target.value)}
+            value={selectedCerName}
+            onChange={(event) => setselectedCerName(event.target.value)}
             required
             id="certificateName"
             label="Certificate Name"
           />
           <Autocomplete
             {...cerProvidersOptions}
+            value={selectedProvider}
             id="disable-clearable"
-            disableClearable
+            clearOnEscape
+            onChange={(event, value) =>
+              value == null
+                ? setSelectedProvider(null)
+                : setSelectedProvider(value)
+            }
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Select Certificate Provider"
+                label="Certificate Provider"
                 margin="normal"
               />
             )}
@@ -329,7 +343,7 @@ export default function SkillListing() {
           <Button onClick={handleAdd} color="primary">
             {editMode == true ? "Edit" : "Add"}
           </Button>
-          <Button onClick={handleCancel} color="primary" autoFocus>
+          <Button onClick={handleClose} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
