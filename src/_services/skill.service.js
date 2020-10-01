@@ -6,6 +6,8 @@ export default {
   getAllCategories,
   getAllSubcategories,
   getAllSkills,
+  addSkill,
+  editSkill,
 };
 
 function getAllSubcategories(body) {
@@ -31,9 +33,26 @@ function getAllCategories() {
   );
 }
 
-function getAllSkills(body) {
+function getAllSkills() {
+  const requestOptions = {
+    method: "GET",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+}
+
+function addSkill(body) {
   const requestOptions = {
     method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+}
+
+function editSkill(body) {
+  const requestOptions = {
+    method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
