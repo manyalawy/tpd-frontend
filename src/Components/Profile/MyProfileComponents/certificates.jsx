@@ -22,41 +22,142 @@ import {
 } from "@material-ui/pickers";
 
 //service
+import certificationService from "../../../_services/certification.service";
 import employeeService from "../../../_services/employee.service";
 
+import { useSnackbar } from "notistack";
+
 export default function Certificates() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [open, setOpen] = React.useState(false);
-  const [cerName, setCerName] = React.useState("");
+  const [cerId, setCerId] = React.useState("");
   const [cerProvider, setCerProvider] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [cerProviderList, setCerProviderList] = React.useState([]);
+  const [cerProviderID, setCerProviderID] = React.useState();
+
+  const [cerByProviderList, setCerByProviderList] = React.useState([]);
 
   const [certificates, setCertificates] = React.useState([]);
+  const [certificate, setCertificate] = React.useState({});
+
+  const [certificateProv, setCertificateProv] = React.useState({});
+
+  const [refresh, setRefresh] = React.useState(false);
+  const [idToDelete, setIdToDelete] = React.useState("");
+  const [idToEdit, setIDToEdit] = React.useState("");
+
+  const [editMode, setEditMode] = React.useState(false);
 
   //fetch User certifactes
   React.useEffect(() => {
     employeeService.getMyCertificates().then((res) => {
       setCertificates(res.Employee?.employee_certifications);
     });
-  }, []);
+    certificationService.getAllProviders().then((res) => {
+      setCerProviderList(res.CertificateProviders);
+    });
+  }, [refresh]);
+
+  React.useEffect(() => {
+    certificationService
+      .getAllByProvider({
+        certification_provider_id: cerProviderID,
+      })
+      .then((res) => {
+        if (!res.error) setCerByProviderList(res.Certifications);
+      });
+  }, [cerProviderID]);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleClickOpenModal = () => {
+  const handleClickOpenModal = (edit, certificate) => {
+    setEditMode(edit);
+
     setOpen(true);
+    if (edit) {
+      console.log(certificate);
+      setSelectedDate(certificate.expiration_date);
+      setCertificate(certificate.certification);
+      setCertificateProv(certificate.certification.certification_provider);
+      setIDToEdit(certificate.id);
+    }
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
   const handleCloseModal = () => {
-    console.log(cerName);
-    if (cerName != null && cerProvider != null && selectedDate != null)
+    if (cerId != null && cerProvider != null && selectedDate != null)
       setOpen(false);
   };
 
   const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
+    options: cerProviderList,
+    getOptionLabel: (option) => option.certification_provider_name,
+  };
+
+  const handleDelete = (id) => {
+    certificationService
+      .deleteEmployeeCertification({
+        id: id,
+      })
+      .then((res) => {
+        if (res.error) {
+          enqueueSnackbar(res.error, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar("Certification Successfully Deleted", {
+            variant: "success",
+          });
+          setRefresh(!refresh);
+        }
+      });
+  };
+
+  const handleSubmit = () => {
+    handleCloseModal();
+
+    if (!editMode) {
+      certificationService
+        .addEmployeeCertificate({
+          certification_id: cerId,
+          expiry_date: selectedDate,
+        })
+        .then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Certification Successfully Added", {
+              variant: "success",
+            });
+            setRefresh(!refresh);
+          }
+        });
+    } else {
+      certificationService
+        .editEmployeeCertificate({
+          certification_id: cerId,
+          expiry_date: selectedDate,
+          id: idToEdit,
+        })
+        .then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Certification Successfully Edited", {
+              variant: "success",
+            });
+            setRefresh(!refresh);
+          }
+        });
+    }
   };
 
   return (
@@ -67,7 +168,7 @@ export default function Certificates() {
           <button
             type="button"
             class="btn btn-dark mr-auto addMyCertification"
-            onClick={handleClickOpenModal}
+            onClick={() => handleClickOpenModal(false)}
           >
             Add Certification
           </button>
@@ -88,22 +189,26 @@ export default function Certificates() {
               <tr>
                 <th scope="row">
                   {
-                    certificate.certification.certification_provider
-                      .certification_provider_name
+                    certificate.certification?.certification_provider
+                      ?.certification_provider_name
                   }
                 </th>
-                <td>{certificate.certification.certification_name}</td>
+                <td>{certificate.certification?.certification_name}</td>
                 <td>{certificate.expiration_date}</td>
                 <td>
                   <button
                     type="button"
                     class="btn btn-link"
-                    onClick={handleClickOpenModal}
+                    onClick={() => handleClickOpenModal(true, certificate)}
                   >
                     Edit
                   </button>
                   |
-                  <button type="button" class="btn btn-link">
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    onClick={() => handleDelete(certificate.id)}
+                  >
                     Delete
                   </button>
                 </td>
@@ -118,7 +223,9 @@ export default function Certificates() {
         onClose={handleCloseModal}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="addMySkillForm">{"My Certificates Form"}</DialogTitle>
+        <DialogTitle id="addMySkillForm">
+          {editMode ? "Edit Certificate" : "Add Certificate Taken"}
+        </DialogTitle>
         <DialogContent>
           <div style={{ width: 300 }}>
             <Autocomplete
@@ -126,7 +233,12 @@ export default function Certificates() {
               {...defaultProps}
               id="certificateProvider"
               debug
-              onChange={(event, value) => setCerProvider(value)}
+              value={certificateProv}
+              onChange={(event, value) => {
+                console.log(value);
+                setCerProviderID(value?.certification_provider_id);
+                setCerProvider(value?.certification_provider_name);
+              }}
               renderInput={(params) => (
                 <TextField
                   required
@@ -139,10 +251,12 @@ export default function Certificates() {
           </div>
           <div style={{ width: 300 }}>
             <Autocomplete
-              onChange={(event, value) => setCerName(value)}
-              {...defaultProps}
+              onChange={(event, value) => setCerId(value?.certification_id)}
+              options={cerByProviderList}
+              getOptionLabel={(option) => option.certification_name}
               id="certificationName"
               debug
+              value={certificate}
               renderInput={(params) => (
                 <TextField
                   required
@@ -180,10 +294,10 @@ export default function Certificates() {
           <Button
             autoFocus
             type="submit"
-            onClick={handleCloseModal}
+            onClick={() => handleSubmit()}
             color="primary"
           >
-            Add
+            {editMode ? "Edit" : "Add"}
           </Button>
           <Button onClick={() => setOpen(false)} color="primary" autoFocus>
             Cancel

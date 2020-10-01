@@ -8,6 +8,9 @@ export default {
   getAllSkills,
   addSkill,
   editSkill,
+  addEmployeeSkill,
+  deleteEmployeeSkill,
+  editEmployeeSkill,
   deleteSkill,
   getSkillHistory,
   export: _export,
@@ -64,14 +67,31 @@ function editSkill(body) {
   return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
 
+function editEmployeeSkill(body) {
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+}
+
 function deleteSkill(body) {
   const requestOptions = {
     method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
-
   return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+}
+
+function addEmployeeSkill(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
 }
 
 function getSkillHistory(body) {
@@ -82,6 +102,15 @@ function getSkillHistory(body) {
   };
 
   return fetch(`${apiUrl}/skill/history`, requestOptions).then(handleResponse);
+}
+
+function deleteEmployeeSkill(body) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
 }
 
 function _export(body) {
