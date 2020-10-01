@@ -9,6 +9,7 @@ export default {
   addSkill,
   editSkill,
   deleteSkill,
+  getSkillHistory,
 };
 
 function getAllSubcategories(body) {
