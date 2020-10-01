@@ -52,9 +52,17 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
     <Route exact path="/profile" component={Profile} />
-    <Route exact path="/skill-Tracking" component={SkillsTracking} />
-    <Route exact path="/skills-history" component={SkillsHistory} />
-    <Route exact path="/certifications-list" component={Certifications} />
+    <TPDGuard>
+      {" "}
+      <Route exact path="/skill-Tracking" component={SkillsTracking} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/skills-history" component={SkillsHistory} />{" "}
+    </TPDGuard>
+    <TPDGuard>
+      {" "}
+      <Route exact path="/certifications-list" component={Certifications} />
+    </TPDGuard>
     <TPDGuard>
       <Route exact path="/skills-listing" component={SkillListing} />
     </TPDGuard>

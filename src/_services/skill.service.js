@@ -71,3 +71,13 @@ function deleteSkill(body) {
 
   return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
+
+function getSkillHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/history`, requestOptions).then(handleResponse);
+}
