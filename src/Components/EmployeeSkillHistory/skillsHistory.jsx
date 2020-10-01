@@ -46,6 +46,8 @@ const rows = [
   createData("India", "IN", "xjwn", "wnxewn", "nddc", "mdsm", "nxndnj"),
 ];
 
+var Filters = {};
+
 const useStyles = makeStyles({
   root: {
     width: "90%",
@@ -127,7 +129,7 @@ export default function StickyHeadTable() {
       : "";
     var filterFunction = selectedFunction ? { function: selectedFunction } : "";
     var filterTitle = selectedTitile ? { function: selectedTitile } : "";
-    const Filters = {
+    Filters = {
       ...filterName,
       ...filterskill,
       ...filterFunction,
@@ -137,6 +139,10 @@ export default function StickyHeadTable() {
       setskillsHistory(res.Skills);
     });
     setOpen(false);
+  };
+
+  const expo = () => {
+    skillsService.export({ Filters });
   };
 
   const handleClickOpen = () => {
@@ -186,7 +192,11 @@ export default function StickyHeadTable() {
         <Fab aria-label="filter" onClick={() => setOpen(true)}>
           <FilterListIcon />
         </Fab>
-        <Fab aria-label="export" className={classes.exportButton}>
+        <Fab
+          onClick={expo}
+          aria-label="export"
+          className={classes.exportButton}
+        >
           <img
             style={{
               width: "24px",
