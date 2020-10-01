@@ -7,6 +7,11 @@ export default {
   addProvider,
   editProvider,
   deleteProvider,
+  getCertificates,
+  editCertificates,
+  addCertificate,
+  deleteCertificate,
+  export: _export,
 };
 
 function getAllProviders() {
@@ -55,16 +60,59 @@ function deleteProvider(body) {
   );
 }
 
+function _export() {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "GET",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/certification/provider/export`, requestOptions).then(
+    (res) => {
+      res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+    }
+  );
+}
 // --------------------------Certifications----------------------------------
 
-// function deleteProvider(body) {
-//   const requestOptions = {
-//     method: "GET",
-//     headers: { ...authHeader(), "Content-Type": "application/json" },
-//     body: JSON.stringify(body),
-//   };
+function getCertificates(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
 
-//   return fetch(`${apiUrl}/certification/all`, requestOptions).then(
-//     handleResponse
-//   );
-// }
+  return fetch(`${apiUrl}/certification/all`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function editCertificates(body) {
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/`, requestOptions).then(handleResponse);
+}
+
+function addCertificate(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/`, requestOptions).then(handleResponse);
+}
+
+function deleteCertificate(body) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/`, requestOptions).then(handleResponse);
+}
