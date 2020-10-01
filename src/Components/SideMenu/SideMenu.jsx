@@ -129,6 +129,7 @@ export default function SideMenu() {
   const [openSkills, setOpenSkills] = React.useState(true);
   const [accountRoles, setAccountRoles] = React.useState([]);
   const [accountId, setAccountId] = React.useState("");
+  const [accountName, setAccountName] = React.useState("");
 
   let logout = () => {
     userServices.logout();
@@ -154,6 +155,7 @@ export default function SideMenu() {
   useEffect(() => {
     setAccountId(accountProperties().id);
     setAccountRoles(accountProperties().roles);
+    setAccountName(accountProperties().name);
   }, []);
   return (
     <div className={classes.root}>
@@ -197,7 +199,7 @@ export default function SideMenu() {
                 onClick={() => history.push("/profile")}
               >
                 <Typography display="inline">
-                  Youssef El Manyalawy
+                  {accountName}
                   {accountRoles.includes("TPD Team")
                     ? " / TPD Team"
                     : accountRoles.includes("Manager")

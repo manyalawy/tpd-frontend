@@ -16,7 +16,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 import skillService from "../../_services/skill.service";
-import resourceRequest from "../../_services/resource-request.service";
+import resourceRequestService from "../../_services/resource-request.service";
 
 import { useSnackbar } from "notistack";
 
@@ -95,29 +95,45 @@ export default function ResourceForm(props) {
 
   const handleSubmit = () => {
     var rep = replacmentCheck == true ? "y" : "n";
-    resourceRequest
-      .create({
-        ResourceRequest: {
-          manager_name: selectedManager,
-          function: selectedFunction,
-          title: selectedTitle,
-          start_date: selectedStartDate,
-          replacement_for: " ",
-          replacement: rep,
-          core_team_member: "y",
 
-          requests_count: parseInt(numberOfRequests),
+    const ResourceRequest = {
+      manager_name: selectedManager,
+      function: selectedFunction,
+      title: selectedTitle,
+      start_date: selectedStartDate,
+      replacement_for: " ",
+      replacement: rep,
+      core_team_member: "y",
 
-          comments: selectedComment,
+      requests_count: parseInt(numberOfRequests),
 
-          percentage: parseInt(selectedPercentage),
-          propability: parseInt(selectedProbability),
+      comments: selectedComment,
 
-          end_date: selectedEndDate,
-          related_Opportunity: selectedrelatedOpp,
-        },
-      })
-      .then((res) => {
+      percentage: parseInt(selectedPercentage),
+      propability: parseInt(selectedProbability),
+
+      end_date: selectedEndDate,
+      related_Opportunity: selectedrelatedOpp,
+    };
+
+    if (props.location?.state?.editing) {
+      const reference_number = props.location?.state?.reference_number;
+      resourceRequestService
+        .update({ ...ResourceRequest, reference_number })
+        .then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Request Successfully Updated", {
+              variant: "success",
+            });
+            history.push("/resource-requests");
+          }
+        });
+    } else {
+      resourceRequestService.create(ResourceRequest).then((res) => {
         if (res.error) {
           enqueueSnackbar(res.error, {
             variant: "error",
@@ -129,6 +145,7 @@ export default function ResourceForm(props) {
           history.push("/resource-requests");
         }
       });
+    }
   };
 
   const handleCategoryChange = (value) => {
@@ -137,11 +154,6 @@ export default function ResourceForm(props) {
     skillService.getAllSubcategories({ category: value }).then((res) => {
       setSubCat(res.Subcategories);
     });
-  };
-
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
   };
 
   //dropdown arrays
@@ -203,7 +215,36 @@ export default function ResourceForm(props) {
     skillService.getAllCategories().then((res) => {
       setCategories(res.Categories);
     });
+
+    if (props.location?.state?.editing)
+      resourceRequestService
+        .getById({
+          reference_number: props.location.state.reference_number,
+        })
+        .then((res) => {
+          console.log(res);
+          setSelectedFunction(res.ResourceRequest.function);
+          setSelectedManager(res.ResourceRequest.manager_name);
+
+          // setSelectedEmployee(res.ResourceRequest.employee_name);
+          setSelectedTitle(res.ResourceRequest.title);
+          // setSelectedId(res.ResourceRequest.employee_id);
+
+          // setStatusSelected(res.ResourceRequest.request_status);
+          // setReasonInput(res.ResourceRequest.release_reason);
+          setSelectedProbability(res.ResourceRequest.propability);
+          setSelectedPercentage(res.ResourceRequest.percentage);
+          setSelectedStartDate(res.ResourceRequest.start_date);
+          setSelectedEndDate(res.ResourceRequest.end_date);
+          setSelectedComment(res.ResourceRequest.comments);
+          setSelectedRelatedOpp(res.ResourceRequest.related_opportunity);
+          setReplamentCheck(res.ResourceRequest.replacenement);
+          setSelectedStatus(res.ResourceRequest.status);
+          setSelectedReplacment(res.ResourceRequest.replacenement_for);
+          setCoreTeam(res.ResourceRequest.core_team_member);
+        });
   }, []);
+
   useEffect(() => {
     if (selectedManager != "") {
       employeeService.getAllNames().then((res) => {
@@ -211,10 +252,16 @@ export default function ResourceForm(props) {
       });
     }
   }, [selectedManager]);
+
   return (
     <div>
       <div>
-        <h1 className="title">Add Resource Request</h1>
+        <h1 className="title">
+          {props.location?.state?.editing ? "Edit" : "Add"} Resource Request
+          {props.location?.state?.editing
+            ? ": " + props.location?.state?.reference_number
+            : ""}
+        </h1>
       </div>
       <div className="form-width mx-auto form">
         <form>
@@ -231,6 +278,7 @@ export default function ResourceForm(props) {
                 {...managersDropDownList}
                 id="selectManager"
                 clearOnEscape
+                value={selectedManager}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -252,6 +300,7 @@ export default function ResourceForm(props) {
                 {...functionsDropdownList}
                 id="selectFunction"
                 clearOnEscape
+                value={selectedFunction}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -265,6 +314,7 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-4">
               <Autocomplete
                 defaultValue={selectedTitle}
+                value={selectedTitle}
                 onChange={(event, value) =>
                   value == null
                     ? setSelectedTitle(null)
@@ -288,6 +338,7 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-4">
               <Autocomplete
                 defaultValue={selectedReplacment}
+                value={selectedReplacment}
                 onChange={(event, value) =>
                   value == null
                     ? setSelectedReplacment(null)
@@ -333,6 +384,7 @@ export default function ResourceForm(props) {
               <div class="form-check">
                 <input
                   defaultChecked={replacmentCheck}
+                  value={replacmentCheck}
                   onChange={() => setReplamentCheck(!replacmentCheck)}
                   class="form-check-input"
                   type="checkbox"
@@ -662,7 +714,9 @@ export default function ResourceForm(props) {
             type="submit"
             onClick={handleSubmit}
           >
-            Submit
+            {props.location?.state?.editing
+              ? "Edit Resource Request"
+              : "Add Resource Request"}
           </button>
           <button type="button" class="btn canc btn-danger">
             Cancel
@@ -672,16 +726,6 @@ export default function ResourceForm(props) {
     </div>
   );
 }
-
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
 
 const tpdOptions = [
   { status: "Open" },

@@ -30,7 +30,7 @@ function getById(body) {
     body: JSON.stringify(body),
   };
 
-  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
+  return fetch(`${apiUrl}/resource-request/one`, requestOptions).then(
     handleResponse
   );
 }
@@ -39,7 +39,7 @@ function create(resourceRequest) {
   const requestOptions = {
     method: "POST",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(resourceRequest),
+    body: JSON.stringify({ ResourceRequest: resourceRequest }),
   };
 
   return fetch(`${apiUrl}/resource-request`, requestOptions).then(
@@ -51,7 +51,7 @@ function update(resourceRequest) {
   const requestOptions = {
     method: "PUT",
     headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(resourceRequest),
+    body: JSON.stringify({ ResourceRequest: resourceRequest }),
   };
 
   return fetch(`${apiUrl}/resource-request`, requestOptions).then(

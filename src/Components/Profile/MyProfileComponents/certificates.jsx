@@ -21,11 +21,23 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
+//service
+import employeeService from "../../../_services/employee.service";
+
 export default function Certificates() {
   const [open, setOpen] = React.useState(false);
   const [cerName, setCerName] = React.useState("");
   const [cerProvider, setCerProvider] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
+
+  const [certificates, setCertificates] = React.useState([]);
+
+  //fetch User certifactes
+  React.useEffect(() => {
+    employeeService.getMyCertificates().then((res) => {
+      setCertificates(res.Employee?.employee_certifications);
+    });
+  }, []);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -72,24 +84,31 @@ export default function Certificates() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">Udemy</th>
-              <td>Web development</td>
-              <td>11/1/2020</td>
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-link"
-                  onClick={handleClickOpenModal}
-                >
-                  Edit
-                </button>
-                |
-                <button type="button" class="btn btn-link">
-                  Delete
-                </button>
-              </td>
-            </tr>
+            {certificates.map((certificate) => (
+              <tr>
+                <th scope="row">
+                  {
+                    certificate.certification.certification_provider
+                      .certification_provider_name
+                  }
+                </th>
+                <td>{certificate.certification.certification_name}</td>
+                <td>{certificate.expiration_date}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    onClick={handleClickOpenModal}
+                  >
+                    Edit
+                  </button>
+                  |
+                  <button type="button" class="btn btn-link">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

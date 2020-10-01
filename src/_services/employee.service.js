@@ -7,6 +7,10 @@ export default {
   getAllTitles,
   getAllFunctions,
   getAllNames,
+  getMySkills,
+  getMyDetails,
+  getMyCertificates,
+  getMyTrainings,
 };
 
 function getAll(body) {
@@ -30,6 +34,43 @@ function getAllTitles() {
   return fetch(`${apiUrl}/employee-profile/titles`, requestOptions).then(
     handleResponse
   );
+}
+
+function getMySkills() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/skill/my`, requestOptions).then(handleResponse);
+}
+
+function getMyCertificates() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/certification/my`, requestOptions).then(
+    handleResponse
+  );
+}
+function getMyTrainings() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/training/my`, requestOptions).then(handleResponse);
+}
+
+function getMyDetails() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/skill/my`, requestOptions).then(handleResponse);
 }
 
 function getAllFunctions() {

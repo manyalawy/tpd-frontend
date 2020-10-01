@@ -16,10 +16,22 @@ import Skills from "./MyProfileComponents/skills.jsx";
 import Certificates from "./MyProfileComponents/certificates";
 import Trainings from "./MyProfileComponents/Trainings";
 import Assigments from "./MyProfileComponents/Assigments.jsx";
+//service
+import employeeService from "../../_services/employee.service";
+
 export default function Profile() {
   const theme = useTheme();
+  const [employeeDetails, setEmployeeDetails] = useState({});
 
   const [tab, setTab] = useState(0);
+
+  //fetch User Data
+  React.useEffect(() => {
+    employeeService.getMyDetails().then((res) => {
+      setEmployeeDetails(res.Employee);
+    });
+  }, []);
+
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
@@ -35,8 +47,8 @@ export default function Profile() {
           alt="profile pic"
         />
 
-        <h3 className="profileName text-center">Youssef El Manyalawy</h3>
-        <h6 className="profileTitle text-center">Software Engineer</h6>
+        <h3 className="profileName text-center">{employeeDetails?.name}</h3>
+        <h6 className="profileTitle text-center">{employeeDetails?.title}</h6>
       </div>
       <div className="profileBody">
         <AppBar position="static" color="default">
