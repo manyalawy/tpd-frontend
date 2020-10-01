@@ -8,6 +8,7 @@ export default {
   getAllSkills,
   addSkill,
   editSkill,
+  deleteSkill,
 };
 
 function getAllSubcategories(body) {
@@ -48,11 +49,22 @@ function addSkill(body) {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
 }
 
 function editSkill(body) {
   const requestOptions = {
     method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+}
+
+function deleteSkill(body) {
+  const requestOptions = {
+    method: "DELETE",
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
