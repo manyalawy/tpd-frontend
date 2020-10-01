@@ -9,6 +9,8 @@ export default {
   addSkill,
   editSkill,
   deleteSkill,
+  getSkillHistory,
+  export: _export,
 };
 
 function getAllSubcategories(body) {
@@ -80,4 +82,17 @@ function getSkillHistory(body) {
   };
 
   return fetch(`${apiUrl}/skill/history`, requestOptions).then(handleResponse);
+}
+
+function _export(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/history/export`, requestOptions).then((res) => {
+    res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+  });
 }

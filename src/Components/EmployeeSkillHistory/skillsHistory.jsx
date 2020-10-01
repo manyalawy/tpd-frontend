@@ -46,6 +46,8 @@ const rows = [
   createData("India", "IN", "xjwn", "wnxewn", "nddc", "mdsm", "nxndnj"),
 ];
 
+var Filters = {};
+
 const useStyles = makeStyles({
   root: {
     width: "90%",
@@ -80,12 +82,19 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [skillsHistory, setskillsHistory] = useState([]);
 
   // Filte options
   const [employeesNames, setEmployeeNames] = useState([]);
   const [skills, setSkills] = useState([]);
   const [functions, setFunctions] = useState([]);
   const [titles, settitles] = useState([]);
+
+  //filter values
+  const [selectedName, setselectedName] = useState(null);
+  const [selectedSkill, setselectedSkill] = useState(null);
+  const [selectedFunction, setselectedFunction] = useState(null);
+  const [selectedTitile, setselectedTitile] = useState(null);
 
   const namesOptions = {
     options: employeesNames,
@@ -113,6 +122,29 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
+  const handleFilter = () => {
+    var filterName = selectedName ? { user_name: selectedName } : "";
+    var filterskill = selectedSkill
+      ? { skill_id: parseInt(selectedSkill.skill_id) }
+      : "";
+    var filterFunction = selectedFunction ? { function: selectedFunction } : "";
+    var filterTitle = selectedTitile ? { function: selectedTitile } : "";
+    Filters = {
+      ...filterName,
+      ...filterskill,
+      ...filterFunction,
+      ...filterTitle,
+    };
+    skillsService.getSkillHistory({ Filters }).then((res) => {
+      setskillsHistory(res.Skills);
+    });
+    setOpen(false);
+  };
+
+  const expo = () => {
+    skillsService.export({ Filters });
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -121,10 +153,14 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
   const handleReset = () => {
-    document.getElementById("selectName").value = "";
-    document.getElementById("selectSkills").value = "";
-    document.getElementById("selectFunction").value = "";
-    document.getElementById("selectTitle").value = "";
+    document.getElementById("selectName").value = null;
+    document.getElementById("selectSkills").value = null;
+    document.getElementById("selectFunction").value = null;
+    document.getElementById("selectTitle").value = null;
+    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
+      setskillsHistory(res.Skills);
+    });
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -143,6 +179,10 @@ export default function StickyHeadTable() {
     skillsService.getAllSkills().then((res) => {
       setSkills(res.Skills);
     });
+
+    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
+      setskillsHistory(res.Skills);
+    });
   }, []);
 
   return (
@@ -152,7 +192,11 @@ export default function StickyHeadTable() {
         <Fab aria-label="filter" onClick={() => setOpen(true)}>
           <FilterListIcon />
         </Fab>
-        <Fab aria-label="export" className={classes.exportButton}>
+        <Fab
+          onClick={expo}
+          aria-label="export"
+          className={classes.exportButton}
+        >
           <img
             style={{
               width: "24px",
@@ -176,24 +220,21 @@ export default function StickyHeadTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {skillsHistory
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
+                  .map((row, i) => {
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.empName}
-                      >
-                        <TableCell>{row.empName}</TableCell>
-                        <TableCell>{row.skillName}</TableCell>
-                        <TableCell>{row.exper}</TableCell>
-                        <TableCell>{row.last}</TableCell>
+                      <TableRow hover role="checkbox" tabIndex={-1} key={i}>
+                        <TableCell>{row.employee_profile.name}</TableCell>
+                        <TableCell>{row.skill.skill_name}</TableCell>
+                        <TableCell>
+                          {row.employee_skill.experience_level}
+                        </TableCell>
+                        <TableCell>{row.last_used_date}</TableCell>
 
-                        <TableCell>{row.man}</TableCell>
-                        <TableCell>{row.tit}</TableCell>
-                        <TableCell>{row.fun}</TableCell>
+                        <TableCell>{row.manager_name}</TableCell>
+                        <TableCell>{row.title}</TableCell>
+                        <TableCell>{row.function}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -212,6 +253,7 @@ export default function StickyHeadTable() {
         </Paper>
       </Grid>
       <Dialog
+        disableBackdropClick={true}
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
@@ -222,6 +264,7 @@ export default function StickyHeadTable() {
         </DialogTitle>
         <DialogContent>
           <Autocomplete
+            onChange={(event, value) => setselectedName(value)}
             {...namesOptions}
             id="selectName"
             clearOnEscape
@@ -237,6 +280,7 @@ export default function StickyHeadTable() {
           />
 
           <Autocomplete
+            onChange={(event, value) => setselectedSkill(value)}
             {...skillsOptions}
             id="selectSkills"
             clearOnEscape
@@ -251,6 +295,7 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
+            onChange={(event, value) => setselectedFunction(value)}
             {...functionsOptions}
             id="selectFunction"
             clearOnEscape
@@ -265,8 +310,10 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
+            onChange={(event, value) => setselectedTitile(value)}
             {...titlesOptions}
             id="selectTitle"
+            onChange={(event, value) => console.log(value)}
             clearOnEscape
             renderInput={(params) => (
               <TextField
@@ -280,7 +327,7 @@ export default function StickyHeadTable() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleFilter} color="primary">
             Filter
           </Button>
           <Button onClick={handleReset} color="primary" autoFocus>
