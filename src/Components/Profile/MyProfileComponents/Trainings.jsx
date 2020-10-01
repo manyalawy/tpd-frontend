@@ -27,7 +27,6 @@ export default function Trainings() {
               <th scope="col">Event From Date</th>
               <th scope="col">Event To Date</th>
               <th scope="col">Training Total Hours</th>
-              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -38,16 +37,6 @@ export default function Trainings() {
                 <td>{training.event_from_date}</td>
                 <td>{training.event_to_date}</td>
                 <td>{training.total_training_hours}</td>
-
-                <td>
-                  <button type="button" class="btn btn-link">
-                    Edit
-                  </button>
-                  |
-                  <button type="button" class="btn btn-link">
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>

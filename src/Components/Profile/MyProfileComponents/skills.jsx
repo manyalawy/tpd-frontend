@@ -23,28 +23,47 @@ import {
 
 //service
 import employeeService from "../../../_services/employee.service";
+import skillService from "../../../_services/skill.service";
+import { useSnackbar } from "notistack";
 
 export default function Skills() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [open, setOpen] = React.useState(false);
-  const [skillName, setSkillName] = React.useState("");
+  const [skillName, setSkillName] = React.useState();
   const [experience, setExperience] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [skillsList, setSkillsList] = React.useState([]);
 
   const [skills, setSkills] = React.useState([]);
+  const [selectedSkill, setSelectedSkill] = React.useState({});
+
+  const [refresh, setRefresh] = React.useState(false);
+  const [idToDelete, setIdToDelete] = React.useState("");
+  const [idToEdit, setIdToEdit] = React.useState("");
+
+  const [editMode, setEditMode] = React.useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
+    options: skillsList,
+    getOptionLabel: (option) => option.skill_name,
   };
   const expLevel = {
     options: expLevelOptions,
     getOptionLabel: (option) => option,
   };
-  const handleClickOpenModal = () => {
+  const handleClickOpenModal = (edit, skill) => {
+    setEditMode(edit);
     setOpen(true);
+    if (edit) {
+      setIdToEdit(skill.id);
+      setSelectedSkill(skill.skill);
+      setSelectedDate(skill.last_used_date);
+      setExperience(skill.experience_level);
+      setSkillName(skill.skill.skill_id);
+    }
   };
 
   const handleDateChange = (date) => {
@@ -60,7 +79,72 @@ export default function Skills() {
     employeeService.getMySkills().then((res) => {
       setSkills(res.Employee?.employee_skills);
     });
-  }, []);
+    skillService.getAllSkills().then((res) => {
+      setSkillsList(res.Skills);
+    });
+  }, [refresh]);
+
+  const handleSubmit = () => {
+    handleCloseModal();
+    if (!editMode) {
+      skillService
+        .addEmployeeSkill({
+          skill_id: skillName,
+          experience_level: experience,
+          last_used_date: selectedDate,
+        })
+        .then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Skill Successfully Added", {
+              variant: "success",
+            });
+            setRefresh(!refresh);
+          }
+        });
+    } else {
+      skillService
+        .editEmployeeSkill({
+          id: idToEdit,
+          skill_id: skillName,
+          experience_level: experience,
+          last_used_date: selectedDate,
+        })
+        .then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Skill Successfully Edited", {
+              variant: "success",
+            });
+            setRefresh(!refresh);
+          }
+        });
+    }
+  };
+  const handleDelete = (id) => {
+    skillService
+      .deleteEmployeeSkill({
+        id: id,
+      })
+      .then((res) => {
+        if (res.error) {
+          enqueueSnackbar(res.error, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar("Skill Successfully Deleted", {
+            variant: "success",
+          });
+          setRefresh(!refresh);
+        }
+      });
+  };
 
   return (
     <div className="mySkills">
@@ -70,7 +154,7 @@ export default function Skills() {
         <button
           type="button"
           class="btn btn-dark addMySkill"
-          onClick={handleClickOpenModal}
+          onClick={() => handleClickOpenModal(false)}
         >
           Add skill
         </button>
@@ -95,12 +179,16 @@ export default function Skills() {
                 <button
                   type="button"
                   class="btn btn-link"
-                  onClick={handleClickOpenModal}
+                  onClick={() => handleClickOpenModal(true, skill)}
                 >
                   Edit
                 </button>
                 |
-                <button type="button" class="btn btn-link">
+                <button
+                  type="button"
+                  class="btn btn-link"
+                  onClick={() => handleDelete(skill.id)}
+                >
                   Delete
                 </button>
               </td>
@@ -115,14 +203,19 @@ export default function Skills() {
           onClose={handleCloseModal}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="addMySkillForm">{"Add Skill Used"}</DialogTitle>
+          <DialogTitle id="addMySkillForm">
+            {editMode ? "Edit Skill" : "Add Skill Used"}
+          </DialogTitle>
           <DialogContent>
             <div style={{ width: 300 }}>
               <Autocomplete
                 {...defaultProps}
                 id="skillName"
                 debug
-                onChange={(event, value) => setSkillName(value.title)}
+                value={selectedSkill}
+                onChange={(event, value) => {
+                  setSkillName(value.skill_id);
+                }}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -139,6 +232,7 @@ export default function Skills() {
                 {...expLevel}
                 id="experienceLevel"
                 clearOnEscape
+                value={experience}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -174,7 +268,7 @@ export default function Skills() {
             <Button
               autoFocus
               type="submit"
-              onClick={handleCloseModal}
+              onClick={handleSubmit}
               color="primary"
             >
               Add

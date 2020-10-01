@@ -7,6 +7,10 @@ export default {
   addProvider,
   editProvider,
   deleteProvider,
+  deleteEmployeeCertification,
+  getAllByProvider,
+  addEmployeeCertificate,
+  editEmployeeCertificate,
 };
 
 function getAllProviders() {
@@ -16,6 +20,18 @@ function getAllProviders() {
   };
 
   return fetch(`${apiUrl}/certification/provider`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getAllByProvider(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/allByProvider`, requestOptions).then(
     handleResponse
   );
 }
@@ -31,6 +47,17 @@ function addProvider(body) {
     handleResponse
   );
 }
+function addEmployeeCertificate(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/employee`, requestOptions).then(
+    handleResponse
+  );
+}
 
 function editProvider(body) {
   const requestOptions = {
@@ -43,6 +70,19 @@ function editProvider(body) {
     handleResponse
   );
 }
+
+function editEmployeeCertificate(body) {
+  const requestOptions = {
+    method: "PUT",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/employee`, requestOptions).then(
+    handleResponse
+  );
+}
+
 function deleteProvider(body) {
   const requestOptions = {
     method: "DELETE",
@@ -51,6 +91,18 @@ function deleteProvider(body) {
   };
 
   return fetch(`${apiUrl}/certification/provider`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function deleteEmployeeCertification(body) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/employee`, requestOptions).then(
     handleResponse
   );
 }
