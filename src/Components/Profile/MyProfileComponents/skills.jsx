@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { accountProperties } from "../../../_helpers";
+
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -19,12 +21,17 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
+//service
+import employeeService from "../../../_services/employee.service";
+
 export default function Skills() {
   const [open, setOpen] = React.useState(false);
   const [skillName, setSkillName] = React.useState("");
   const [experience, setExperience] = React.useState("");
-
   const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [skillsList, setSkillsList] = React.useState([]);
+
+  const [skills, setSkills] = React.useState([]);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -47,6 +54,13 @@ export default function Skills() {
     if (skillName != null && experience != null && selectedDate != null)
       setOpen(false);
   };
+
+  //fetch User Skils
+  useEffect(() => {
+    employeeService.getMySkills().then((res) => {
+      setSkills(res.Employee?.employee_skills);
+    });
+  }, []);
 
   return (
     <div className="mySkills">
@@ -72,24 +86,26 @@ export default function Skills() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Java</th>
-            <td>Beginner</td>
-            <td>Last used</td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-link"
-                onClick={handleClickOpenModal}
-              >
-                Edit
-              </button>
-              |
-              <button type="button" class="btn btn-link">
-                Delete
-              </button>
-            </td>
-          </tr>
+          {skills.map((skill) => (
+            <tr>
+              <th scope="row">{skill.skill.skill_name}</th>
+              <td>{skill.experience_level}</td>
+              <td>{skill.last_used_date}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-link"
+                  onClick={handleClickOpenModal}
+                >
+                  Edit
+                </button>
+                |
+                <button type="button" class="btn btn-link">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <form action="submit">
@@ -99,7 +115,7 @@ export default function Skills() {
           onClose={handleCloseModal}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="addMySkillForm">{"My Skills Form"}</DialogTitle>
+          <DialogTitle id="addMySkillForm">{"Add Skill Used"}</DialogTitle>
           <DialogContent>
             <div style={{ width: 300 }}>
               <Autocomplete
@@ -143,7 +159,7 @@ export default function Skills() {
                     format="dd/MM/yyyy"
                     margin="normal"
                     id="date-picker-inline"
-                    label="Date picker inline"
+                    label="Last used"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
