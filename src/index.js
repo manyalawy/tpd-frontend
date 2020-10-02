@@ -20,6 +20,7 @@ import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
 import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
 import SkillsHistory from "./Components/EmployeeSkillHistory/skillsHistory";
+import CertificationsHistory from "./Components/CertificationsHistory/certificationsHistory";
 import Certifications from "./Components/Certifications/certifications";
 import TPDGuard from "./Components/Guards/TPDGuard.js";
 
@@ -52,20 +53,24 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
     <Route exact path="/profile" component={Profile} />
     <TPDGuard>
-      {" "}
       <Route exact path="/skill-Tracking" component={SkillsTracking} />
     </TPDGuard>
     <TPDGuard>
-      <Route exact path="/skills-history" component={SkillsHistory} />{" "}
+      <Route exact path="/skills-history" component={SkillsHistory} />
     </TPDGuard>
     <TPDGuard>
-      {" "}
       <Route exact path="/certifications-list" component={Certifications} />
     </TPDGuard>
     <TPDGuard>
       <Route exact path="/skills-listing" component={SkillListing} />
     </TPDGuard>
-    s
+    <TPDGuard>
+      <Route
+        exact
+        path="/certifications-history"
+        component={CertificationsHistory}
+      />
+    </TPDGuard>
   </>
 );
 

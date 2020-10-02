@@ -15,8 +15,39 @@ export default {
   editCertificates,
   addCertificate,
   deleteCertificate,
+  getCertifactionsHistory,
   export: _export,
+  exportHistory: _exportHistory,
 };
+
+function _exportHistory(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/history/export`, requestOptions).then(
+    (res) => {
+      res
+        .text()
+        .then((text) => FileDownload(text, "CertificationsHisotry.csv"));
+    }
+  );
+}
+
+function getCertifactionsHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/history`, requestOptions).then(
+    handleResponse
+  );
+}
 
 function getAllProviders() {
   const requestOptions = {
