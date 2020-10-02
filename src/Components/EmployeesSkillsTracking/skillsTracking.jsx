@@ -123,11 +123,20 @@ export default function StickyHeadTable() {
       ...filterName,
       ...filterStatus,
     };
-    console.log(Filters);
     skillsService.getSkillTrackings({ Filters }).then((res) => {
       setTrackings(res.Skills);
     });
     setOpen(false);
+  };
+
+  const expo = () => {
+    var filterName = selectedName ? { name: selectedName } : "";
+    var filterStatus = selectedStatus ? { status: selectedStatus } : "";
+    const Filters = {
+      ...filterName,
+      ...filterStatus,
+    };
+    skillsService.exportSkillTracking({ Filters });
   };
 
   React.useEffect(() => {
@@ -147,7 +156,11 @@ export default function StickyHeadTable() {
         <Fab aria-label="filter" onClick={() => setOpen(true)}>
           <FilterListIcon />
         </Fab>
-        <Fab aria-label="export" className={classes.exportButton}>
+        <Fab
+          aria-label="export"
+          className={classes.exportButton}
+          onClick={expo}
+        >
           <img
             style={{
               width: "24px",
