@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { store, history } from "./_helpers";
+import { history } from "./_helpers";
 import PrivateRoute from "../src/_helpers/PrivateRoute.jsx";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -20,7 +19,6 @@ import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
 import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking";
 import SkillsHistory from "./Components/EmployeeSkillHistory/skillsHistory";
-import CertificationsHistory from "./Components/CertificationsHistory/certificationsHistory";
 import Certifications from "./Components/Certifications/certifications";
 import TPDGuard from "./Components/Guards/TPDGuard.js";
 import CerHistory from "./Components/CertificateHistory/cerHistory";
@@ -47,15 +45,28 @@ const LoginContainer = () => <Route path="/login" component={LoginPage} />;
 const DefaultContainer = () => (
   <>
     <SideMenu />
-    <Route exact path="/release-requests" component={Release} />
-    <Route exact path="/release-requests/add" component={ReleaseForm} />
-    <Route exact path="/release-requests/edit" component={ReleaseForm} />
-    <Route exact path="/resource-requests" component={Resource} />
-    <Route exact path="/resource-requests/add" component={ResourceForm} />
-    <Route exact path="/resource-requests/edit" component={ResourceForm} />
-    <Route exact path="/resource-requests/empolyees" component={Employees} />
     <Route exact path="/profile" component={Profile} />
-    <Route exact path="/cerHistory" component={CerHistory} />
+    <TPDGuard>
+      <Route exact path="/release-requests" component={Release} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/release-requests/add" component={ReleaseForm} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/release-requests/edit" component={ReleaseForm} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/resource-requests" component={Resource} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/resource-requests/add" component={ResourceForm} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/resource-requests/edit" component={ResourceForm} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route exact path="/cerHistory" component={CerHistory} />
+    </TPDGuard>
     <TPDGuard>
       <Route exact path="/skill-Tracking" component={SkillsTracking} />
     </TPDGuard>
@@ -74,18 +85,10 @@ const DefaultContainer = () => (
     <TPDGuard>
       <Route exact path="/employees" component={Employees} />
     </TPDGuard>
-    {/* <TPDGuard>
-      <Route
-        exact
-        path="/certifications-history"
-        component={CertificationsHistory}
-      />
-    </TPDGuard> */}
   </>
 );
 
 ReactDOM.render(
-  //<Provider store={store}>
   <Router history={history}>
     <ThemeProvider theme={theme}>
       <SnackbarProvider
@@ -102,6 +105,5 @@ ReactDOM.render(
       </SnackbarProvider>
     </ThemeProvider>
   </Router>,
-  // </Provider>
   document.getElementById("root")
 );
