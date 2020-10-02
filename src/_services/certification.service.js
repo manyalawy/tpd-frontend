@@ -18,24 +18,26 @@ export default {
   getCertifactionsHistory,
   export: _export,
   exportHistory: _exportHistory,
+  certificateHistory,
+  getCertificateByProv,
 };
 
-function _exportHistory(body) {
-  const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
+// function _exportHistory(body) {
+//   const FileDownload = require("js-file-download");
+//   const requestOptions = {
+//     method: "POST",
+//     headers: { ...authHeader(), "Content-Type": "application/json" },
+//     body: JSON.stringify(body),
+//   };
 
-  return fetch(`${apiUrl}/certification/history/export`, requestOptions).then(
-    (res) => {
-      res
-        .text()
-        .then((text) => FileDownload(text, "CertificationsHisotry.csv"));
-    }
-  );
-}
+//   return fetch(`${apiUrl}/certification/history/export`, requestOptions).then(
+//     (res) => {
+//       res
+//         .text()
+//         .then((text) => FileDownload(text, "CertificationsHisotry.csv"));
+//     }
+//   );
+// }
 
 function getCertifactionsHistory(body) {
   const requestOptions = {
@@ -170,6 +172,19 @@ function getCertificates(body) {
   );
 }
 
+function _exportHistory() {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+  return fetch(`${apiUrl}/certification/history/export`, requestOptions).then(
+    (res) => {
+      res.text().then((text) => FileDownload(text, "CertificatesHistory.csv"));
+    }
+  );
+}
+
 function editCertificates(body) {
   const requestOptions = {
     method: "PUT",
@@ -198,4 +213,28 @@ function deleteCertificate(body) {
   };
 
   return fetch(`${apiUrl}/certification/`, requestOptions).then(handleResponse);
+}
+
+function certificateHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/history`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getCertificateByProv(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/allByProvider`, requestOptions).then(
+    handleResponse
+  );
 }
