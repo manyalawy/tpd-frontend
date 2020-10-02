@@ -16,6 +16,7 @@ export default {
   export: _export,
   getSkillTrackings,
   exportSkillTracking: _exportTrackings,
+  exportAllSkills,
 };
 
 function _exportTrackings(body) {
@@ -151,6 +152,19 @@ function _export(body) {
   };
 
   return fetch(`${apiUrl}/skill/history/export`, requestOptions).then((res) => {
-    res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+    res.text().then((text) => FileDownload(text, "Skills.csv"));
+  });
+}
+
+function exportAllSkills(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/all/export`, requestOptions).then((res) => {
+    res.text().then((text) => FileDownload(text, "Skills.csv"));
   });
 }
