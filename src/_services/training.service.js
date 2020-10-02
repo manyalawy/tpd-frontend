@@ -11,7 +11,7 @@ function getAllEmployeeTrainings(body) {
     body: JSON.stringify(body),
   };
 
-  return fetch(`${apiUrl}/training/employeeTrainings`, requestOptions).then(
+  return fetch(`${apiUrl}/training/employeesTrainings`, requestOptions).then(
     handleResponse
   );
 }
@@ -26,7 +26,7 @@ function exportEmployeeTrainings(body) {
   };
 
   return fetch(
-    `${apiUrl}/training/employeeTrainings/export`,
+    `${apiUrl}/training/employeesTrainings/export`,
     requestOptions
   ).then((res) => {
     res.text().then((text) => FileDownload(text, "EmployeeTrainings.csv"));

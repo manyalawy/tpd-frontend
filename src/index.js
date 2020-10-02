@@ -24,6 +24,8 @@ import Certifications from "./Components/Certifications/certifications";
 import TPDGuard from "./Components/Guards/TPDGuard.js";
 import CerHistory from "./Components/CertificateHistory/cerHistory";
 import EmployeeTrainings from "./Components/EmployeesTrainings/employeeTrainings";
+import EmployeeProfile from "./Components/EmployeeProfile/Profile";
+import EmployeeAssignementHistory from "./Components/EmployeeAssignmentsHistory/EmployeeAssignmentsHistory";
 
 const theme = createMuiTheme({
   typography: {
@@ -52,6 +54,16 @@ const DefaultContainer = () => (
       path="/profile/assignments-history"
       component={AssignmentsHisotry}
     />
+    <TPDGuard>
+      <Route exact path="/employee-profile" component={EmployeeProfile} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route
+        exact
+        path="/employee-profile/assignment-history"
+        component={EmployeeAssignementHistory}
+      />
+    </TPDGuard>
     <TPDGuard>
       <Route exact path="/release-requests" component={Release} />
     </TPDGuard>
