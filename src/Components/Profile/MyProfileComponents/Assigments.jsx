@@ -1,5 +1,7 @@
 import { AssignmentSharp } from "@material-ui/icons";
 import React from "react";
+import { useHistory } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -14,6 +16,10 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+
+//service
+import employeeService from "../../../_services/employee.service";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -24,7 +30,7 @@ import "date-fns";
 
 const useStyles = makeStyles({
   root: {
-    width: "400px",
+    width: "300px",
     marginTop: "3rem",
     marginBottom: "3rem",
     backgroundColor: "#f8f8ff",
@@ -60,26 +66,18 @@ const useStyles = makeStyles({
   },
 });
 export default function Assignments() {
+  let history = useHistory();
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [assignments, setAssignments] = React.useState([]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleDateChange2 = (date) => {
-    setSelectedDate2(date);
-  };
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [selectedDate2, setSelectedDate2] = React.useState(new Date());
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  //fetch User Assignments
+  React.useEffect(() => {
+    employeeService.getMyAssignments().then((res) => {
+      setAssignments(res.Employee?.assignments);
+    });
+  }, []);
 
   return (
     <div>
@@ -92,14 +90,60 @@ export default function Assignments() {
         <Button
           className={classes.addButton}
           variant="contained"
+          onClick={() => history.push("/profile/assignments-history")}
+        >
+          View History
+        </Button>
+        {/* <Button
+          className={classes.addButton}
+          variant="contained"
           onClick={handleClickOpen}
         >
           Add assigment
-        </Button>
+        </Button> */}
       </Grid>
       <div className="row">
-        <div className="col-md-3 offset-md-2">
-          <Card className={classes.root}>
+        {assignments.map((assignment, i) => (
+          <div className="col-md-3">
+            <Card className={classes.root}>
+              <CardContent>
+                <Typography
+                  className={classes.title}
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  Assigment {i + 1}
+                </Typography>
+
+                <Typography className={classes.content}>
+                  Workgroup:{"     "}
+                  {assignment.workgroup}
+                </Typography>
+                <Typography className={classes.content}>
+                  Cost Center:{"     "}
+                  {assignment.cost_center}
+                </Typography>
+                <Typography className={classes.content}>
+                  SDM Manager:{"     "}
+                  {assignment.sdm_reporting_manager}
+                </Typography>
+                <Typography className={classes.content}>
+                  Allocation Percentage:{"     "}
+                  {assignment.allocation_percentage}
+                </Typography>
+                <Typography className={classes.content}>
+                  Start Date:{"     "}
+                  {assignment.start_date?.split("T")[0]}
+                </Typography>
+                <Typography className={classes.content}>
+                  Release Date:{"     "}
+                  {assignment.release_date?.split("T")[0]}
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+        {/*  <Card className={classes.root}>
             <CardContent>
               <Typography
                 className={classes.title}
@@ -130,44 +174,10 @@ export default function Assignments() {
               <Button href="#text-buttons" color="primary">
                 Delete
               </Button>
-            </CardActions>
-          </Card>
-        </div>
-        <div className="col-md-3 offset-md-1">
-          <Card className={classes.root}>
-            <CardContent>
-              <Typography
-                className={classes.title}
-                color="textSecondary"
-                gutterBottom
-              >
-                Assigment 1
-              </Typography>
-
-              <Typography className={classes.content}>Workgroup:</Typography>
-              <Typography className={classes.content}>Cost Center:</Typography>
-              <Typography className={classes.content}>
-                SDM Manager:eck rrenfnerfncekrjncjerncjernceknrjcuhvegnrin
-              </Typography>
-              <Typography className={classes.content}>
-                Allocation Percentage:
-              </Typography>
-              <Typography className={classes.content}>Start Date</Typography>
-              <Typography className={classes.content}>Release Date</Typography>
-            </CardContent>
-            <CardActions>
-              <Button href="#text-buttons" color="primary">
-                Edit
-              </Button>{" "}
-              |{" "}
-              <Button href="#text-buttons" color="primary">
-                Delete
-              </Button>
-            </CardActions>
-          </Card>
-        </div>
+            </CardActions> 
+          </Card>*/}
       </div>
-      <Dialog
+      {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -251,8 +261,8 @@ export default function Assignments() {
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
-      <Grid
+      </Dialog> */}
+      {/* <Grid
         container
         alignItems="flex-start"
         justify="flex-end"
@@ -261,7 +271,7 @@ export default function Assignments() {
         <Button className={classes.addButton} variant="contained">
           View History
         </Button>
-      </Grid>
+      </Grid> */}
     </div>
   );
 }

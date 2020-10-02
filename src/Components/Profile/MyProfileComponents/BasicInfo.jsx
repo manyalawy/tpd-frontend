@@ -19,7 +19,7 @@ export default function BasicInfo() {
     <div className="basicInfo">
       <div class="row basicInfoRow">
         <div class="col-lg-4 col-sm-12">
-          Hiring date: {employeeDetails?.hiring_date}
+          Hiring date: {employeeDetails?.hiring_date?.split("T")[0]}
         </div>
         <div class="col-lg-4 col-sm-12">ID: {employeeDetails.id}</div>
         <div class="col-lg-4 col-sm-12">
@@ -28,7 +28,7 @@ export default function BasicInfo() {
       </div>
       <div class="row basicInfoRow">
         <div class="col-lg-4 col-sm-12">
-          Direct manager: {employeeDetails?.direct_manager}
+          Direct manager: {employeeDetails?.Manager?.name}
         </div>
         <div class="col-lg-4 col-sm-12">
           Workgroup: {employeeDetails?.workgroup}

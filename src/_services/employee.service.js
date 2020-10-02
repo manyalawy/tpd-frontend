@@ -12,6 +12,7 @@ export default {
   getMyDetails,
   getMyCertificates,
   getMyTrainings,
+  getMyAssignments,
   exportAll,
 };
 
@@ -112,6 +113,16 @@ function getAllFunctions() {
     handleResponse
   );
 }
+
+function getMyAssignments() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/assignment/my`, requestOptions).then(handleResponse);
+}
+
 function getAllNames() {
   const requestOptions = {
     method: "GET",
