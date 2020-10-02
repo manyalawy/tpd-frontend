@@ -133,18 +133,20 @@ export default function ResourceForm(props) {
           }
         });
     } else {
-      resourceRequestService.create(ResourceRequest).then((res) => {
-        if (res.error) {
-          enqueueSnackbar(res.error, {
-            variant: "error",
-          });
-        } else {
-          enqueueSnackbar("Request Successfully created", {
-            variant: "success",
-          });
-          history.push("/resource-requests");
-        }
-      });
+      for (let index = 0; index < parseInt(numberOfRequests); index++) {
+        resourceRequestService.create(ResourceRequest).then((res) => {
+          if (res.error) {
+            enqueueSnackbar(res.error, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar("Request Successfully created", {
+              variant: "success",
+            });
+            history.push("/resource-requests");
+          }
+        });
+      }
     }
   };
 

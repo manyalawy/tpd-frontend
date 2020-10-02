@@ -22,6 +22,7 @@ import SkillsTracking from "./Components/EmployeesSkillsTracking/skillsTracking"
 import SkillsHistory from "./Components/EmployeeSkillHistory/skillsHistory";
 import Certifications from "./Components/Certifications/certifications";
 import TPDGuard from "./Components/Guards/TPDGuard.js";
+import CerHistory from "./Components/CertificateHistory/cerHistory";
 
 const theme = createMuiTheme({
   typography: {
@@ -50,7 +51,9 @@ const DefaultContainer = () => (
     <Route exact path="/resource-requests" component={Resource} />
     <Route exact path="/resource-requests/add" component={ResourceForm} />
     <Route exact path="/resource-requests/edit" component={ResourceForm} />
+    <Route exact path="/resource-requests/empolyees" component={Employees} />
     <Route exact path="/profile" component={Profile} />
+    <Route exact path="/cerHistory" component={CerHistory} />
     <TPDGuard>
       {" "}
       <Route exact path="/skill-Tracking" component={SkillsTracking} />
