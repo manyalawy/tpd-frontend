@@ -14,6 +14,7 @@ import Resource from "./Components/ResourceReq/resource.jsx";
 import ResourceForm from "./Components/ResourceForm/ResourceForm.jsx";
 import Release from "./Components/ReleaseReq/ReleaseReq.jsx";
 import Profile from "./Components/Profile/Profile.jsx";
+import AssignmentsHisotry from "./Components/AssignmentsHistory/AssignmentHistory";
 
 import Employees from "./Components/Employees/Employees";
 import SkillListing from "./Components/SkillListing/skillListing";
@@ -46,6 +47,11 @@ const DefaultContainer = () => (
   <>
     <SideMenu />
     <Route exact path="/profile" component={Profile} />
+    <Route
+      exact
+      path="/profile/assignments-history"
+      component={AssignmentsHisotry}
+    />
     <TPDGuard>
       <Route exact path="/release-requests" component={Release} />
     </TPDGuard>
