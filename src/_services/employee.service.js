@@ -7,11 +7,29 @@ export default {
   getAllTitles,
   getAllFunctions,
   getAllNames,
+  getAllWorkgroups,
   getMySkills,
   getMyDetails,
   getMyCertificates,
   getMyTrainings,
+  exportAll,
 };
+
+function exportAll(body) {
+  const FileDownload = require("js-file-download");
+
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/employee-profile/all/export`, requestOptions).then(
+    (res) => {
+      res.text().then((text) => FileDownload(text, "Employees.csv"));
+    }
+  );
+}
 
 function getAll(body) {
   const requestOptions = {
@@ -32,6 +50,17 @@ function getAllTitles() {
   };
 
   return fetch(`${apiUrl}/employee-profile/titles`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getAllWorkgroups() {
+  const requestOptions = {
+    method: "GET",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/employee-profile/workgroups`, requestOptions).then(
     handleResponse
   );
 }

@@ -22,6 +22,9 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
+import employeeService from "../../_services/employee.service";
+
+import ExportIcon from "../assets/file-export-solid.svg";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -97,10 +100,36 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
+  const [employees, setEmployees] = React.useState([]);
+  // Filter options
+  const [names, setNames] = React.useState([]);
+  const [titles, setTitles] = React.useState([]);
+  const [functions, setFunctions] = React.useState([]);
+  const [wokrgroups, setWorkgroups] = React.useState([]);
+
+  //filter values
+  const [selectedName, setselectedName] = React.useState(null);
+  const [selectedTitle, setselectedTitle] = React.useState(null);
+  const [selectedFunction, setselectedFunction] = React.useState(null);
+  const [selectedWorkgroup, setselectedWorkgroup] = React.useState(null);
+
+  const nameOptions = {
+    options: names,
+    getOptionLabel: (option) => option,
   };
+  const titleOptions = {
+    options: titles,
+    getOptionLabel: (option) => option,
+  };
+  const functionOptions = {
+    options: functions,
+    getOptionLabel: (option) => option,
+  };
+  const workgroupOptions = {
+    options: wokrgroups,
+    getOptionLabel: (option) => option,
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -122,78 +151,158 @@ export default function StickyHeadTable() {
     document.getElementById("selectName").value = "";
     document.getElementById("selectTitle").value = "";
     document.getElementById("selectFunction").value = "";
+    setselectedName("");
+    setselectedTitle("");
+    setselectedFunction("");
+    setselectedWorkgroup("");
+    employeeService.getAll({ Filters: {} }).then((res) => {
+      setEmployees(res.Employees);
+    });
+    setOpen(false);
   };
+
+  const handleFilter = () => {
+    var filterName = selectedName ? { name: selectedName } : "";
+    var filterTitle = selectedTitle ? { title: selectedTitle } : "";
+    var filterFunction = selectedFunction ? { function: selectedFunction } : "";
+    var filterWorkgroup = selectedWorkgroup
+      ? { workgroup: selectedWorkgroup }
+      : "";
+    const Filters = {
+      ...filterName,
+      ...filterTitle,
+      ...filterFunction,
+      ...filterWorkgroup,
+    };
+    employeeService.getAll({ Filters }).then((res) => {
+      setEmployees(res.Employees);
+    });
+    setOpen(false);
+  };
+
+  const expo = () => {
+    var filterName = selectedName ? { name: selectedName } : "";
+    var filterTitle = selectedTitle ? { title: selectedTitle } : "";
+    var filterFunction = selectedFunction ? { function: selectedFunction } : "";
+    var filterWorkgroup = selectedWorkgroup
+      ? { workgroup: selectedWorkgroup }
+      : "";
+    const Filters = {
+      ...filterName,
+      ...filterTitle,
+      ...filterFunction,
+      ...filterWorkgroup,
+    };
+    employeeService.exportAll({ Filters });
+  };
+
+  React.useEffect(() => {
+    employeeService.getAllNames().then((res) => {
+      setNames(res.Names);
+    });
+    employeeService.getAllFunctions().then((res) => {
+      setFunctions(res.Functions);
+    });
+    employeeService.getAllTitles().then((res) => {
+      setTitles(res.Titles);
+    });
+    employeeService.getAllWorkgroups().then((res) => {
+      setWorkgroups(res.Workgroups);
+    });
+
+    employeeService.getAll({ Filters: {} }).then((res) => {
+      setEmployees(res.Employees);
+    });
+  }, []);
 
   return (
     <div>
       <h1 className={classes.title}>Empolyees</h1>
+      <div className={classes.buttons}>
+        <Fab
+          className={classes.filtterButton}
+          color="primary"
+          aria-label="filter"
+          onClick={() => setOpen(true)}
+        >
+          <FilterListIcon />
+        </Fab>
+        <Fab
+          aria-label="export"
+          className={classes.exportButton}
+          onClick={expo}
+        >
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </Fab>
+      </div>
+      <Grid container justify="center" alignItems="center">
+        <Paper className={classes.root}>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align={column.align}>
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {employees
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.name}
+                      >
+                        <TableCell>
+                          <Button href="#text-buttons" color="primary">
+                            {row.name}
+                          </Button>
+                        </TableCell>
+                        <TableCell>{row.title}</TableCell>
+                        <TableCell>{row.hiring_date}</TableCell>
+                        <TableCell>{row.function}</TableCell>
+                        <TableCell>{row.Manager?.name}</TableCell>
+                        <TableCell>{row.workgroup}</TableCell>
+                        <TableCell>{row.employment_type}</TableCell>
+                        <TableCell>{row.allocation_percentage}</TableCell>
+                        <TableCell>
+                          {row.skills_last_update_date?.split("T")[0]}
+                        </TableCell>
+                        <TableCell>
+                          <Button href="#text-buttons" color="primary">
+                            Edit
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Grid>
 
-      <Fab
-        className={classes.filtterButton}
-        color="primary"
-        aria-label="filter"
-        onClick={() => setOpen(true)}
-      >
-        <FilterListIcon />
-      </Fab>
-
-      <Paper className={classes.root}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                    >
-                      <TableCell>
-                        <Button href="#text-buttons" color="primary">
-                          {row.name}
-                        </Button>
-                      </TableCell>
-                      <TableCell>{row.tit}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell>{row.func}</TableCell>
-                      <TableCell>{row.man}</TableCell>
-                      <TableCell>{row.work}</TableCell>
-                      <TableCell>{row.emp}</TableCell>
-                      <TableCell>{row.allo}</TableCell>
-                      <TableCell>{row.skills}</TableCell>
-                      <TableCell>
-                        <Button href="#text-buttons" color="primary">
-                          Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
       <Dialog
         fullScreen={fullScreen}
         open={open}
@@ -205,9 +314,11 @@ export default function StickyHeadTable() {
         </DialogTitle>
         <DialogContent>
           <Autocomplete
-            {...defaultProps}
+            onChange={(event, value) => setselectedName(value)}
+            {...nameOptions}
             id="selectName"
-            disableCloseOnSelect
+            clearOnEscape
+            value={selectedName}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -220,9 +331,11 @@ export default function StickyHeadTable() {
           />
 
           <Autocomplete
-            {...defaultProps}
+            onChange={(event, value) => setselectedTitle(value)}
+            {...titleOptions}
             id="selectTitle"
-            disableCloseOnSelect
+            clearOnEscape
+            value={selectedTitle}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -234,9 +347,11 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
-            {...defaultProps}
+            onChange={(event, value) => setselectedWorkgroup(value)}
+            {...workgroupOptions}
             id="selectWorkGroup"
-            disableCloseOnSelect
+            clearOnEscape
+            value={selectedWorkgroup}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -248,9 +363,11 @@ export default function StickyHeadTable() {
             )}
           />
           <Autocomplete
-            {...defaultProps}
+            onChange={(event, value) => setselectedFunction(value)}
+            {...functionOptions}
             id="selectFunction"
-            disableCloseOnSelect
+            clearOnEscape
+            value={selectedFunction}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -263,7 +380,7 @@ export default function StickyHeadTable() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleFilter} color="primary">
             Filter
           </Button>
           <Button onClick={handleReset} color="primary" autoFocus>
