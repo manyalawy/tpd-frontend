@@ -240,7 +240,7 @@ export default function StickyHeadTable() {
                         <TableCell>{row.certification_name}</TableCell>
                         <TableCell>{row.certification_provider_name}</TableCell>
                         <TableCell>
-                          {row.expiration_date.split("T")[0]}
+                          {row.expiration_date?.split("T")[0]}
                         </TableCell>
                       </TableRow>
                     );

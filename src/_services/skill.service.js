@@ -14,7 +14,36 @@ export default {
   deleteSkill,
   getSkillHistory,
   export: _export,
+  getSkillTrackings,
+  exportSkillTracking: _exportTrackings,
 };
+
+function _exportTrackings(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/tracking/export`, requestOptions).then(
+    (res) => {
+      res
+        .text()
+        .then((text) => FileDownload(text, "EmployeesSkillTracking.csv"));
+    }
+  );
+}
+
+function getSkillTrackings(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/tracking`, requestOptions).then(handleResponse);
+}
 
 function getAllSubcategories(body) {
   const requestOptions = {
