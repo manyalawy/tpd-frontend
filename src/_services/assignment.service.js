@@ -5,7 +5,18 @@ const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 export default {
   addEmployeeAssignment,
   editEmployeeAssignment,
+  deleteEmployeeAssignment,
 };
+
+function deleteEmployeeAssignment(body) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/assignment/`, requestOptions).then(handleResponse);
+}
 
 function addEmployeeAssignment(body) {
   const requestOptions = {

@@ -9,6 +9,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import releaseRequestService from "../../_services/release-request.service";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
+import TPDGuard from "../Guards/TPDGuard";
+import { accountProperties } from "../../_helpers";
 
 import { useSnackbar } from "notistack";
 
@@ -49,7 +51,7 @@ export default function ReleaseForm(props) {
     employeeService.getAllNames().then((res) => {
       setEmployeeFilterList(res.Names);
     });
-    if (props.location?.state?.editing)
+    if (props.location?.state?.editing) {
       releaseRequestService
         .getById({
           ReleaseRequest: {
@@ -57,7 +59,6 @@ export default function ReleaseForm(props) {
           },
         })
         .then((res) => {
-          console.log(res);
           setSelectedEmployee(res.ReleaseRequest.employee_name);
           setSelectedManager(res.ReleaseRequest.manager_name);
           setSelectedTitle(res.ReleaseRequest.title);
@@ -71,6 +72,10 @@ export default function ReleaseForm(props) {
           setLeavingInput(res.ReleaseRequest.leaving);
           setDateInput(res.ReleaseRequest.release_date);
         });
+    } else {
+      // if (accountProperties().roles?.includes("Manager"))
+      //   setSelectedManager(res.ReleaseRequest.manager_name);
+    }
   }, []);
 
   //when employee name is changed
@@ -180,24 +185,46 @@ export default function ReleaseForm(props) {
         <form>
           <div class="form-row">
             <div class="form-group col-md-3">
-              <Autocomplete
-                id="selectManager"
-                autoComplete
-                renderInput={(params) => (
-                  <TextField
-                    required
-                    {...params}
-                    label="Select Manager"
-                    margin="normal"
-                  />
-                )}
-                value={selectedManager}
-                options={managerFilterList}
-                getOptionLabel={(option) => option.name}
-                onChange={(event, value) => {
-                  setSelectedManager(value.name);
-                }}
-              />
+              {accountProperties().roles?.includes("Manager") ? (
+                <Autocomplete
+                  id="selectManager"
+                  autoComplete
+                  disabled={true}
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      {...params}
+                      label="Select Manager"
+                      margin="normal"
+                    />
+                  )}
+                  value={selectedManager}
+                  options={managerFilterList}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(event, value) => {
+                    setSelectedManager(value.name);
+                  }}
+                />
+              ) : (
+                <Autocomplete
+                  id="selectManager"
+                  autoComplete
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      {...params}
+                      label="Select Manager"
+                      margin="normal"
+                    />
+                  )}
+                  value={selectedManager}
+                  options={managerFilterList}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(event, value) => {
+                    setSelectedManager(value.name);
+                  }}
+                />
+              )}
             </div>
             <div class="form-group col-md-3">
               <Autocomplete

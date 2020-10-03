@@ -17,6 +17,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
+import { useSnackbar } from "notistack";
+
 //service
 import employeeService from "../../../_services/employee.service";
 import assignmentService from "../../../_services/assignment.service";
@@ -77,6 +79,7 @@ export default function Assignments(props) {
   //add assignment
   const [workgroup, setWorkgroup] = useState("");
   const [costcenter, setCostCenter] = useState("");
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [sdmManager, setSDMManager] = useState("");
 
@@ -87,6 +90,9 @@ export default function Assignments(props) {
   const [releaseDate, setReleaseDate] = useState(new Date());
 
   const [editingAss, setEditingAss] = React.useState(false);
+  const [editingAssId, setEditingAssId] = React.useState("");
+
+  const [refresh, setRefresh] = React.useState(false);
 
   //fetch User Assignments
   React.useEffect(() => {
@@ -96,7 +102,7 @@ export default function Assignments(props) {
         setAssignments(res.Employee?.assignments);
         setName(res.Employee?.name);
       });
-  }, []);
+  }, [refresh]);
 
   const handleAdd = () => {
     setOpen(false);
@@ -113,7 +119,10 @@ export default function Assignments(props) {
         },
       })
       .then((res) => {
-        console.log("added");
+        enqueueSnackbar("Assignment Added Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
       });
   };
   const handleEdit = () => {
@@ -121,6 +130,7 @@ export default function Assignments(props) {
     assignmentService
       .editEmployeeAssignment({
         Assignment: {
+          assignment_id: editingAssId,
           workgroup: workgroup,
           cost_center: costcenter,
           sdm_reporting_manager: sdmManager,
@@ -130,7 +140,27 @@ export default function Assignments(props) {
           employee_id: props?.id,
         },
       })
-      .then();
+      .then(() => {
+        enqueueSnackbar("Assignment Edited Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
+      });
+  };
+
+  const handleDelete = (id) => {
+    assignmentService
+      .deleteEmployeeAssignment({
+        Assignment: {
+          assignment_id: id,
+        },
+      })
+      .then((res) => {
+        enqueueSnackbar("Assignment Deleted Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
+      });
   };
 
   return (
@@ -193,10 +223,31 @@ export default function Assignments(props) {
               </CardContent>
               {props?.editing ? (
                 <CardActions>
-                  <Button color="primary" onClick={() => setOpen(true)}>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setEditingAss(true);
+                      setEditingAssId(assignment.assignment_id);
+                      setWorkgroup(assignment.workgroup);
+                      setCostCenter(assignment.cost_center);
+                      setSDMManager(assignment.sdm_reporting_manager);
+                      setPercentage(assignment.allocation_percentage);
+                      setStartDate(assignment.start_date);
+                      setReleaseDate(assignment.release_date);
+                      setOpen(true);
+                    }}
+                  >
                     Edit
                   </Button>{" "}
-                  | <Button color="primary">Delete</Button>
+                  |{" "}
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      handleDelete(assignment.assignment_id);
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </CardActions>
               ) : (
                 ""
@@ -270,8 +321,6 @@ export default function Assignments(props) {
                 margin="normal"
                 id="date-picker-inline"
                 label="Date picker inline"
-                // value={selectedDate}
-                // onChange={handleDateChange}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
@@ -286,8 +335,6 @@ export default function Assignments(props) {
                 margin="normal"
                 id="date-picker-inlin"
                 label="Date picker inline"
-                // value={selectedDate2}
-                // onChange={handleDateChange2}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
