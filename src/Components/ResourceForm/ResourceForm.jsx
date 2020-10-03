@@ -17,6 +17,7 @@ import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
 import skillService from "../../_services/skill.service";
 import resourceRequestService from "../../_services/resource-request.service";
+import { accountProperties } from "../../_helpers";
 
 import { useSnackbar } from "notistack";
 
@@ -31,9 +32,11 @@ export default function ResourceForm(props) {
   //handling inputs
   const [replacmentCheck, setReplamentCheck] = useState(false);
   const [skills, setSkills] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("Open");
   const [editingMode, setEditingMode] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedManagerOption, setSelectedManagerOption] = useState({});
+
   const [selectedFunction, setSelectedFunction] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [selectedReplacment, setSelectedReplacment] = useState(null);
@@ -160,7 +163,7 @@ export default function ResourceForm(props) {
 
   //dropdown arrays
   var status = {};
-  if (props.user == "TPD") {
+  if (accountProperties().roles?.includes("TPD Team")) {
     status = {
       options: tpdOptions,
       getOptionLabel: (option) => option.status,
@@ -204,6 +207,15 @@ export default function ResourceForm(props) {
 
   //use effects
   useEffect(() => {
+    if (accountProperties().roles?.includes("Manager")) {
+      employeeService.getMyDetails().then((res) => {
+        setSelectedManager(res.Employee.name);
+        setSelectedManagerOption({ name: res.Employee.name });
+        setSelectedFunction(res.Employee.function);
+        setSelectedTitle(res.Employee.title);
+        setSelectedStatus("Open");
+      });
+    }
     managerService.getAll().then((res) => {
       setManagers(res.managers);
       console.log(managers);
@@ -279,8 +291,9 @@ export default function ResourceForm(props) {
                 }
                 {...managersDropDownList}
                 id="selectManager"
+                disabled={accountProperties().roles?.includes("Manager")}
                 clearOnEscape
-                value={selectedManager}
+                value={selectedManagerOption}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -302,6 +315,7 @@ export default function ResourceForm(props) {
                 {...functionsDropdownList}
                 id="selectFunction"
                 clearOnEscape
+                disabled={accountProperties().roles?.includes("Manager")}
                 value={selectedFunction}
                 renderInput={(params) => (
                   <TextField
@@ -317,6 +331,7 @@ export default function ResourceForm(props) {
               <Autocomplete
                 defaultValue={selectedTitle}
                 value={selectedTitle}
+                disabled={accountProperties().roles?.includes("Manager")}
                 onChange={(event, value) =>
                   value == null
                     ? setSelectedTitle(null)
@@ -526,7 +541,7 @@ export default function ResourceForm(props) {
           <div class="form-row">
             <div class="form-group col-md-3">
               <Autocomplete
-                disabled={props.editing == "yes" ? false : true}
+                disabled={props.location?.state?.editing ? false : true}
                 onChange={(event, value) => handleStatusChange(event, value)}
                 defaultValue={selectedStatus}
                 {...status}
@@ -544,7 +559,10 @@ export default function ResourceForm(props) {
               <Autocomplete
                 freeSolo
                 disabled={
-                  props.user == "TPD" && props.editing == "yes" ? false : true
+                  accountProperties().roles?.includes("TPD Team") &&
+                  props.location?.state?.editing
+                    ? false
+                    : true
                 }
                 onChange={(event, value) => setSelectedAction(value)}
                 defaultValue={selectedAction}
@@ -562,7 +580,10 @@ export default function ResourceForm(props) {
             <div class="form-group col-md-3">
               <TextField
                 disabled={
-                  props.user == "TPD" && props.editing == "yes" ? false : true
+                  accountProperties().roles?.includes("TPD Team") &&
+                  props.location?.state?.editing
+                    ? false
+                    : true
                 }
                 required={
                   selectedStatus == "Moved" ||
@@ -584,7 +605,10 @@ export default function ResourceForm(props) {
               <label for="actualsStartDate">Actual Start Date</label>
               <input
                 disabled={
-                  props.user == "TPD" && props.editing == "yes" ? false : true
+                  accountProperties().roles?.includes("TPD Team") &&
+                  props.location?.state?.editing
+                    ? false
+                    : true
                 }
                 value={date}
                 min={date}
@@ -597,7 +621,10 @@ export default function ResourceForm(props) {
               <label for="actualsEndDate">Actual End Date</label>
               <input
                 disabled={
-                  props.user == "TPD" && props.editing == "yes" ? false : true
+                  accountProperties().roles?.includes("TPD Team") &&
+                  props.location?.state?.editing
+                    ? false
+                    : true
                 }
                 value={date}
                 min={date}
@@ -611,7 +638,8 @@ export default function ResourceForm(props) {
               <div class="input-group">
                 <input
                   disabled={
-                    props.user == "TPD" && props.editing == "true"
+                    accountProperties().roles?.includes("TPD Team") &&
+                    props.location?.state?.editing
                       ? false
                       : true
                   }
@@ -720,7 +748,11 @@ export default function ResourceForm(props) {
               ? "Edit Resource Request"
               : "Add Resource Request"}
           </button>
-          <button type="button" class="btn canc btn-danger">
+          <button
+            type="button"
+            class="btn canc btn-danger"
+            onClick={() => history.push("/resource-requests")}
+          >
             Cancel
           </button>
         </form>

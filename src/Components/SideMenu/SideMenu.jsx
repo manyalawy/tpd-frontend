@@ -278,14 +278,20 @@ export default function SideMenu() {
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/resource-requests")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/resource-requests");
+                  }}
                 >
                   Resource Requests
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/release-requests")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/release-requests");
+                  }}
                 >
                   Release Requests
                 </ListItem>
@@ -310,21 +316,30 @@ export default function SideMenu() {
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/skills-listing")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skills-listing");
+                  }}
                 >
                   Skills List
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/skill-tracking")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skill-tracking");
+                  }}
                 >
                   Skills Tracking
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/skills-history")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skills-history");
+                  }}
                 >
                   Skills History
                 </ListItem>
@@ -353,21 +368,30 @@ export default function SideMenu() {
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/certification-providers")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certification-providers");
+                  }}
                 >
                   Certifications Providers List
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/certifications-list")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certifications-list");
+                  }}
                 >
                   Certifications List
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/certifications-history")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certifications-history");
+                  }}
                 >
                   Certifications History
                 </ListItem>
@@ -376,7 +400,10 @@ export default function SideMenu() {
             <ListItem
               button
               key={"EmployeeTrainings"}
-              onClick={() => history.push("/employee-trainings")}
+              onClick={() => {
+                setOpen(false);
+                history.push("/employee-trainings");
+              }}
             >
               <ListItemIcon className={clsx(classes.navBarIcons)}>
                 <AssessmentIcon />
@@ -389,7 +416,10 @@ export default function SideMenu() {
             <ListItem
               button
               key={"Employees"}
-              onClick={() => history.push("/employees")}
+              onClick={() => {
+                setOpen(false);
+                history.push("/employees");
+              }}
             >
               <ListItemIcon className={clsx(classes.navBarIcons)}>
                 <PeopleIcon />
@@ -428,14 +458,20 @@ export default function SideMenu() {
                     <ListItem
                       button
                       className={clsx(classes.navBarSubList)}
-                      onClick={() => history.push("/resource-requests")}
+                      onClick={() => {
+                        setOpen(false);
+                        history.push("/resource-requests");
+                      }}
                     >
                       Resource Requests
                     </ListItem>
                     <ListItem
                       button
                       className={clsx(classes.navBarSubList)}
-                      onClick={() => history.push("/release-requests")}
+                      onClick={() => {
+                        setOpen(false);
+                        history.push("/release-requests");
+                      }}
                     >
                       Release Requests
                     </ListItem>
@@ -469,14 +505,20 @@ export default function SideMenu() {
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/profile/assignments")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/assignments");
+                  }}
                 >
                   Current Assignments
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/profile/assignments/history")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/assignments/history");
+                  }}
                 >
                   Assignments History
                 </ListItem>
@@ -509,21 +551,30 @@ export default function SideMenu() {
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/profile/skills")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/skills");
+                  }}
                 >
                   Skills
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/profile/certifications")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/certifications");
+                  }}
                 >
                   Certifications
                 </ListItem>
                 <ListItem
                   button
                   className={clsx(classes.navBarSubList)}
-                  onClick={() => history.push("/profile/trainings")}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/trainings");
+                  }}
                 >
                   Trainings
                 </ListItem>
@@ -532,7 +583,10 @@ export default function SideMenu() {
             <ListItem
               button
               key={"Profile"}
-              onClick={() => history.push("/profile")}
+              onClick={() => {
+                setOpen(false);
+                history.push("/profile");
+              }}
             >
               <ListItemIcon className={clsx(classes.navBarIcons)}>
                 <PersonIcon />

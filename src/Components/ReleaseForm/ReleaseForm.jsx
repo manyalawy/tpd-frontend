@@ -9,7 +9,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import releaseRequestService from "../../_services/release-request.service";
 import managerService from "../../_services/manager.service";
 import employeeService from "../../_services/employee.service";
-import TPDGuard from "../Guards/TPDGuard";
 import { accountProperties } from "../../_helpers";
 
 import { useSnackbar } from "notistack";
@@ -24,10 +23,13 @@ export default function ReleaseForm(props) {
 
   const [action, setAction] = useState(null);
   const [checked, setChecked] = useState(false);
+  const [selectedAction, setSelectedAction] = useState(null);
 
   //Handle Filters(DropDownlists)
   const [managerFilterList, setManagerFilterList] = useState([]);
   const [selectedManager, setSelectedManager] = useState();
+
+  const [selectedManagerOption, setSelectedManagerOption] = useState({});
   const [employeeFilterList, setEmployeeFilterList] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState();
 
@@ -43,8 +45,18 @@ export default function ReleaseForm(props) {
   const [leavingInput, setLeavingInput] = useState(false);
   const [statusSelected, setStatusSelected] = useState("Open");
 
+  const [statusSelectedOption, setStatusSelectedOption] = useState(
+    statusOptions[0]
+  );
+
   //Once for all Filter Lists
   useEffect(() => {
+    if (accountProperties().roles?.includes("Manager")) {
+      employeeService.getMyDetails().then((res) => {
+        setSelectedManager(res.Employee.name);
+        setSelectedManagerOption({ name: res.Employee.name });
+      });
+    }
     managerService.getAll().then((res) => {
       setManagerFilterList(res.managers);
     });
@@ -72,9 +84,6 @@ export default function ReleaseForm(props) {
           setLeavingInput(res.ReleaseRequest.leaving);
           setDateInput(res.ReleaseRequest.release_date);
         });
-    } else {
-      // if (accountProperties().roles?.includes("Manager"))
-      //   setSelectedManager(res.ReleaseRequest.manager_name);
     }
   }, []);
 
@@ -83,8 +92,6 @@ export default function ReleaseForm(props) {
     if (selectedEmployee)
       employeeService
         .getAll({
-          Page: 0,
-          Limit: 10,
           Filters: { name: selectedEmployee },
         })
         .then((res) => {
@@ -103,9 +110,9 @@ export default function ReleaseForm(props) {
     getOptionLabel: (option) => option.action,
   };
   function handleCheck(event) {
-    if (event.target.checked && props.location?.state?.editing) {
+    if (event.target.checked) {
       setAction({ action: "Added to leaving list" });
-
+      setSelectedAction("Added to leaving list");
       setChecked(true);
       setLeavingInput(true);
       setStatusSelected({ status: "Leaving" });
@@ -116,6 +123,7 @@ export default function ReleaseForm(props) {
   }
   function handleActionChange(value) {
     setAction(value);
+    setSelectedAction(value.action);
     if (value.action == "Added to leaving list") {
       setStatusSelected({ status: "Leaving" });
     }
@@ -198,7 +206,7 @@ export default function ReleaseForm(props) {
                       margin="normal"
                     />
                   )}
-                  value={selectedManager}
+                  value={selectedManagerOption}
                   options={managerFilterList}
                   getOptionLabel={(option) => option.name}
                   onChange={(event, value) => {
@@ -230,6 +238,10 @@ export default function ReleaseForm(props) {
               <Autocomplete
                 id="selectResourcaName"
                 autoComplete
+                disabled={
+                  accountProperties().roles?.includes("Manager") &&
+                  statusSelected != "Open"
+                }
                 renderInput={(params) => (
                   <TextField
                     required
@@ -305,6 +317,10 @@ export default function ReleaseForm(props) {
                   class="form-control"
                   id="releaseReason"
                   rows="5"
+                  disabled={
+                    accountProperties().roles?.includes("Manager") &&
+                    statusSelected != "Open"
+                  }
                   value={reasonInput}
                   onChange={(event) => {
                     setReasonInput(event.target.value);
@@ -324,6 +340,10 @@ export default function ReleaseForm(props) {
                   min="10"
                   max="100"
                   id="probability"
+                  disabled={
+                    accountProperties().roles?.includes("Manager") &&
+                    statusSelected != "Open"
+                  }
                   value={propabilityInput}
                   onChange={(event) => {
                     setPropabilityInput(event.target.value);
@@ -347,6 +367,10 @@ export default function ReleaseForm(props) {
                   min="10"
                   max="100"
                   id="releasePercentage"
+                  disabled={
+                    accountProperties().roles?.includes("Manager") &&
+                    statusSelected != "Open"
+                  }
                   value={percentageInput}
                   onChange={(event) => {
                     setPercentageInput(event.target.value);
@@ -368,6 +392,10 @@ export default function ReleaseForm(props) {
                 type="date"
                 class="form-control"
                 id="releaseDate"
+                disabled={
+                  accountProperties().roles?.includes("Manager") &&
+                  statusSelected != "Open"
+                }
                 onChange={(event) => {
                   setDateInput(event.target.value);
                 }}
@@ -377,27 +405,35 @@ export default function ReleaseForm(props) {
           <br></br>
           <br />
           <div class="form-row">
-            <div class="form-group col-md-3">
-              <label for="actualReleaseDate">Actual Release Date</label>
-              <input
-                disabled={
-                  props.location?.state?.editing &&
-                  props.location?.state?.user == "TPD"
-                    ? false
-                    : true
-                }
-                value={props.location?.state?.editing ? date : null}
-                min={date}
-                type="date"
-                class="form-control"
-                id="actualReleaseDate"
-              ></input>
-            </div>
+            {props.location?.state?.editing ? (
+              <div class="form-group col-md-3">
+                <label for="actualReleaseDate">Actual Release Date</label>
+                <input
+                  disabled={
+                    props.location?.state?.editing &&
+                    props.location?.state?.user == "TPD"
+                      ? false
+                      : true
+                  }
+                  value={props.location?.state?.editing ? date : null}
+                  min={date}
+                  disabled={
+                    accountProperties().roles?.includes("Manager") &&
+                    statusSelected != "Open"
+                  }
+                  type="date"
+                  class="form-control"
+                  id="actualReleaseDate"
+                ></input>
+              </div>
+            ) : (
+              ""
+            )}
 
             <div class="form-group col-md-3">
               <Autocomplete
                 {...status}
-                value={statusSelected}
+                value={statusSelectedOption}
                 id="selectStatus"
                 disabled={
                   checked == false &&
@@ -406,8 +442,9 @@ export default function ReleaseForm(props) {
                     ? false
                     : true
                 }
-                onChange={(event, value) => setStatusSelected(value)}
+                onChange={(event, value) => setStatusSelected(value.status)}
                 autoComplete
+                disabled={accountProperties().roles?.includes("Manager")}
                 renderInput={(params) => (
                   <TextField
                     required
@@ -418,30 +455,34 @@ export default function ReleaseForm(props) {
                 )}
               />
             </div>
-            <div class="form-group col-md-3">
-              <Autocomplete
-                {...actions}
-                id="selectActionTaken"
-                value={action}
-                disabled={
-                  checked == false &&
-                  props.location?.state?.user == "TPD" &&
-                  props.location?.state?.editing
-                    ? false
-                    : true
-                }
-                onChange={(event, value) => handleActionChange(value)}
-                freeSolo
-                renderInput={(params) => (
-                  <TextField
-                    required
-                    {...params}
-                    label="Select Action"
-                    margin="normal"
-                  />
-                )}
-              />
-            </div>
+            {props.location?.state?.editing ? (
+              <div class="form-group col-md-3">
+                <Autocomplete
+                  {...actions}
+                  id="selectActionTaken"
+                  value={action}
+                  disabled={
+                    checked == false &&
+                    accountProperties().roles?.includes("TPD Team") &&
+                    props.location?.state?.editing
+                      ? false
+                      : true
+                  }
+                  onChange={(event, value) => handleActionChange(value)}
+                  freeSolo
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      {...params}
+                      label="Select Action"
+                      margin="normal"
+                    />
+                  )}
+                />
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div class="form-check">
             <input
@@ -462,7 +503,11 @@ export default function ReleaseForm(props) {
               ? "Edit Release Request"
               : "Add Release Request"}
           </button>
-          <button class="btn btnRed btn-primary" type="reset">
+          <button
+            class="btn btnRed btn-primary"
+            type="reset"
+            onClick={() => history.push("/release-requests")}
+          >
             Cancel
           </button>
         </form>
