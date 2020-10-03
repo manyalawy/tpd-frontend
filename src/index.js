@@ -68,7 +68,6 @@ const DefaultContainer = () => (
     ) : (
       <>
         <div style={{ margin: "40px" }}>
-          <h1 style={{ color: "White" }}>Current Assignments</h1>
           <Route exact path="/" component={MyAssignments} />
         </div>
       </>

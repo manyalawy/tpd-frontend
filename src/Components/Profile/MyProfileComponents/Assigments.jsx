@@ -81,6 +81,7 @@ export default function Assignments() {
 
   return (
     <div>
+      <h1 style={{ color: "White" }}>Current Assignments</h1>
       <Grid
         container
         alignItems="flex-start"

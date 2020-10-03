@@ -160,25 +160,34 @@ export default function ReleaseForm(props) {
               variant: "error",
             });
           } else {
-            releaseRequestService
-              .addAction({
-                ReleaseRequestAction: {
-                  request_reference_number: reference_number,
-                  action: selectedAction,
-                },
-              })
-              .then((res2) => {
-                if (res2.error) {
-                  enqueueSnackbar(res2.error, {
-                    variant: "error",
-                  });
-                } else {
-                  enqueueSnackbar("Request Successfully Updated", {
-                    variant: "success",
-                  });
-                  history.push("/release-requests");
-                }
-              });
+            if (accountProperties().roles?.includes("TPD Team")) {
+              releaseRequestService
+                .addAction({
+                  ReleaseRequestAction: {
+                    request_reference_number: reference_number,
+                    action: selectedAction,
+                  },
+                })
+                .then((res2) => {
+                  if (res2.error) {
+                    enqueueSnackbar(res2.error, {
+                      variant: "error",
+                    });
+                  } else {
+                    enqueueSnackbar("Request Successfully Updated", {
+                      variant: "success",
+                    });
+                    history.push("/release-requests");
+                  }
+                });
+            } else {
+              if (!res.error) {
+                enqueueSnackbar("Request Successfully Updated", {
+                  variant: "success",
+                });
+                history.push("/release-requests");
+              }
+            }
           }
         });
     } else {

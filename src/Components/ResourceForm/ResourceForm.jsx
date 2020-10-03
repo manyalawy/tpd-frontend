@@ -117,10 +117,9 @@ export default function ResourceForm(props) {
       percentage: parseInt(selectedPercentage),
       propability: parseInt(selectedProbability),
       end_date: selectedEndDate,
-      related_Opportunity: selectedrelatedOpp,
-      request_status: selectedStatus,
+      related_opportunity: selectedrelatedOpp,
+      status: selectedStatus,
     };
-
     if (props.location?.state?.editing) {
       const reference_number = props.location?.state?.reference_number;
       resourceRequestService

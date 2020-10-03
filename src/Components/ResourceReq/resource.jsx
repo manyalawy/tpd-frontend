@@ -93,7 +93,7 @@ export default function Resource() {
   //used for actions of a specific request
   useEffect(() => {
     resourceRequestService
-      .getById({ ResourceRequest: { reference_number: idActions } })
+      .getById({ reference_number: idActions })
       .then((res) => {
         setRequestActions(
           res.ResourceRequest?.resource_requests_actions
@@ -153,6 +153,8 @@ export default function Resource() {
           Filters,
         })
         .then((res) => {
+          console.log(res.ResourceRequests);
+
           setResourceRequests(res.ResourceRequests);
         });
     } else {
@@ -333,7 +335,7 @@ export default function Resource() {
                 <td>{resourceRequest.propability}</td>
                 <td>{resourceRequest.percentage}</td>
                 <td>{resourceRequest.status}</td>
-                <td>TODO Actions Taken</td>
+                <td>{resourceRequest.resource_requests_actions[0]?.action}</td>
                 <td className="btn-group">
                   <IconButton
                     color="inherit"
