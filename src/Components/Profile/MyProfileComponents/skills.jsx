@@ -169,12 +169,12 @@ export default function Skills() {
             <th scope="col">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{ backgroundColor: "white" }}>
           {skills.map((skill) => (
             <tr>
               <th scope="row">{skill.skill.skill_name}</th>
               <td>{skill.experience_level}</td>
-              <td>{skill.last_used_date}</td>
+              <td>{skill.last_used_date?.split("T")[0]}</td>
               <td>
                 <button
                   type="button"

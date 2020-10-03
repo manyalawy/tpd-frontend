@@ -32,6 +32,8 @@ import userServices from "../../_services/user.service";
 import { accountProperties } from "../../_helpers";
 import { useSnackbar } from "notistack";
 import Release from "../ReleaseReq/ReleaseReq.jsx";
+import PersonIcon from "@material-ui/icons/Person";
+import AssignmentIcon from "@material-ui/icons/Assignment";
 
 const drawerWidth = 240;
 
@@ -126,14 +128,23 @@ export default function SideMenu() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [openTalent, setOpenTalent] = React.useState(true);
-  const [openSkills, setOpenSkills] = React.useState(true);
+  const [openSkills, setOpenSkills] = React.useState(false);
+  const [openCertifications, setOpenCertifications] = React.useState(false);
+
+  const [openAssignments, setOpenAssignments] = React.useState(true);
+
+  const [
+    openEmployeeCertifications,
+    setOpenEmployeeCertifications,
+  ] = React.useState(true);
+
   const [accountRoles, setAccountRoles] = React.useState([]);
   const [accountId, setAccountId] = React.useState("");
   const [accountName, setAccountName] = React.useState("");
 
   let logout = () => {
     userServices.logout();
-    history.push("/");
+    history.push("/login");
   };
 
   const handleTalentClick = () => {
@@ -142,6 +153,16 @@ export default function SideMenu() {
 
   const handleSkillsClick = () => {
     setOpenSkills(!openSkills);
+  };
+
+  const handleCertificationsClick = () => {
+    setOpenCertifications(!openCertifications);
+  };
+  const handleEmployeeCertificationsClick = () => {
+    setOpenEmployeeCertifications(!openEmployeeCertifications);
+  };
+  const handleAssignmentsClick = () => {
+    setOpenAssignments(!openAssignments);
   };
 
   const handleDrawerOpen = () => {
@@ -232,81 +253,352 @@ export default function SideMenu() {
             )}
           </IconButton>
         </div>
-        <List>
-          <ListItem button onClick={handleTalentClick} key={"Talent Requests"}>
-            <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <PermContactCalendarIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"Talent Requests"}
-              className={clsx(classes.navBarList)}
-            />
-            {openTalent ? (
-              <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+        {accountRoles.includes("TPD Team") ? (
+          <List>
+            <ListItem
+              button
+              onClick={handleTalentClick}
+              key={"Talent Requests"}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                <PermContactCalendarIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Talent Requests"}
+                className={clsx(classes.navBarList)}
+              />
+              {openTalent ? (
+                <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+              ) : (
+                <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              )}
+            </ListItem>
+            <Collapse in={openTalent} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/resource-requests");
+                  }}
+                >
+                  Resource Requests
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/release-requests");
+                  }}
+                >
+                  Release Requests
+                </ListItem>
+              </List>
+            </Collapse>
+            <ListItem button onClick={handleSkillsClick} key={"Skills"}>
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                {/* <img src={PsychologyIcon}></img> */}
+              </ListItemIcon>
+              <ListItemText
+                primary={"Skills"}
+                className={clsx(classes.navBarList)}
+              />
+              {openSkills ? (
+                <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+              ) : (
+                <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              )}
+            </ListItem>
+            <Collapse in={openSkills} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skills-listing");
+                  }}
+                >
+                  Skills List
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skill-tracking");
+                  }}
+                >
+                  Skills Tracking
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/skills-history");
+                  }}
+                >
+                  Skills History
+                </ListItem>
+              </List>
+            </Collapse>
+            <ListItem
+              button
+              onClick={handleCertificationsClick}
+              key={"Certifications"}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                {/* <img src={PsychologyIcon}></img> */}
+              </ListItemIcon>
+              <ListItemText
+                primary={"Certifications"}
+                className={clsx(classes.navBarList)}
+              />
+              {openCertifications ? (
+                <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+              ) : (
+                <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              )}
+            </ListItem>
+            <Collapse in={openCertifications} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certification-providers");
+                  }}
+                >
+                  Certifications Providers List
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certifications-list");
+                  }}
+                >
+                  Certifications List
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/certifications-history");
+                  }}
+                >
+                  Certifications History
+                </ListItem>
+              </List>
+            </Collapse>
+            <ListItem
+              button
+              key={"EmployeeTrainings"}
+              onClick={() => {
+                setOpen(false);
+                history.push("/employee-trainings");
+              }}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                <AssessmentIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Employees Trainings"}
+                className={clsx(classes.navBarList)}
+              />
+            </ListItem>
+            <ListItem
+              button
+              key={"Employees"}
+              onClick={() => {
+                setOpen(false);
+                history.push("/employees");
+              }}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Employees"}
+                className={clsx(classes.navBarList)}
+              />
+            </ListItem>
+          </List>
+        ) : (
+          <List>
+            {accountRoles.includes("Manager") ? (
+              <>
+                {" "}
+                <ListItem
+                  button
+                  onClick={handleTalentClick}
+                  key={"Talent Requests"}
+                >
+                  <ListItemIcon className={clsx(classes.navBarIcons)}>
+                    <PermContactCalendarIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Talent Requests"}
+                    className={clsx(classes.navBarList)}
+                  />
+                  {openTalent ? (
+                    <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+                  ) : (
+                    <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+                  )}
+                </ListItem>
+                <Collapse in={openTalent} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem
+                      button
+                      className={clsx(classes.navBarSubList)}
+                      onClick={() => {
+                        setOpen(false);
+                        history.push("/resource-requests");
+                      }}
+                    >
+                      Resource Requests
+                    </ListItem>
+                    <ListItem
+                      button
+                      className={clsx(classes.navBarSubList)}
+                      onClick={() => {
+                        setOpen(false);
+                        history.push("/release-requests");
+                      }}
+                    >
+                      Release Requests
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </>
             ) : (
-              <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              ""
             )}
-          </ListItem>
-          <Collapse in={openTalent} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={clsx(classes.navBarSubList)}>
-                Resource Requests
-              </ListItem>
-              <ListItem button className={clsx(classes.navBarSubList)}>
-                Release Requests
-              </ListItem>
-            </List>
-          </Collapse>
-          <ListItem
-            button
-            onClick={handleSkillsClick}
-            key={"Skills & Certifications"}
-          >
-            <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <img src={PsychologyIcon}></img>
-            </ListItemIcon>
-            <ListItemText
-              primary={"Skills & Certifications"}
-              className={clsx(classes.navBarList)}
-            />
-            {openSkills ? (
-              <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
-            ) : (
-              <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
-            )}
-          </ListItem>
-          <Collapse in={openSkills} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={clsx(classes.navBarSubList)}>
-                Skills
-              </ListItem>
-              <ListItem button className={clsx(classes.navBarSubList)}>
-                Certifications
-              </ListItem>
-              <ListItem button className={clsx(classes.navBarSubList)}>
-                Trainings
-              </ListItem>
-            </List>
-          </Collapse>
-          <ListItem button key={"Employees"}>
-            <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"Employees"}
-              className={clsx(classes.navBarList)}
-            />
-          </ListItem>
-          <ListItem button key={"Insights & Analytics"}>
-            <ListItemIcon className={clsx(classes.navBarIcons)}>
-              <AssessmentIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"Insights & Analytics"}
-              className={clsx(classes.navBarList)}
-            />
-          </ListItem>
-        </List>
+            <ListItem
+              button
+              onClick={handleAssignmentsClick}
+              key={"Assignments"}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                {/* <img src={PsychologyIcon}></img> */}
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Assignments"}
+                className={clsx(classes.navBarList)}
+              />
+              {openSkills ? (
+                <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+              ) : (
+                <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              )}
+            </ListItem>
+            <Collapse in={openAssignments} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/assignments");
+                  }}
+                >
+                  Current Assignments
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/assignments/history");
+                  }}
+                >
+                  Assignments History
+                </ListItem>
+              </List>
+            </Collapse>
+            <ListItem
+              button
+              onClick={handleEmployeeCertificationsClick}
+              key={"Skills and Certifications"}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                <AssessmentIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Skills and Certifications"}
+                className={clsx(classes.navBarList)}
+              />
+              {openCertifications ? (
+                <ArrowDropUpIcon className={clsx(classes.navBarIcons)} />
+              ) : (
+                <ArrowDropDownIcon className={clsx(classes.navBarIcons)} />
+              )}
+            </ListItem>
+            <Collapse
+              in={openEmployeeCertifications}
+              timeout="auto"
+              unmountOnExit
+            >
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/skills");
+                  }}
+                >
+                  Skills
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/certifications");
+                  }}
+                >
+                  Certifications
+                </ListItem>
+                <ListItem
+                  button
+                  className={clsx(classes.navBarSubList)}
+                  onClick={() => {
+                    setOpen(false);
+                    history.push("/profile/trainings");
+                  }}
+                >
+                  Trainings
+                </ListItem>
+              </List>
+            </Collapse>
+            <ListItem
+              button
+              key={"Profile"}
+              onClick={() => {
+                setOpen(false);
+                history.push("/profile");
+              }}
+            >
+              <ListItemIcon className={clsx(classes.navBarIcons)}>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"My Profile"}
+                className={clsx(classes.navBarList)}
+              />
+            </ListItem>
+          </List>
+        )}
+
         <Button
           size="small"
           variant="contained"

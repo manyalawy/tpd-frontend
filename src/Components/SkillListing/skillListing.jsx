@@ -24,7 +24,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
 import skillService from "../../_services/skill.service";
-import { accountProperties } from "../../_helpers/accountProperties";
+
+import IconButton from "@material-ui/core/IconButton";
+import ExportIcon from "../assets/file-export-solid.svg";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import { parse } from "date-fns";
@@ -155,6 +157,10 @@ export default function SkillListing() {
     setSkillsTable(newSkills);
   };
 
+  const exportSkills = () => {
+    skillService.exportAllSkills({});
+  };
+
   React.useEffect(() => {
     refresh();
   }, []);
@@ -200,6 +206,25 @@ export default function SkillListing() {
         >
           <AddIcon />
         </Fab>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          style={{
+            backgroundColor: "#084791",
+            margin: "10px",
+            color: "#ffffff",
+          }}
+          onClick={() => exportSkills()}
+        >
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </IconButton>
       </div>
       {/* </Box> */}
       <Grid container alignItems="center" justify="center">

@@ -23,6 +23,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+import { accountProperties } from "../../_helpers";
 
 //Services
 import resourceRequestService from "../../_services/resource-request.service";
@@ -111,9 +112,12 @@ export default function Resource() {
 
   //With every Update to re-render Table with filtration or after deletion
   useEffect(() => {
-    const managerFilterProperty = selectedManager
-      ? { manager_name: selectedManager }
-      : "";
+    let managerFilterProperty = "";
+    if (accountProperties().roles?.includes("TPD Team")) {
+      managerFilterProperty = selectedManager
+        ? { manager_name: selectedManager }
+        : "";
+    }
     const titleFilterProperty = selectedTitle
       ? { employee_title: selectedTitle }
       : "";
@@ -141,20 +145,33 @@ export default function Resource() {
       ...categoryFilterProperty,
       ...subcategoryFilterProperty,
     };
-
-    resourceRequestService
-      .getAll({
-        Page: selectedPage - 1,
-        Limit: 10,
-        Filters,
-      })
-      .then((res) => {
-        setResourceRequests(res.ResourceRequests);
-      });
+    if (accountProperties().roles?.includes("TPD Team")) {
+      resourceRequestService
+        .getAll({
+          Page: selectedPage - 1,
+          Limit: 10,
+          Filters,
+        })
+        .then((res) => {
+          setResourceRequests(res.ResourceRequests);
+        });
+    } else {
+      resourceRequestService
+        .getAllByManager({
+          Page: selectedPage - 1,
+          Limit: 10,
+          Filters,
+        })
+        .then((res) => {
+          setResourceRequests(res.ResourceRequests);
+        });
+    }
   }, [deleted, filtered, selectedPage]);
 
   function resetFilter() {
-    document.getElementById("filterManager").value = "";
+    if (accountProperties().roles?.includes("TPD Team")) {
+      document.getElementById("filterManager").value = "";
+    }
     document.getElementById("filterTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
@@ -182,9 +199,13 @@ export default function Resource() {
   };
 
   const exportRequests = () => {
-    const managerFilterProperty = selectedManager
-      ? { manager_name: selectedManager }
-      : "";
+    let managerFilterProperty = "";
+    if (accountProperties().roles?.includes("TPD Team")) {
+      managerFilterProperty = selectedManager
+        ? { manager_name: selectedManager }
+        : "";
+    }
+
     const titleFilterProperty = selectedTitle
       ? { employee_title: selectedTitle }
       : "";
@@ -212,9 +233,15 @@ export default function Resource() {
       ...categoryFilterProperty,
       ...subcategoryFilterProperty,
     };
-    resourceRequestService.export({
-      Filters,
-    });
+    if (accountProperties().roles?.includes("TPD Team")) {
+      resourceRequestService.export({
+        Filters,
+      });
+    } else {
+      resourceRequestService.exportAllByManager({
+        Filters,
+      });
+    }
   };
 
   return (
@@ -273,7 +300,12 @@ export default function Resource() {
           <thead class="thead-dark">
             <tr>
               <th scope="col">Ref No.</th>
-              <th scope="col">Manager</th>
+              {accountProperties().roles?.includes("TPD Team") ? (
+                <th scope="col">Manager</th>
+              ) : (
+                ""
+              )}
+
               <th scope="col">Function</th>
               <th scope="col">Title</th>
               <th scope="col">Start Date</th>
@@ -289,11 +321,15 @@ export default function Resource() {
             {resourceRequests.map((resourceRequest) => (
               <tr>
                 <th scope="row">{resourceRequest.reference_number}</th>
-                <td>{resourceRequest.manager_name}</td>
+                {accountProperties().roles?.includes("TPD Team") ? (
+                  <td>{resourceRequest.manager_name}</td>
+                ) : (
+                  ""
+                )}
                 <td>{resourceRequest.function}</td>
                 <td>{resourceRequest.title}</td>
-                <td>{resourceRequest.start_date}</td>
-                <td>{resourceRequest.end_date}</td>
+                <td>{resourceRequest.start_date?.split("T")[0]}</td>
+                <td>{resourceRequest.end_date?.split("T")[0]}</td>
                 <td>{resourceRequest.propability}</td>
                 <td>{resourceRequest.percentage}</td>
                 <td>{resourceRequest.status}</td>
@@ -343,7 +379,6 @@ export default function Resource() {
             count={100}
             color="primary"
             onChange={(event, value) => {
-              console.log(value);
               setSelectedPage(value);
             }}
           />
@@ -374,20 +409,28 @@ export default function Resource() {
                 </button>
               </div>
               <div class="modal-body row ">
-                <div className="filterElement" style={{ width: 200 }}>
-                  <Autocomplete
-                    id="filterManager"
-                    renderInput={(params) => (
-                      <TextField {...params} label="Manager" margin="normal" />
-                    )}
-                    value={selectedManager}
-                    options={managerFilterList}
-                    getOptionLabel={(option) => option.name}
-                    onChange={(event, value) => {
-                      setSelectedManager(value.name);
-                    }}
-                  />
-                </div>
+                {accountProperties().roles?.includes("TPD Team") ? (
+                  <div className="filterElement" style={{ width: 200 }}>
+                    <Autocomplete
+                      id="filterManager"
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Manager"
+                          margin="normal"
+                        />
+                      )}
+                      value={selectedManager}
+                      options={managerFilterList}
+                      getOptionLabel={(option) => option.name}
+                      onChange={(event, value) => {
+                        setSelectedManager(value.name);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
 
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete

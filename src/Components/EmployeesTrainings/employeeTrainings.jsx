@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -24,29 +23,30 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
 import ExportIcon from "../assets/file-export-solid.svg";
-import skillsService from "../../_services/skill.service";
+import trainingService from "../../_services/training.service";
 import employeeService from "../../_services/employee.service";
+
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
-  { id: "skillName", label: "Skill Name", minWidth: 100 },
-  { id: "exper", label: "Experience level", minWidth: 100 },
-
-  { id: "lastUsed", label: "Last Used", minWidth: 100 },
-  { id: "manName", label: "Manager Name", minWidth: 100 },
-  { id: "title", label: "Titile", minWidth: 100 },
-  { id: "func", label: "Function", minWidth: 100 },
+  { id: "activityName", label: "Training Activity Name", minWidth: 100 },
+  { id: "eventName", label: "Training Event Name", minWidth: 100 },
+  { id: "fromDate", label: "Event From Date", minWidth: 100 },
+  { id: "toDate", label: "Event To Date", minWidth: 100 },
+  { id: "totalHours", label: "Training Total Hours", minWidth: 100 },
 ];
 
-function createData(empName, skillName, exper, last, man, tit, fun) {
-  return { empName, tit, man, last, exper, skillName, fun };
+function createData(empName, tit, manName, last) {
+  return { empName, tit, manName, last };
 }
 
-const rows = [
-  createData("India", "IN", "xjwn", "wnxewn", "nddc", "mdsm", "nxndnj"),
-];
-
-var Filters = {};
+const rows = [createData("India", "IN", "xjwn", "wnxewn")];
 
 const useStyles = makeStyles({
   root: {
@@ -82,37 +82,27 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [skillsHistory, setskillsHistory] = useState([]);
-
+  const [trainings, setTrainings] = React.useState([]);
   // Filte options
-  const [employeesNames, setEmployeeNames] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [functions, setFunctions] = useState([]);
-  const [titles, settitles] = useState([]);
+  const [employeesNames, setEmployeeNames] = React.useState([]);
+  const [activityNames, setActivityNames] = React.useState([]);
+  const [fromDate, setFromDate] = React.useState(new Date());
+  const [toDate, setToDate] = React.useState(new Date());
 
   //filter values
-  const [selectedName, setselectedName] = useState(null);
-  const [selectedSkill, setselectedSkill] = useState(null);
-  const [selectedFunction, setselectedFunction] = useState(null);
-  const [selectedTitile, setselectedTitile] = useState(null);
+  const [selectedName, setselectedName] = React.useState(null);
+  const [selectedActivty, setselectedActivty] = React.useState(null);
+  const [selectedFromDate, setselectedFromDate] = React.useState(null);
+  const [selectedToDate, setselectedToDate] = React.useState(null);
 
   const namesOptions = {
     options: employeesNames,
     getOptionLabel: (option) => option,
   };
-  const skillsOptions = {
-    options: skills,
-    getOptionLabel: (option) => option.skill_name,
-  };
-  const functionsOptions = {
-    options: functions,
+  const activityOptions = {
+    options: activityNames,
     getOptionLabel: (option) => option,
   };
-  const titlesOptions = {
-    options: titles,
-    getOptionLabel: (option) => option,
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -120,29 +110,6 @@ export default function StickyHeadTable() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-  };
-
-  const handleFilter = () => {
-    var filterName = selectedName ? { name: selectedName } : "";
-    var filterskill = selectedSkill
-      ? { skill_id: parseInt(selectedSkill.skill_id) }
-      : "";
-    var filterFunction = selectedFunction ? { function: selectedFunction } : "";
-    var filterTitle = selectedTitile ? { function: selectedTitile } : "";
-    Filters = {
-      ...filterName,
-      ...filterskill,
-      ...filterFunction,
-      ...filterTitle,
-    };
-    skillsService.getSkillHistory({ Filters }).then((res) => {
-      setskillsHistory(res.Skills);
-    });
-    setOpen(false);
-  };
-
-  const expo = () => {
-    skillsService.export({ Filters });
   };
 
   const handleClickOpen = () => {
@@ -153,49 +120,80 @@ export default function StickyHeadTable() {
     setOpen(false);
   };
   const handleReset = () => {
-    document.getElementById("selectName").value = null;
-    document.getElementById("selectSkills").value = null;
-    document.getElementById("selectFunction").value = null;
-    document.getElementById("selectTitle").value = null;
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
-      setskillsHistory(res.Skills);
+    document.getElementById("selectName").value = "";
+    document.getElementById("selectActivity").value = "";
+    setselectedName("");
+    setselectedActivty("");
+    setselectedFromDate("");
+    setselectedToDate("");
+
+    trainingService.getAllEmployeeTrainings({ Filters: {} }).then((res) => {
+      setTrainings(res.Trainings);
+    });
+  };
+
+  const handleFilter = () => {
+    var filterName = selectedName ? { employee_name: selectedName } : "";
+    var filterActivty = selectedActivty
+      ? { training_activity_name: selectedActivty }
+      : "";
+    var filterFromDate = selectedFromDate
+      ? { event_from_date: selectedFromDate }
+      : "";
+    var filterToDate = selectedToDate ? { event_to_date: selectedToDate } : "";
+
+    const Filters = {
+      ...filterName,
+      ...filterActivty,
+      ...filterFromDate,
+      ...filterToDate,
+    };
+    trainingService.getAllEmployeeTrainings({ Filters }).then((res) => {
+      setTrainings(res.Trainings);
     });
     setOpen(false);
   };
 
-  useEffect(() => {
+  const expo = () => {
+    var filterName = selectedName ? { employee_name: selectedName } : "";
+    var filterActivty = selectedActivty
+      ? { training_activity_name: selectedActivty }
+      : "";
+    var filterFromDate = selectedFromDate
+      ? { event_from_date: selectedFromDate }
+      : "";
+    var filterToDate = selectedToDate ? { event_to_date: selectedToDate } : "";
+
+    const Filters = {
+      ...filterName,
+      ...filterActivty,
+      ...filterFromDate,
+      ...filterToDate,
+    };
+    trainingService.exportEmployeeTrainings({ Filters });
+  };
+
+  React.useEffect(() => {
     employeeService.getAllNames().then((res) => {
       setEmployeeNames(res.Names);
     });
 
-    employeeService.getAllFunctions().then((res) => {
-      setFunctions(res.Functions);
-    });
-
-    employeeService.getAllTitles().then((res) => {
-      settitles(res.Titles);
-    });
-
-    skillsService.getAllSkills().then((res) => {
-      setSkills(res.Skills);
-    });
-
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
-      setskillsHistory(res.Skills);
+    trainingService.getAllEmployeeTrainings({ Filters: {} }).then((res) => {
+      setTrainings(res.Trainings);
     });
   }, []);
 
   return (
     <div>
-      <h1 className={classes.title}>Employee Skills History</h1>
+      <h1 className={classes.title}>Employee Trainings </h1>
       <div className={classes.buttons}>
         <Fab aria-label="filter" onClick={() => setOpen(true)}>
           <FilterListIcon />
         </Fab>
         <Fab
-          onClick={expo}
           aria-label="export"
           className={classes.exportButton}
+          onClick={expo}
         >
           <img
             style={{
@@ -220,23 +218,22 @@ export default function StickyHeadTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {skillsHistory
+                {trainings
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, i) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                         <TableCell>{row.employee_profile.name}</TableCell>
-                        <TableCell>{row.skill.skill_name}</TableCell>
-                        <TableCell>
-                          {row.employee_skill.experience_level}
-                        </TableCell>
-                        <TableCell>
-                          {row.last_used_date?.split("T")[0]}
-                        </TableCell>
+                        <TableCell>{row.training_activity_name}</TableCell>
+                        <TableCell>{row.training_event_name}</TableCell>
 
-                        <TableCell>{row.manager_name}</TableCell>
-                        <TableCell>{row.title}</TableCell>
-                        <TableCell>{row.function}</TableCell>
+                        <TableCell>
+                          {row.event_from_date?.split("T")[0]}
+                        </TableCell>
+                        <TableCell>
+                          {row.event_to_date?.split("T")[0]}
+                        </TableCell>
+                        <TableCell>{row.total_training_hours}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -255,14 +252,13 @@ export default function StickyHeadTable() {
         </Paper>
       </Grid>
       <Dialog
-        disableBackdropClick={true}
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          Employee List Filter
+          Employee Trainings Filter
         </DialogTitle>
         <DialogContent>
           <Autocomplete
@@ -270,6 +266,7 @@ export default function StickyHeadTable() {
             {...namesOptions}
             id="selectName"
             clearOnEscape
+            value={selectedName}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -282,51 +279,52 @@ export default function StickyHeadTable() {
           />
 
           <Autocomplete
-            onChange={(event, value) => setselectedSkill(value)}
-            {...skillsOptions}
-            id="selectSkills"
+            onChange={(event, value) => setselectedActivty(value)}
+            {...activityOptions}
+            id="selectActivity"
             clearOnEscape
+            value={selectedActivty}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
                 className={classes.select}
                 {...params}
-                label="Skills Name"
+                label="Activity Name"
                 margin="normal"
               />
             )}
           />
-          <Autocomplete
-            onChange={(event, value) => setselectedFunction(value)}
-            {...functionsOptions}
-            id="selectFunction"
-            clearOnEscape
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Function"
-                margin="normal"
-              />
-            )}
-          />
-          <Autocomplete
-            onChange={(event, value) => setselectedTitile(value)}
-            {...titlesOptions}
-            id="selectTitle"
-            onChange={(event, value) => console.log(value)}
-            clearOnEscape
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Title"
-                margin="normal"
-              />
-            )}
-          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="selectFrom"
+              label="From Date"
+              value={selectedFromDate}
+              onChange={(date) => setFromDate(date)}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
+          <br />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="selectTo"
+              label="To Date"
+              value={selectedToDate}
+              onChange={(date) => setToDate(date)}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleFilter} color="primary">
@@ -341,10 +339,4 @@ export default function StickyHeadTable() {
   );
 }
 
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-];
+const statusOptions = ["Last Updated", "Non-registered"];

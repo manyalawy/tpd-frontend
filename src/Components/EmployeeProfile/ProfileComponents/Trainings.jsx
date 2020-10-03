@@ -3,15 +3,16 @@ import React from "react";
 //service
 import employeeService from "../../../_services/employee.service";
 
-export default function Trainings() {
+export default function Trainings(props) {
   const [trainings, setTrainings] = React.useState([]);
 
   //fetch User trainings
   React.useEffect(() => {
-    employeeService.getMyTrainings().then((res) => {
-      setTrainings(res.Employee?.employee_trainings);
-      console.log(res.Employee);
-    });
+    employeeService
+      .getEmployeeTrainings({ employee_id: props?.id })
+      .then((res) => {
+        setTrainings(res.Employee?.employee_trainings);
+      });
   }, []);
 
   return (
@@ -29,7 +30,7 @@ export default function Trainings() {
               <th scope="col">Training Total Hours</th>
             </tr>
           </thead>
-          <tbody style={{ backgroundColor: "white" }}>
+          <tbody>
             {trainings.map((training) => (
               <tr>
                 <th scope="row">{training.training_activity_name}</th>

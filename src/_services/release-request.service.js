@@ -9,7 +9,50 @@ export default {
   update,
   delete: _delete,
   export: _export,
+  getAllByManager,
+  exportAllByManager,
+  addAction,
 };
+
+function addAction(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/release-request/action`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function exportAllByManager(body) {
+  const FileDownload = require("js-file-download");
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(
+    `${apiUrl}/release-request/manager/exportAll`,
+    requestOptions
+  ).then((res) => {
+    res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+  });
+}
+
+function getAllByManager(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/release-request/manager/getAll`, requestOptions).then(
+    handleResponse
+  );
+}
 
 function getAll(body) {
   const requestOptions = {

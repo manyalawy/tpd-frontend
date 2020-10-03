@@ -1,5 +1,5 @@
 import { AssignmentSharp } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,8 +17,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
+import { useSnackbar } from "notistack";
+
 //service
 import employeeService from "../../../_services/employee.service";
+import assignmentService from "../../../_services/assignment.service";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -65,43 +68,121 @@ const useStyles = makeStyles({
     width: "170px",
   },
 });
-export default function Assignments() {
+export default function Assignments(props) {
   let history = useHistory();
+  const [name, setName] = React.useState("");
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [assignments, setAssignments] = React.useState([]);
 
+  //add assignment
+  const [workgroup, setWorkgroup] = useState("");
+  const [costcenter, setCostCenter] = useState("");
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const [sdmManager, setSDMManager] = useState("");
+
+  const [percentage, setPercentage] = useState("");
+
+  const [startDate, setStartDate] = useState(new Date());
+
+  const [releaseDate, setReleaseDate] = useState(new Date());
+
+  const [editingAss, setEditingAss] = React.useState(false);
+  const [editingAssId, setEditingAssId] = React.useState("");
+
+  const [refresh, setRefresh] = React.useState(false);
+
   //fetch User Assignments
   React.useEffect(() => {
-    employeeService.getMyAssignments().then((res) => {
-      setAssignments(res.Employee?.assignments);
-    });
-  }, []);
+    employeeService
+      .getEmployeeAssignments({ employee_id: props?.id })
+      .then((res) => {
+        setAssignments(res.Employee?.assignments);
+        setName(res.Employee?.name);
+      });
+  }, [refresh]);
+
+  const handleAdd = () => {
+    setOpen(false);
+    assignmentService
+      .addEmployeeAssignment({
+        Assignment: {
+          workgroup: workgroup,
+          cost_center: costcenter,
+          sdm_reporting_manager: sdmManager,
+          allocation_percentage: percentage,
+          start_date: startDate,
+          release_date: releaseDate,
+          employee_id: props?.id,
+        },
+      })
+      .then((res) => {
+        enqueueSnackbar("Assignment Added Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
+      });
+  };
+  const handleEdit = () => {
+    setOpen(false);
+    assignmentService
+      .editEmployeeAssignment({
+        Assignment: {
+          assignment_id: editingAssId,
+          workgroup: workgroup,
+          cost_center: costcenter,
+          sdm_reporting_manager: sdmManager,
+          allocation_percentage: percentage,
+          start_date: startDate,
+          release_date: releaseDate,
+          employee_id: props?.id,
+        },
+      })
+      .then(() => {
+        enqueueSnackbar("Assignment Edited Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
+      });
+  };
+
+  const handleDelete = (id) => {
+    assignmentService
+      .deleteEmployeeAssignment({
+        Assignment: {
+          assignment_id: id,
+        },
+      })
+      .then((res) => {
+        enqueueSnackbar("Assignment Deleted Successfully", {
+          variant: "success",
+        });
+        setRefresh(!refresh);
+      });
+  };
 
   return (
     <div>
-      <Grid
-        container
-        alignItems="flex-start"
-        justify="flex-end"
-        direction="row"
-      >
-        <Button
-          className={classes.addButton}
-          variant="contained"
-          onClick={() => history.push("/profile/assignments-history")}
+      {props?.editing ? (
+        <Grid
+          container
+          alignItems="flex-start"
+          justify="flex-end"
+          direction="row"
         >
-          View History
-        </Button>
-        {/* <Button
-          className={classes.addButton}
-          variant="contained"
-          onClick={handleClickOpen}
-        >
-          Add assigment
-        </Button> */}
-      </Grid>
+          <Button
+            className={classes.addButton}
+            variant="contained"
+            onClick={() => setOpen(true)}
+          >
+            Add assigment
+          </Button>
+        </Grid>
+      ) : (
+        ""
+      )}
       <div className="row">
         {assignments.map((assignment, i) => (
           <div className="col-md-3">
@@ -140,54 +221,56 @@ export default function Assignments() {
                   {assignment.release_date?.split("T")[0]}
                 </Typography>
               </CardContent>
+              {props?.editing ? (
+                <CardActions>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setEditingAss(true);
+                      setEditingAssId(assignment.assignment_id);
+                      setWorkgroup(assignment.workgroup);
+                      setCostCenter(assignment.cost_center);
+                      setSDMManager(assignment.sdm_reporting_manager);
+                      setPercentage(assignment.allocation_percentage);
+                      setStartDate(assignment.start_date);
+                      setReleaseDate(assignment.release_date);
+                      setOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>{" "}
+                  |{" "}
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      handleDelete(assignment.assignment_id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </CardActions>
+              ) : (
+                ""
+              )}
             </Card>
           </div>
         ))}
-        {/*  <Card className={classes.root}>
-            <CardContent>
-              <Typography
-                className={classes.title}
-                color="textSecondary"
-                gutterBottom
-              >
-                Assigment 1
-              </Typography>
-
-              <Typography className={classes.content}>Workgroup:</Typography>
-              <Typography className={classes.content}>Cost Center:</Typography>
-              <Typography className={classes.content}>SDM Manager:</Typography>
-              <Typography className={classes.content}>
-                Allocation Percentage:
-              </Typography>
-              <Typography className={classes.content}>Start Date</Typography>
-              <Typography className={classes.content}>Release Date</Typography>
-            </CardContent>
-            <CardActions>
-              <Button
-                href="#text-buttons"
-                color="primary"
-                onClick={handleClickOpen}
-              >
-                Edit
-              </Button>{" "}
-              |{" "}
-              <Button href="#text-buttons" color="primary">
-                Delete
-              </Button>
-            </CardActions> 
-          </Card>*/}
       </div>
-      {/* <Dialog
+      <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Assigment form</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {editingAss ? "Edit Assingment" : "Add Assingment"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <TextField
               required
+              value={workgroup}
+              onChange={(e, value) => setWorkgroup(e.target.value)}
               className={classes.form}
               display="inline"
               id="workGroup"
@@ -195,6 +278,8 @@ export default function Assignments() {
             />
             <TextField
               required
+              value={costcenter}
+              onChange={(e, value) => setCostCenter(e.target.value)}
               className={classes.form}
               display="inline"
               id="costCenter"
@@ -202,6 +287,8 @@ export default function Assignments() {
             />
             <TextField
               required
+              value={sdmManager}
+              onChange={(e, value) => setSDMManager(e.target.value)}
               className={classes.form}
               display="inline"
               id="sdmManager"
@@ -209,6 +296,8 @@ export default function Assignments() {
             />
             <TextField
               required
+              value={percentage}
+              onChange={(e, value) => setPercentage(e.target.value)}
               type="number"
               min="1"
               className={classes.form}
@@ -225,13 +314,13 @@ export default function Assignments() {
               <KeyboardDatePicker
                 className={classes.date}
                 disableToolbar
+                value={startDate}
+                onChange={(value) => setStartDate(value)}
                 variant="inline"
                 format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inline"
                 label="Date picker inline"
-                value={selectedDate}
-                onChange={handleDateChange}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
@@ -239,13 +328,13 @@ export default function Assignments() {
               <KeyboardDatePicker
                 className={classes.date}
                 disableToolbar
+                value={releaseDate}
+                onChange={(value) => setReleaseDate(value)}
                 variant="inline"
                 format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inlin"
                 label="Date picker inline"
-                value={selectedDate2}
-                onChange={handleDateChange2}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
@@ -254,24 +343,33 @@ export default function Assignments() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Add
+          <Button onClick={editingAss ? handleEdit : handleAdd} color="primary">
+            {editingAss ? "Save" : "Add"}
           </Button>
           <Button onClick={() => setOpen(false)} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
-      </Dialog> */}
-      {/* <Grid
+      </Dialog>
+      <Grid
         container
         alignItems="flex-start"
         justify="flex-end"
         direction="row"
       >
-        <Button className={classes.addButton} variant="contained">
+        <Button
+          className={classes.addButton}
+          variant="contained"
+          onClick={() =>
+            history.push({
+              pathname: "/employee-profile/assignments-history",
+              state: { id: props?.id, name },
+            })
+          }
+        >
           View History
         </Button>
-      </Grid> */}
+      </Grid>
     </div>
   );
 }

@@ -7,11 +7,35 @@ export default {
   getAllTitles,
   getAllFunctions,
   getAllNames,
+  getAllWorkgroups,
   getMySkills,
   getMyDetails,
   getMyCertificates,
   getMyTrainings,
+  getMyAssignments,
+  exportAll,
+  getEmployeeSkills,
+  getEmployeeCertificates,
+  getEmployeeTrainings,
+  getEmployeeAssignments,
+  getEmployeeAssignmentHistory,
 };
+
+function exportAll(body) {
+  const FileDownload = require("js-file-download");
+
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/employee-profile/all/export`, requestOptions).then(
+    (res) => {
+      res.text().then((text) => FileDownload(text, "Employees.csv"));
+    }
+  );
+}
 
 function getAll(body) {
   const requestOptions = {
@@ -32,6 +56,17 @@ function getAllTitles() {
   };
 
   return fetch(`${apiUrl}/employee-profile/titles`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getAllWorkgroups() {
+  const requestOptions = {
+    method: "GET",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/employee-profile/workgroups`, requestOptions).then(
     handleResponse
   );
 }
@@ -83,6 +118,40 @@ function getAllFunctions() {
     handleResponse
   );
 }
+
+function getMyAssignments() {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+  };
+
+  return fetch(`${apiUrl}/assignment/my`, requestOptions).then(handleResponse);
+}
+
+function getEmployeeAssignmentHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/assignment/history/empoloyee`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getEmployeeAssignments(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/assignment/employee`, requestOptions).then(
+    handleResponse
+  );
+}
+
 function getAllNames() {
   const requestOptions = {
     method: "GET",
@@ -90,6 +159,42 @@ function getAllNames() {
   };
 
   return fetch(`${apiUrl}/employee-profile/names`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getEmployeeSkills(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/skill/employee/all`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getEmployeeCertificates(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/certification/employee/all`, requestOptions).then(
+    handleResponse
+  );
+}
+
+function getEmployeeTrainings(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/training/employeeTrainings`, requestOptions).then(
     handleResponse
   );
 }

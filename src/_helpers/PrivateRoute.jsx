@@ -1,11 +1,13 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import isTokenExpired from "./isTokenExpired";
+
 const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (!localStorage.getItem("user")) {
+        if (isTokenExpired(localStorage.getItem("user"))) {
           // not logged in so redirect to login page with the return url
           return (
             <Redirect

@@ -5,14 +5,17 @@ import employeeService from "../../../_services/employee.service";
 
 import "../Profile.css";
 
-export default function BasicInfo() {
+export default function BasicInfo(props) {
   const [employeeDetails, setEmployeeDetails] = useState({});
 
   //fetch User Data
   useEffect(() => {
-    employeeService.getMyDetails().then((res) => {
-      setEmployeeDetails(res.Employee);
-    });
+    console.log(props);
+    employeeService
+      .getEmployeeSkills({ employee_id: props?.id })
+      .then((res) => {
+        setEmployeeDetails(res.Employee);
+      });
   }, []);
 
   return (

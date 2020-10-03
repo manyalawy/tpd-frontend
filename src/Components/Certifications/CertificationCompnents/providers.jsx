@@ -195,7 +195,7 @@ export default function SkillListing() {
 
   return (
     <div>
-      <h1 className={classes.title}>Providers List</h1>
+      <h1 className={classes.title}>Certification Providers </h1>
       {/* <Box component="div" display="inline"> */}
       <div style={{ display: "inline" }}>
         <OutlinedInput

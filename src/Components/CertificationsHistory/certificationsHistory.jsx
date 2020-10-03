@@ -24,29 +24,23 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
 import ExportIcon from "../assets/file-export-solid.svg";
-import skillsService from "../../_services/skill.service";
+import certificationService from "../../_services/certification.service";
 import employeeService from "../../_services/employee.service";
 
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
-  { id: "skillName", label: "Skill Name", minWidth: 100 },
-  { id: "exper", label: "Experience level", minWidth: 100 },
-
-  { id: "lastUsed", label: "Last Used", minWidth: 100 },
-  { id: "manName", label: "Manager Name", minWidth: 100 },
-  { id: "title", label: "Titile", minWidth: 100 },
-  { id: "func", label: "Function", minWidth: 100 },
+  { id: "certificationName", label: "Certification Name", minWidth: 100 },
+  { id: "providerName", label: "Certification Provider Name", minWidth: 100 },
+  { id: "expDate", label: "Expiration Date", minWidth: 100 },
 ];
 
-function createData(empName, skillName, exper, last, man, tit, fun) {
-  return { empName, tit, man, last, exper, skillName, fun };
+function createData(empName, certificationName, providerName, expDate) {
+  return { empName, certificationName, providerName, expDate };
 }
 
 const rows = [
   createData("India", "IN", "xjwn", "wnxewn", "nddc", "mdsm", "nxndnj"),
 ];
-
-var Filters = {};
 
 const useStyles = makeStyles({
   root: {
@@ -82,35 +76,29 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [skillsHistory, setskillsHistory] = useState([]);
+  const [certificationsHistory, setCertificationsHistory] = useState([]);
 
   // Filte options
   const [employeesNames, setEmployeeNames] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [functions, setFunctions] = useState([]);
-  const [titles, settitles] = useState([]);
+  const [providerNames, setProviderNames] = useState([]);
+  const [certificates, setCertificates] = useState([]);
 
   //filter values
   const [selectedName, setselectedName] = useState(null);
-  const [selectedSkill, setselectedSkill] = useState(null);
-  const [selectedFunction, setselectedFunction] = useState(null);
-  const [selectedTitile, setselectedTitile] = useState(null);
+  const [selectedProvider, setselectedProvider] = useState(null);
+  const [selectedCertifcate, setselectedCertifcate] = useState(null);
 
   const namesOptions = {
     options: employeesNames,
     getOptionLabel: (option) => option,
   };
-  const skillsOptions = {
-    options: skills,
-    getOptionLabel: (option) => option.skill_name,
+  const providersOptions = {
+    options: providerNames,
+    getOptionLabel: (option) => option.certification_provider_name,
   };
-  const functionsOptions = {
-    options: functions,
-    getOptionLabel: (option) => option,
-  };
-  const titlesOptions = {
-    options: titles,
-    getOptionLabel: (option) => option,
+  const certifactesOptions = {
+    options: certificates,
+    getOptionLabel: (option) => option.certification_name,
   };
 
   const handleChangePage = (event, newPage) => {
@@ -124,25 +112,45 @@ export default function StickyHeadTable() {
 
   const handleFilter = () => {
     var filterName = selectedName ? { name: selectedName } : "";
-    var filterskill = selectedSkill
-      ? { skill_id: parseInt(selectedSkill.skill_id) }
+    var filterProvider = selectedProvider
+      ? {
+          certification_provider_id: parseInt(
+            selectedProvider.certification_provider_id
+          ),
+        }
       : "";
-    var filterFunction = selectedFunction ? { function: selectedFunction } : "";
-    var filterTitle = selectedTitile ? { function: selectedTitile } : "";
-    Filters = {
+    var filterCertifacte = selectedCertifcate
+      ? { certification_id: parseInt(selectedCertifcate.certification_id) }
+      : "";
+    const Filters = {
       ...filterName,
-      ...filterskill,
-      ...filterFunction,
-      ...filterTitle,
+      ...filterProvider,
+      ...filterCertifacte,
     };
-    skillsService.getSkillHistory({ Filters }).then((res) => {
-      setskillsHistory(res.Skills);
+    certificationService.getCertifactionsHistory({ Filters }).then((res) => {
+      setCertificationsHistory(res.Certifications);
     });
     setOpen(false);
   };
 
   const expo = () => {
-    skillsService.export({ Filters });
+    var filterName = selectedName ? { name: selectedName } : "";
+    var filterProvider = selectedProvider
+      ? {
+          certification_provider_id: parseInt(
+            selectedProvider.certification_provider_id
+          ),
+        }
+      : "";
+    var filterCertifacte = selectedCertifcate
+      ? { certification_id: parseInt(selectedCertifcate.certification_id) }
+      : "";
+    const Filters = {
+      ...filterName,
+      ...filterProvider,
+      ...filterCertifacte,
+    };
+    certificationService.exportHistory({ Filters });
   };
 
   const handleClickOpen = () => {
@@ -154,12 +162,17 @@ export default function StickyHeadTable() {
   };
   const handleReset = () => {
     document.getElementById("selectName").value = null;
-    document.getElementById("selectSkills").value = null;
-    document.getElementById("selectFunction").value = null;
-    document.getElementById("selectTitle").value = null;
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
-      setskillsHistory(res.Skills);
-    });
+    document.getElementById("selectProviders").value = null;
+    document.getElementById("selectCertificates").value = null;
+    setselectedName("");
+    setselectedProvider("");
+    setselectedCertifcate("");
+
+    certificationService
+      .getCertifactionsHistory({ Filters: {} })
+      .then((res) => {
+        setCertificationsHistory(res.Certifications);
+      });
     setOpen(false);
   };
 
@@ -168,26 +181,24 @@ export default function StickyHeadTable() {
       setEmployeeNames(res.Names);
     });
 
-    employeeService.getAllFunctions().then((res) => {
-      setFunctions(res.Functions);
+    certificationService.getCertificates({ Filters: {} }).then((res) => {
+      setCertificates(res.Certifications);
     });
 
-    employeeService.getAllTitles().then((res) => {
-      settitles(res.Titles);
+    certificationService.getAllProviders().then((res) => {
+      setProviderNames(res.CertificateProviders);
     });
 
-    skillsService.getAllSkills().then((res) => {
-      setSkills(res.Skills);
-    });
-
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
-      setskillsHistory(res.Skills);
-    });
+    certificationService
+      .getCertifactionsHistory({ Filters: {} })
+      .then((res) => {
+        setCertificationsHistory(res.Certifications);
+      });
   }, []);
 
   return (
     <div>
-      <h1 className={classes.title}>Employee Skills History</h1>
+      <h1 className={classes.title}>Employees Certification History</h1>
       <div className={classes.buttons}>
         <Fab aria-label="filter" onClick={() => setOpen(true)}>
           <FilterListIcon />
@@ -220,23 +231,17 @@ export default function StickyHeadTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {skillsHistory
+                {certificationsHistory
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, i) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={i}>
-                        <TableCell>{row.employee_profile.name}</TableCell>
-                        <TableCell>{row.skill.skill_name}</TableCell>
+                        <TableCell>{row.employee_name}</TableCell>
+                        <TableCell>{row.certification_name}</TableCell>
+                        <TableCell>{row.certification_provider_name}</TableCell>
                         <TableCell>
-                          {row.employee_skill.experience_level}
+                          {row.expiration_date?.split("T")[0]}
                         </TableCell>
-                        <TableCell>
-                          {row.last_used_date?.split("T")[0]}
-                        </TableCell>
-
-                        <TableCell>{row.manager_name}</TableCell>
-                        <TableCell>{row.title}</TableCell>
-                        <TableCell>{row.function}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -270,6 +275,7 @@ export default function StickyHeadTable() {
             {...namesOptions}
             id="selectName"
             clearOnEscape
+            value={selectedName}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
@@ -282,47 +288,33 @@ export default function StickyHeadTable() {
           />
 
           <Autocomplete
-            onChange={(event, value) => setselectedSkill(value)}
-            {...skillsOptions}
-            id="selectSkills"
+            onChange={(event, value) => setselectedProvider(value)}
+            {...providersOptions}
+            id="selectProviders"
             clearOnEscape
+            value={selectedProvider}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
                 className={classes.select}
                 {...params}
-                label="Skills Name"
+                label="Certification Provider Name"
                 margin="normal"
               />
             )}
           />
           <Autocomplete
-            onChange={(event, value) => setselectedFunction(value)}
-            {...functionsOptions}
-            id="selectFunction"
+            onChange={(event, value) => setselectedCertifcate(value)}
+            {...certifactesOptions}
+            id="selectCertificates"
             clearOnEscape
+            value={selectedCertifcate}
             renderInput={(params) => (
               <TextField
                 style={{ width: 200 }}
                 className={classes.select}
                 {...params}
-                label="Function"
-                margin="normal"
-              />
-            )}
-          />
-          <Autocomplete
-            onChange={(event, value) => setselectedTitile(value)}
-            {...titlesOptions}
-            id="selectTitle"
-            onChange={(event, value) => console.log(value)}
-            clearOnEscape
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Title"
+                label="Certification"
                 margin="normal"
               />
             )}
