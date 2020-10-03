@@ -5,11 +5,16 @@ import React from "react";
 import Guard from "./guard";
 import { accountProperties } from "../../_helpers/accountProperties";
 
-const ManagerGuard = (props) => {
+const ManagerTPDGuard = (props) => {
   return (
-    <Guard condition={accountProperties().roles?.includes("Manager")}>
+    <Guard
+      condition={
+        accountProperties().roles?.includes("Manager") ||
+        accountProperties().roles?.includes("TPD Team")
+      }
+    >
       {props.children}
     </Guard>
   );
 };
-export default ManagerGuard;
+export default ManagerTPDGuard;

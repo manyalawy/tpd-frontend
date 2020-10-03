@@ -7,7 +7,6 @@ import AddIcon from "@material-ui/icons/Add";
 import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import Pagination from "@material-ui/lab/Pagination";
 import HistoryIcon from "@material-ui/icons/History";
 import Table from "@material-ui/core/Table";
@@ -18,6 +17,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+
+import { accountProperties } from "../../_helpers";
 
 import "./ReleaseReq.css";
 
@@ -119,19 +120,33 @@ export default function ReleaseReq() {
       ...employeeFilterProperty,
       ...statusFilterProperty,
     };
-    releaseRequestService
-      .getAll({
-        Page: selectedPage - 1,
-        Limit: 10,
-        Filters,
-      })
-      .then((res) => {
-        setReleaseRequests(res.ReleaseRequests);
-      });
+    if (accountProperties().roles?.includes("TPD Team")) {
+      releaseRequestService
+        .getAll({
+          Page: selectedPage - 1,
+          Limit: 10,
+          Filters,
+        })
+        .then((res) => {
+          setReleaseRequests(res.ReleaseRequests);
+        });
+    } else {
+      releaseRequestService
+        .getAllByManager({
+          Page: selectedPage - 1,
+          Limit: 10,
+          Filters,
+        })
+        .then((res) => {
+          setReleaseRequests(res.ReleaseRequests);
+        });
+    }
   }, [deleted, filtered, selectedPage]);
 
   function resetFilter() {
-    document.getElementById("filterManager").value = "";
+    if (accountProperties().roles?.includes("TPD Team")) {
+      document.getElementById("filterManager").value = "";
+    }
     document.getElementById("filterEmployeeTitle").value = "";
     document.getElementById("filterFunction").value = "";
     document.getElementById("filterStatus").value = "";
@@ -153,9 +168,12 @@ export default function ReleaseReq() {
   };
 
   const exportRequests = () => {
-    const managerFilterProperty = selectedManager
-      ? { manager_name: selectedManager }
-      : "";
+    let managerFilterProperty = "";
+    if (accountProperties().roles?.includes("TPD Team")) {
+      managerFilterProperty = selectedManager
+        ? { manager_name: selectedManager }
+        : "";
+    }
     const titleFilterProperty = selectedTitle
       ? { employee_title: selectedTitle }
       : "";
@@ -176,12 +194,21 @@ export default function ReleaseReq() {
       ...employeeFilterProperty,
       ...statusFilterProperty,
     };
-    releaseRequestService.export({
-      Filters,
-    });
-    enqueueSnackbar("Requests Exported Successfully", {
-      variant: "success",
-    });
+    if (accountProperties().roles?.includes("TPD Team")) {
+      releaseRequestService.export({
+        Filters,
+      });
+      enqueueSnackbar("Requests Exported Successfully", {
+        variant: "success",
+      });
+    } else {
+      releaseRequestService.exportAllByManager({
+        Filters,
+      });
+      enqueueSnackbar("Requests Exported Successfully", {
+        variant: "success",
+      });
+    }
   };
 
   const editRequest = (reference_number) => {
@@ -249,7 +276,11 @@ export default function ReleaseReq() {
           <thead class="thead-dark">
             <tr>
               <th scope="col">Ref No.</th>
-              <th scope="col">Manager</th>
+              {accountProperties().roles?.includes("TPD Team") ? (
+                <th scope="col">Manager</th>
+              ) : (
+                ""
+              )}
               <th scope="col">Resource Name</th>
               <th scope="col">Employee ID</th>
               <th scope="col">Employee Title</th>
@@ -267,13 +298,17 @@ export default function ReleaseReq() {
             {releaseRequests.map((releaseRequest) => (
               <tr>
                 <th scope="row">{releaseRequest.reference_number}</th>
-                <td>{releaseRequest.manager_name}</td>
+                {accountProperties().roles?.includes("TPD Team") ? (
+                  <td>{releaseRequest.manager_name}</td>
+                ) : (
+                  ""
+                )}
                 <td>{releaseRequest.employee_name}</td>
                 <td>{releaseRequest.employee_id}</td>
                 <td>{releaseRequest.title}</td>
                 <td>{releaseRequest.function}</td>
 
-                <td>{releaseRequest.release_date}</td>
+                <td>{releaseRequest.release_date?.split("T")[0]}</td>
                 <td>{releaseRequest.release_percentage}</td>
                 <td>{releaseRequest.release_reason}</td>
                 <td>{releaseRequest.leaving}</td>
@@ -354,20 +389,29 @@ export default function ReleaseReq() {
             </div>
             <div class="modal-body">
               <div className="row">
-                <div className="filterElement" style={{ width: 200 }}>
-                  <Autocomplete
-                    id="filterManager"
-                    renderInput={(params) => (
-                      <TextField {...params} label="Manager" margin="normal" />
-                    )}
-                    value={selectedManager}
-                    options={managerFilterList}
-                    getOptionLabel={(option) => option.name}
-                    onChange={(event, value) => {
-                      setSelectedManager(value.name);
-                    }}
-                  />
-                </div>
+                {accountProperties().roles?.includes("TPD Team") ? (
+                  <div className="filterElement" style={{ width: 200 }}>
+                    <Autocomplete
+                      id="filterManager"
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Manager"
+                          margin="normal"
+                        />
+                      )}
+                      value={selectedManager}
+                      options={managerFilterList}
+                      getOptionLabel={(option) => option.name}
+                      onChange={(event, value) => {
+                        setSelectedManager(value.name);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 <div className="filterElement" style={{ width: 200 }}>
                   <Autocomplete
                     id="filterEmployeeTitle"

@@ -32,7 +32,7 @@ import MySkills from "./Components/Profile/MyProfileComponents/skills";
 import MyCertifications from "./Components/Profile/MyProfileComponents/certificates";
 import MyAssignments from "./Components/Profile/MyProfileComponents/Assigments";
 import MyAssignmentsHistory from "./Components/AssignmentsHistory/AssignmentHistory";
-import ManagerGuard from "./Components/Guards/ManagerGuard";
+import ManagerTPDGuard from "./Components/Guards/ManagerTPDGuard";
 
 const theme = createMuiTheme({
   typography: {
@@ -83,24 +83,24 @@ const DefaultContainer = () => (
         component={EmployeeAssignementHistory}
       />
     </TPDGuard>
-    <TPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/release-requests" component={Release} />
-    </TPDGuard>
-    <TPDGuard>
+    </ManagerTPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/release-requests/add" component={ReleaseForm} />
-    </TPDGuard>
-    <TPDGuard>
+    </ManagerTPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/release-requests/edit" component={ReleaseForm} />
-    </TPDGuard>
-    <TPDGuard>
+    </ManagerTPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/resource-requests" component={Resource} />
-    </TPDGuard>
-    <TPDGuard>
+    </ManagerTPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/resource-requests/add" component={ResourceForm} />
-    </TPDGuard>
-    <TPDGuard>
+    </ManagerTPDGuard>
+    <ManagerTPDGuard>
       <Route exact path="/resource-requests/edit" component={ResourceForm} />
-    </TPDGuard>
+    </ManagerTPDGuard>
     <TPDGuard>
       <Route exact path="/certifications-history" component={CerHistory} />
     </TPDGuard>
