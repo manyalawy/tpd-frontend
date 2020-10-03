@@ -18,6 +18,7 @@ export default {
   getEmployeeCertificates,
   getEmployeeTrainings,
   getEmployeeAssignments,
+  getEmployeeAssignmentHistory,
 };
 
 function exportAll(body) {
@@ -125,6 +126,18 @@ function getMyAssignments() {
   };
 
   return fetch(`${apiUrl}/assignment/my`, requestOptions).then(handleResponse);
+}
+
+function getEmployeeAssignmentHistory(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/assignment/history/empoloyee`, requestOptions).then(
+    handleResponse
+  );
 }
 
 function getEmployeeAssignments(body) {

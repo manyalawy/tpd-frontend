@@ -67,6 +67,7 @@ const useStyles = makeStyles({
 });
 export default function Assignments(props) {
   let history = useHistory();
+  const [name, setName] = React.useState("");
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -78,32 +79,33 @@ export default function Assignments(props) {
       .getEmployeeAssignments({ employee_id: props?.id })
       .then((res) => {
         setAssignments(res.Employee?.assignments);
+        setName(res.Employee?.name);
       });
   }, []);
 
+  const handleSubmit = () => {
+    setOpen(false);
+  };
   return (
     <div>
-      <Grid
-        container
-        alignItems="flex-start"
-        justify="flex-end"
-        direction="row"
-      >
-        <Button
-          className={classes.addButton}
-          variant="contained"
-          onClick={() => history.push("/profile/assignments-history")}
+      {props?.editing ? (
+        <Grid
+          container
+          alignItems="flex-start"
+          justify="flex-end"
+          direction="row"
         >
-          View History
-        </Button>
-        {/* <Button
-          className={classes.addButton}
-          variant="contained"
-          onClick={handleClickOpen}
-        >
-          Add assigment
-        </Button> */}
-      </Grid>
+          <Button
+            className={classes.addButton}
+            variant="contained"
+            onClick={() => setOpen(true)}
+          >
+            Add assigment
+          </Button>
+        </Grid>
+      ) : (
+        ""
+      )}
       <div className="row">
         {assignments.map((assignment, i) => (
           <div className="col-md-3">
@@ -142,50 +144,27 @@ export default function Assignments(props) {
                   {assignment.release_date?.split("T")[0]}
                 </Typography>
               </CardContent>
+              {props?.editing ? (
+                <CardActions>
+                  <Button color="primary" onClick={() => setOpen(true)}>
+                    Edit
+                  </Button>{" "}
+                  | <Button color="primary">Delete</Button>
+                </CardActions>
+              ) : (
+                ""
+              )}
             </Card>
           </div>
         ))}
-        {/*  <Card className={classes.root}>
-            <CardContent>
-              <Typography
-                className={classes.title}
-                color="textSecondary"
-                gutterBottom
-              >
-                Assigment 1
-              </Typography>
-
-              <Typography className={classes.content}>Workgroup:</Typography>
-              <Typography className={classes.content}>Cost Center:</Typography>
-              <Typography className={classes.content}>SDM Manager:</Typography>
-              <Typography className={classes.content}>
-                Allocation Percentage:
-              </Typography>
-              <Typography className={classes.content}>Start Date</Typography>
-              <Typography className={classes.content}>Release Date</Typography>
-            </CardContent>
-            <CardActions>
-              <Button
-                href="#text-buttons"
-                color="primary"
-                onClick={handleClickOpen}
-              >
-                Edit
-              </Button>{" "}
-              |{" "}
-              <Button href="#text-buttons" color="primary">
-                Delete
-              </Button>
-            </CardActions> 
-          </Card>*/}
       </div>
-      {/* <Dialog
+      <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Assigment form</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Add Assingment</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <TextField
@@ -232,8 +211,8 @@ export default function Assignments(props) {
                 margin="normal"
                 id="date-picker-inline"
                 label="Date picker inline"
-                value={selectedDate}
-                onChange={handleDateChange}
+                // value={selectedDate}
+                // onChange={handleDateChange}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
@@ -246,8 +225,8 @@ export default function Assignments(props) {
                 margin="normal"
                 id="date-picker-inlin"
                 label="Date picker inline"
-                value={selectedDate2}
-                onChange={handleDateChange2}
+                // value={selectedDate2}
+                // onChange={handleDateChange2}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                 }}
@@ -256,24 +235,33 @@ export default function Assignments(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             Add
           </Button>
           <Button onClick={() => setOpen(false)} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
-      </Dialog> */}
-      {/* <Grid
+      </Dialog>
+      <Grid
         container
         alignItems="flex-start"
         justify="flex-end"
         direction="row"
       >
-        <Button className={classes.addButton} variant="contained">
+        <Button
+          className={classes.addButton}
+          variant="contained"
+          onClick={() =>
+            history.push({
+              pathname: "/employee-profile/assignments-history",
+              state: { id: props?.id, name },
+            })
+          }
+        >
           View History
         </Button>
-      </Grid> */}
+      </Grid>
     </div>
   );
 }

@@ -70,8 +70,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function StickyHeadTable() {
-  const [open, setOpen] = React.useState(false);
+export default function EmployeeAssignmentsHistory(props) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
@@ -89,14 +88,19 @@ export default function StickyHeadTable() {
   };
 
   React.useEffect(() => {
-    employeeService.getMyAssignments().then((res) => {
-      setAssignments(res.Employee?.assignments);
-    });
+    employeeService
+      .getEmployeeAssignmentHistory({ employee_id: props?.location?.state?.id })
+      .then((res) => {
+        setAssignments(res.Employee?.assignments);
+      });
   }, []);
 
   return (
     <div>
-      <h1 className={classes.title}>My Assignments History</h1>
+      <h1 className={classes.title}>
+        {" "}
+        {props?.location?.state?.name} 's Assignments History
+      </h1>
 
       <Grid container justify="center" alignItems="center">
         <Paper className={classes.root}>
