@@ -548,7 +548,7 @@ export default function ReleaseReq() {
                     {requestActions.map((action) => (
                       <TableRow key={"test"}>
                         <TableCell component="th" scope="row">
-                          {action.createdAt}
+                          {action.createdAt?.split("T")[0]}
                         </TableCell>
                         <TableCell align="right">"TODO Owner"</TableCell>
                         <TableCell align="right">{action.action}</TableCell>

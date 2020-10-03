@@ -115,7 +115,8 @@ export default function ReleaseForm(props) {
       setSelectedAction("Added to leaving list");
       setChecked(true);
       setLeavingInput(true);
-      setStatusSelected({ status: "Leaving" });
+      setStatusSelected("Leaving");
+      setStatusSelectedOption({ status: "Leaving" });
     } else {
       setChecked(false);
       setLeavingInput(false);
@@ -125,10 +126,12 @@ export default function ReleaseForm(props) {
     setAction(value);
     setSelectedAction(value.action);
     if (value.action == "Added to leaving list") {
-      setStatusSelected({ status: "Leaving" });
+      setStatusSelected("Leaving");
+      setStatusSelectedOption({ status: "Leaving" });
     }
     if (value.action == "Added to moving list") {
-      setStatusSelected({ status: "Moved" });
+      setStatusSelected("Moved");
+      setStatusSelectedOption({ status: "Moved" });
     }
   }
 
@@ -157,10 +160,25 @@ export default function ReleaseForm(props) {
               variant: "error",
             });
           } else {
-            enqueueSnackbar("Request Successfully Updated", {
-              variant: "success",
-            });
-            history.push("/release-requests");
+            releaseRequestService
+              .addAction({
+                ReleaseRequestAction: {
+                  request_reference_number: reference_number,
+                  action: selectedAction,
+                },
+              })
+              .then((res2) => {
+                if (res2.error) {
+                  enqueueSnackbar(res2.error, {
+                    variant: "error",
+                  });
+                } else {
+                  enqueueSnackbar("Request Successfully Updated", {
+                    variant: "success",
+                  });
+                  history.push("/release-requests");
+                }
+              });
           }
         });
     } else {
@@ -411,7 +429,7 @@ export default function ReleaseForm(props) {
                 <input
                   disabled={
                     props.location?.state?.editing &&
-                    props.location?.state?.user == "TPD"
+                    accountProperties().roles?.includes("TPD Team")
                       ? false
                       : true
                   }
@@ -438,7 +456,7 @@ export default function ReleaseForm(props) {
                 disabled={
                   checked == false &&
                   props.location?.state?.editing &&
-                  props.location?.state?.user == "TPD"
+                  accountProperties().roles?.includes("TPD Team")
                     ? false
                     : true
                 }

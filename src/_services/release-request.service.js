@@ -11,7 +11,20 @@ export default {
   export: _export,
   getAllByManager,
   exportAllByManager,
+  addAction,
 };
+
+function addAction(body) {
+  const requestOptions = {
+    method: "POST",
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(`${apiUrl}/release-request/action`, requestOptions).then(
+    handleResponse
+  );
+}
 
 function exportAllByManager(body) {
   const FileDownload = require("js-file-download");

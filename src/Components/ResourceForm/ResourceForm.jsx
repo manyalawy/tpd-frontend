@@ -36,6 +36,9 @@ export default function ResourceForm(props) {
   const [editingMode, setEditingMode] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
   const [selectedManagerOption, setSelectedManagerOption] = useState({});
+  const [statusSelectedOption, setStatusSelectedOption] = useState(
+    tpdOptions[0]
+  );
 
   const [selectedFunction, setSelectedFunction] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
@@ -86,7 +89,8 @@ export default function ResourceForm(props) {
     event.preventDefault();
   }
   function handleStatusChange(event, value) {
-    setSelectedStatus(value.status);
+    setSelectedStatus(value?.status);
+    setStatusSelectedOption(value);
   }
 
   const handleStartDateChange = (date) => {
@@ -107,16 +111,14 @@ export default function ResourceForm(props) {
       replacement_for: " ",
       replacement: rep,
       core_team_member: "y",
-
       requests_count: parseInt(numberOfRequests),
 
       comments: selectedComment,
-
       percentage: parseInt(selectedPercentage),
       propability: parseInt(selectedProbability),
-
       end_date: selectedEndDate,
       related_Opportunity: selectedrelatedOpp,
+      request_status: selectedStatus,
     };
 
     if (props.location?.state?.editing) {
@@ -129,10 +131,19 @@ export default function ResourceForm(props) {
               variant: "error",
             });
           } else {
-            enqueueSnackbar("Request Successfully Updated", {
-              variant: "success",
-            });
-            history.push("/resource-requests");
+            resourceRequestService
+              .addAction({
+                ResourceRequestAction: {
+                  request_reference_number: reference_number,
+                  action: selectedAction.action,
+                },
+              })
+              .then((res2) => {
+                enqueueSnackbar("Request Successfully Updated", {
+                  variant: "success",
+                });
+                history.push("/resource-requests");
+              });
           }
         });
     } else {
@@ -214,11 +225,11 @@ export default function ResourceForm(props) {
         setSelectedFunction(res.Employee.function);
         setSelectedTitle(res.Employee.title);
         setSelectedStatus("Open");
+        setStatusSelectedOption({ status: "Open" });
       });
     }
     managerService.getAll().then((res) => {
       setManagers(res.managers);
-      console.log(managers);
     });
     employeeService.getAllFunctions().then((res) => {
       setFunctions(res.Functions);
@@ -244,7 +255,11 @@ export default function ResourceForm(props) {
           setSelectedTitle(res.ResourceRequest.title);
           // setSelectedId(res.ResourceRequest.employee_id);
 
-          // setStatusSelected(res.ResourceRequest.request_status);
+          setSelectedStatus(res.ResourceRequest.request_status);
+          setStatusSelectedOption({
+            status: res.ResourceRequest.request_status,
+          });
+
           // setReasonInput(res.ResourceRequest.release_reason);
           setSelectedProbability(res.ResourceRequest.propability);
           setSelectedPercentage(res.ResourceRequest.percentage);
@@ -253,7 +268,7 @@ export default function ResourceForm(props) {
           setSelectedComment(res.ResourceRequest.comments);
           setSelectedRelatedOpp(res.ResourceRequest.related_opportunity);
           setReplamentCheck(res.ResourceRequest.replacenement);
-          setSelectedStatus(res.ResourceRequest.status);
+          // setSelectedStatus(res.ResourceRequest.status);
           setSelectedReplacment(res.ResourceRequest.replacenement_for);
           setCoreTeam(res.ResourceRequest.core_team_member);
         });
@@ -266,6 +281,10 @@ export default function ResourceForm(props) {
       });
     }
   }, [selectedManager]);
+
+  const handleActionChange = (value) => {
+    setSelectedAction(value);
+  };
 
   return (
     <div>
@@ -543,7 +562,7 @@ export default function ResourceForm(props) {
               <Autocomplete
                 disabled={props.location?.state?.editing ? false : true}
                 onChange={(event, value) => handleStatusChange(event, value)}
-                defaultValue={selectedStatus}
+                defaultValue={statusSelectedOption}
                 {...status}
                 id="selectStatus"
                 renderInput={(params) => (
@@ -564,7 +583,7 @@ export default function ResourceForm(props) {
                     ? false
                     : true
                 }
-                onChange={(event, value) => setSelectedAction(value)}
+                onChange={(event, value) => handleActionChange(value)}
                 defaultValue={selectedAction}
                 {...actions}
                 id="selectActionTaken"
