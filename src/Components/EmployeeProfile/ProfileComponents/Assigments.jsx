@@ -1,5 +1,5 @@
 import { AssignmentSharp } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,6 +19,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 
 //service
 import employeeService from "../../../_services/employee.service";
+import assignmentService from "../../../_services/assignment.service";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -73,6 +74,20 @@ export default function Assignments(props) {
   const [open, setOpen] = React.useState(false);
   const [assignments, setAssignments] = React.useState([]);
 
+  //add assignment
+  const [workgroup, setWorkgroup] = useState("");
+  const [costcenter, setCostCenter] = useState("");
+
+  const [sdmManager, setSDMManager] = useState("");
+
+  const [percentage, setPercentage] = useState("");
+
+  const [startDate, setStartDate] = useState(new Date());
+
+  const [releaseDate, setReleaseDate] = useState(new Date());
+
+  const [editingAss, setEditingAss] = React.useState(false);
+
   //fetch User Assignments
   React.useEffect(() => {
     employeeService
@@ -83,9 +98,41 @@ export default function Assignments(props) {
       });
   }, []);
 
-  const handleSubmit = () => {
+  const handleAdd = () => {
     setOpen(false);
+    assignmentService
+      .addEmployeeAssignment({
+        Assignment: {
+          workgroup: workgroup,
+          cost_center: costcenter,
+          sdm_reporting_manager: sdmManager,
+          allocation_percentage: percentage,
+          start_date: startDate,
+          release_date: releaseDate,
+          employee_id: props?.id,
+        },
+      })
+      .then((res) => {
+        console.log("added");
+      });
   };
+  const handleEdit = () => {
+    setOpen(false);
+    assignmentService
+      .editEmployeeAssignment({
+        Assignment: {
+          workgroup: workgroup,
+          cost_center: costcenter,
+          sdm_reporting_manager: sdmManager,
+          allocation_percentage: percentage,
+          start_date: startDate,
+          release_date: releaseDate,
+          employee_id: props?.id,
+        },
+      })
+      .then();
+  };
+
   return (
     <div>
       {props?.editing ? (
@@ -164,11 +211,15 @@ export default function Assignments(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Add Assingment</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {editingAss ? "Edit Assingment" : "Add Assingment"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <TextField
               required
+              value={workgroup}
+              onChange={(e, value) => setWorkgroup(e.target.value)}
               className={classes.form}
               display="inline"
               id="workGroup"
@@ -176,6 +227,8 @@ export default function Assignments(props) {
             />
             <TextField
               required
+              value={costcenter}
+              onChange={(e, value) => setCostCenter(e.target.value)}
               className={classes.form}
               display="inline"
               id="costCenter"
@@ -183,6 +236,8 @@ export default function Assignments(props) {
             />
             <TextField
               required
+              value={sdmManager}
+              onChange={(e, value) => setSDMManager(e.target.value)}
               className={classes.form}
               display="inline"
               id="sdmManager"
@@ -190,6 +245,8 @@ export default function Assignments(props) {
             />
             <TextField
               required
+              value={percentage}
+              onChange={(e, value) => setPercentage(e.target.value)}
               type="number"
               min="1"
               className={classes.form}
@@ -206,6 +263,8 @@ export default function Assignments(props) {
               <KeyboardDatePicker
                 className={classes.date}
                 disableToolbar
+                value={startDate}
+                onChange={(value) => setStartDate(value)}
                 variant="inline"
                 format="dd/MM/yyyy"
                 margin="normal"
@@ -220,6 +279,8 @@ export default function Assignments(props) {
               <KeyboardDatePicker
                 className={classes.date}
                 disableToolbar
+                value={releaseDate}
+                onChange={(value) => setReleaseDate(value)}
                 variant="inline"
                 format="dd/MM/yyyy"
                 margin="normal"
@@ -235,8 +296,8 @@ export default function Assignments(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} color="primary">
-            Add
+          <Button onClick={editingAss ? handleEdit : handleAdd} color="primary">
+            {editingAss ? "Save" : "Add"}
           </Button>
           <Button onClick={() => setOpen(false)} color="primary" autoFocus>
             Cancel

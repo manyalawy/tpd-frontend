@@ -5,8 +5,8 @@ import Certification from "./CertificationCompnents/certificates";
 export default function Certifications() {
   return (
     <div>
-      <Providers />
       <Certification />
+      <Providers />
     </div>
   );
 }

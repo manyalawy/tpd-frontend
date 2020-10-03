@@ -7,7 +7,7 @@ import { accountProperties } from "../../_helpers/accountProperties";
 
 const ManagerGuard = (props) => {
   return (
-    <Guard condition={accountProperties().roles?.includes("Manger")}>
+    <Guard condition={accountProperties().roles?.includes("Manager")}>
       {props.children}
     </Guard>
   );

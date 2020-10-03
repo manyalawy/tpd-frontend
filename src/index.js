@@ -26,6 +26,13 @@ import CerHistory from "./Components/CertificateHistory/cerHistory";
 import EmployeeTrainings from "./Components/EmployeesTrainings/employeeTrainings";
 import EmployeeProfile from "./Components/EmployeeProfile/Profile";
 import EmployeeAssignementHistory from "./Components/EmployeeAssignmentsHistory/EmployeeAssignmentsHistory.jsx";
+import CertificationProviders from "./Components/Certifications/CertificationCompnents/providers";
+import MyTrainings from "./Components/Profile/MyProfileComponents/Trainings";
+import MySkills from "./Components/Profile/MyProfileComponents/skills";
+import MyCertifications from "./Components/Profile/MyProfileComponents/certificates";
+import MyAssignments from "./Components/Profile/MyProfileComponents/Assigments";
+import MyAssignmentsHistory from "./Components/AssignmentsHistory/AssignmentHistory";
+import ManagerGuard from "./Components/Guards/ManagerGuard";
 
 const theme = createMuiTheme({
   typography: {
@@ -49,11 +56,23 @@ const DefaultContainer = () => (
   <>
     <SideMenu />
     <Route exact path="/profile" component={Profile} />
+    <Route exact path="/profile/trainings" component={MyTrainings} />
+    <Route exact path="/profile/skills" component={MySkills} />
+    <Route exact path="/profile/certifications" component={MyCertifications} />
+    <Route exact path="/profile/assignments" component={MyAssignments} />
     <Route
       exact
-      path="/profile/assignments-history"
-      component={AssignmentsHisotry}
+      path="/profile/assignments/history"
+      component={MyAssignmentsHistory}
     />
+
+    <TPDGuard>
+      <Route
+        exact
+        path="/profile/assignments-history"
+        component={AssignmentsHisotry}
+      />
+    </TPDGuard>
     <TPDGuard>
       <Route exact path="/employee-profile" component={EmployeeProfile} />
     </TPDGuard>
@@ -83,16 +102,23 @@ const DefaultContainer = () => (
       <Route exact path="/resource-requests/edit" component={ResourceForm} />
     </TPDGuard>
     <TPDGuard>
-      <Route exact path="/cerHistory" component={CerHistory} />
+      <Route exact path="/certifications-history" component={CerHistory} />
     </TPDGuard>
     <TPDGuard>
-      <Route exact path="/skill-Tracking" component={SkillsTracking} />
+      <Route exact path="/skill-tracking" component={SkillsTracking} />
     </TPDGuard>
     <TPDGuard>
       <Route exact path="/skills-history" component={SkillsHistory} />
     </TPDGuard>
     <TPDGuard>
       <Route exact path="/certifications-list" component={Certifications} />
+    </TPDGuard>
+    <TPDGuard>
+      <Route
+        exact
+        path="/certification-providers"
+        component={CertificationProviders}
+      />
     </TPDGuard>
     <TPDGuard>
       <Route exact path="/skills-listing" component={SkillListing} />

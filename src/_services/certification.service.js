@@ -154,7 +154,7 @@ function _export() {
 
   return fetch(`${apiUrl}/certification/provider/export`, requestOptions).then(
     (res) => {
-      res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+      res.text().then((text) => FileDownload(text, "Certifications.csv"));
     }
   );
 }
