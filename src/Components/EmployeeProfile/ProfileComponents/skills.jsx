@@ -32,7 +32,7 @@ export default function Skills(props) {
             <tr>
               <th scope="row">{skill.skill.skill_name}</th>
               <td>{skill.experience_level}</td>
-              <td>{skill.last_used_date}</td>
+              <td>{skill.last_used_date?.split("T")[0]}</td>
             </tr>
           ))}
         </tbody>

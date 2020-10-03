@@ -230,7 +230,9 @@ export default function StickyHeadTable() {
                         <TableCell>
                           {row.employee_skill.experience_level}
                         </TableCell>
-                        <TableCell>{row.last_used_date}</TableCell>
+                        <TableCell>
+                          {row.last_used_date?.split("T")[0]}
+                        </TableCell>
 
                         <TableCell>{row.manager_name}</TableCell>
                         <TableCell>{row.title}</TableCell>

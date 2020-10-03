@@ -38,7 +38,7 @@ export default function Certificates(props) {
                   }
                 </th>
                 <td>{certificate.certification?.certification_name}</td>
-                <td>{certificate.expiration_date}</td>
+                <td>{certificate.expiration_date?.split("T")[0]}</td>
               </tr>
             ))}
           </tbody>

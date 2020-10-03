@@ -184,7 +184,7 @@ export default function Certificates() {
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{ backgroundColor: "white" }}>
             {certificates.map((certificate) => (
               <tr>
                 <th scope="row">
@@ -194,7 +194,7 @@ export default function Certificates() {
                   }
                 </th>
                 <td>{certificate.certification?.certification_name}</td>
-                <td>{certificate.expiration_date}</td>
+                <td>{certificate.expiration_date?.split("T")[0]}</td>
                 <td>
                   <button
                     type="button"

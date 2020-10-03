@@ -34,6 +34,8 @@ import MyAssignments from "./Components/Profile/MyProfileComponents/Assigments";
 import MyAssignmentsHistory from "./Components/AssignmentsHistory/AssignmentHistory";
 import ManagerTPDGuard from "./Components/Guards/ManagerTPDGuard";
 
+import { accountProperties } from "./_helpers";
+
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -55,6 +57,23 @@ const LoginContainer = () => <Route path="/login" component={LoginPage} />;
 const DefaultContainer = () => (
   <>
     <SideMenu />
+    {accountProperties().roles?.includes("TPD Team") ? (
+      <ManagerTPDGuard>
+        <Route exact path="/" component={Release} />
+      </ManagerTPDGuard>
+    ) : accountProperties().roles?.includes("Manager") ? (
+      <ManagerTPDGuard>
+        <Route exact path="/" component={Release} />
+      </ManagerTPDGuard>
+    ) : (
+      <>
+        <div style={{ margin: "40px" }}>
+          <h1 style={{ color: "White" }}>Current Assignments</h1>
+          <Route exact path="/" component={MyAssignments} />
+        </div>
+      </>
+    )}
+
     <Route exact path="/profile" component={Profile} />
     <Route exact path="/profile/trainings" component={MyTrainings} />
     <Route exact path="/profile/skills" component={MySkills} />
@@ -65,7 +84,6 @@ const DefaultContainer = () => (
       path="/profile/assignments/history"
       component={MyAssignmentsHistory}
     />
-
     <TPDGuard>
       <Route
         exact

@@ -29,13 +29,13 @@ export default function Trainings() {
               <th scope="col">Training Total Hours</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{ backgroundColor: "white" }}>
             {trainings.map((training) => (
               <tr>
                 <th scope="row">{training.training_activity_name}</th>
                 <td>{training.training_event_name}</td>
-                <td>{training.event_from_date}</td>
-                <td>{training.event_to_date}</td>
+                <td>{training.event_from_date?.split("T")[0]}</td>
+                <td>{training.event_to_date?.split("T")[0]}</td>
                 <td>{training.total_training_hours}</td>
               </tr>
             ))}

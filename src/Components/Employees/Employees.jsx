@@ -282,7 +282,7 @@ export default function StickyHeadTable() {
                           </Button>
                         </TableCell>
                         <TableCell>{row.title}</TableCell>
-                        <TableCell>{row.hiring_date}</TableCell>
+                        <TableCell>{row.hiring_date?.split("T")[0]}</TableCell>
                         <TableCell>{row.function}</TableCell>
                         <TableCell>{row.Manager?.name}</TableCell>
                         <TableCell>{row.workgroup}</TableCell>
