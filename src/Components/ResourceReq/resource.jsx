@@ -573,20 +573,16 @@ export default function Resource() {
                       <TableCell>Action Date</TableCell>
                       <TableCell align="right">Action Owner</TableCell>
                       <TableCell align="right">Status</TableCell>
-                      <TableCell align="right">Action Note</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {requestActions.map((action) => (
                       <TableRow key={"test"}>
                         <TableCell component="th" scope="row">
-                          {action.createdAt}
+                          {action.createdAt.split("T")[0]}
                         </TableCell>
-                        <TableCell align="right">RafiqTPD</TableCell>
+                        <TableCell align="right">Rafiq TPD</TableCell>
                         <TableCell align="right">{action.action}</TableCell>
-                        <TableCell align="right">
-                          {action.action_note}
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

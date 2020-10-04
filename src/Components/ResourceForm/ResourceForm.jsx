@@ -130,19 +130,27 @@ export default function ResourceForm(props) {
               variant: "error",
             });
           } else {
-            resourceRequestService
-              .addAction({
-                ResourceRequestAction: {
-                  request_reference_number: reference_number,
-                  action: selectedAction.action,
-                },
-              })
-              .then((res2) => {
-                enqueueSnackbar("Request Successfully Updated", {
-                  variant: "success",
+            if (accountProperties().roles?.includes("TPD Team")) {
+              resourceRequestService
+                .addAction({
+                  ResourceRequestAction: {
+                    request_reference_number: reference_number,
+                    action: selectedAction.action,
+                  },
+                })
+                .then((res2) => {
+                  if (!res2.error) {
+                    enqueueSnackbar("Request Successfully Updated", {
+                      variant: "success",
+                    });
+                    history.push("/resource-requests");
+                  } else {
+                    enqueueSnackbar(res2.error, {
+                      variant: "error",
+                    });
+                  }
                 });
-                history.push("/resource-requests");
-              });
+            }
           }
         });
     } else {

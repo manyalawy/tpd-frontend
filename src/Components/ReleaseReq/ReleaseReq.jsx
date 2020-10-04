@@ -541,7 +541,6 @@ export default function ReleaseReq() {
                       <TableCell>Action Date</TableCell>
                       <TableCell align="right">Action Owner</TableCell>
                       <TableCell align="right">Status</TableCell>
-                      <TableCell align="right">Action Note</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -550,11 +549,8 @@ export default function ReleaseReq() {
                         <TableCell component="th" scope="row">
                           {action.createdAt?.split("T")[0]}
                         </TableCell>
-                        <TableCell align="right">"TODO Owner"</TableCell>
+                        <TableCell align="right">Ayoub TPD</TableCell>
                         <TableCell align="right">{action.action}</TableCell>
-                        <TableCell align="right">
-                          {action.action_note}
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
