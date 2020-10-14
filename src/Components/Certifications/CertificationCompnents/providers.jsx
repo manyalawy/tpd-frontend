@@ -30,6 +30,8 @@ import ImportExportIcon from "@material-ui/icons/ImportExport";
 import ExportIcon from "../../assets/file-export-solid.svg";
 import IconButton from "@material-ui/core/IconButton";
 
+import { useSnackbar } from "notistack";
+
 const columns = [
   { id: "cerProv", label: "Certificate Provider", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
@@ -72,6 +74,7 @@ const useStyles = makeStyles({
 var unchanged = [];
 
 export default function SkillListing() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const [providersTable, setProvidersTable] = React.useState([]);
@@ -123,10 +126,16 @@ export default function SkillListing() {
             },
           })
           .then((res) => {
-            certificationService.getAllProviders().then((res) => {
-              setProvidersTable(res.CertificateProviders);
-              unchanged = res.CertificateProviders;
-            });
+            if (!res.error) {
+              certificationService.getAllProviders().then((res) => {
+                setProvidersTable(res.CertificateProviders);
+                unchanged = res.CertificateProviders;
+              });
+
+              enqueueSnackbar("Certifcate Provider Successfully Edited", {
+                variant: "success",
+              });
+            }
           });
       } else {
         setSelectedProvider("");
@@ -141,6 +150,10 @@ export default function SkillListing() {
               certificationService.getAllProviders().then((res) => {
                 setProvidersTable(res.CertificateProviders);
                 unchanged = res.CertificateProviders;
+              });
+
+              enqueueSnackbar("Certifcate Provider Successfully Added", {
+                variant: "success",
               });
             }
           });
@@ -171,7 +184,11 @@ export default function SkillListing() {
   };
 
   const exportProviders = () => {
-    certificationService.export();
+    certificationService.export().then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   const handleDelete = (provider, id) => {
@@ -182,10 +199,16 @@ export default function SkillListing() {
         },
       })
       .then((res) => {
-        certificationService.getAllProviders().then((res) => {
-          setProvidersTable(res.CertificateProviders);
-          unchanged = res.CertificateProviders;
-        });
+        if (!res.error) {
+          certificationService.getAllProviders().then((res) => {
+            setProvidersTable(res.CertificateProviders);
+            unchanged = res.CertificateProviders;
+          });
+
+          enqueueSnackbar("Certifcate Provider Successfully Deleted", {
+            variant: "success",
+          });
+        }
       });
   };
 

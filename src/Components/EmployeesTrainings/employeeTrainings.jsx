@@ -28,6 +28,7 @@ import employeeService from "../../_services/employee.service";
 import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import IconButton from "@material-ui/core/IconButton";
+import { useSnackbar } from "notistack";
 
 import {
   MuiPickersUtilsProvider,
@@ -79,6 +80,8 @@ const useStyles = makeStyles({
 });
 
 export default function StickyHeadTable() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -173,7 +176,11 @@ export default function StickyHeadTable() {
       ...filterFromDate,
       ...filterToDate,
     };
-    trainingService.exportEmployeeTrainings({ Filters });
+    trainingService.exportEmployeeTrainings({ Filters }).then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   React.useEffect(() => {

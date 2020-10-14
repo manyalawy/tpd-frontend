@@ -31,6 +31,8 @@ import ExportIcon from "../assets/file-export-solid.svg";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { parse } from "date-fns";
 
+import { useSnackbar } from "notistack";
+
 const columns = [
   { id: "skillName", label: "Skill Name", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
@@ -50,7 +52,7 @@ const useStyles = makeStyles({
   },
   searchBar: {
     backgroundColor: "white",
-    marginLeft: "70%",
+    marginLeft: "60%",
   },
   container: {
     maxHeight: 440,
@@ -73,6 +75,7 @@ const useStyles = makeStyles({
 var unchanged = [];
 
 export default function SkillListing() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const [skillsTable, setSkillsTable] = React.useState([]);
@@ -122,6 +125,11 @@ export default function SkillListing() {
             },
           })
           .then((res) => {
+            if (!res.error) {
+              enqueueSnackbar("Skill Successfully Edited", {
+                variant: "success",
+              });
+            }
             refresh();
           });
       } else {
@@ -132,6 +140,11 @@ export default function SkillListing() {
             },
           })
           .then((res) => {
+            if (!res.error) {
+              enqueueSnackbar("Skill Successfully Added", {
+                variant: "success",
+              });
+            }
             refresh();
           });
       }
@@ -142,6 +155,11 @@ export default function SkillListing() {
 
   const handleDelete = (id) => {
     skillService.deleteSkill({ skill_id: parseInt(id) }).then((res) => {
+      if (!res.error) {
+        enqueueSnackbar("Skill Successfully Deleted", {
+          variant: "success",
+        });
+      }
       refresh();
     });
   };
@@ -158,7 +176,11 @@ export default function SkillListing() {
   };
 
   const exportSkills = () => {
-    skillService.exportAllSkills({});
+    skillService.exportAllSkills({}).then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   React.useEffect(() => {
@@ -183,7 +205,7 @@ export default function SkillListing() {
     <div>
       <h1 className={classes.title}>Skills list</h1>
       {/* <Box component="div" display="inline"> */}
-      <div style={{ display: "inline" }}>
+      <div style={{ display: "flex" }}>
         <OutlinedInput
           onChange={(event) => handleSearch(event.target.value)}
           className={classes.searchBar}
@@ -212,14 +234,14 @@ export default function SkillListing() {
           edge="start"
           style={{
             backgroundColor: "#084791",
-            margin: "10px",
+            marginLeft: "12px",
             color: "#ffffff",
           }}
           onClick={() => exportSkills()}
         >
           <img
             style={{
-              width: "24px",
+              width: "29px",
               margin: "auto",
             }}
             src={ExportIcon}

@@ -30,6 +30,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
 import ExportIcon from "../../assets/file-export-solid.svg";
 
+import { useSnackbar } from "notistack";
+
 const columns = [
   { id: "cerName", label: "Certification Name", minWidth: 170 },
   { id: "cerProvider", label: "Certification Provider", minWidth: 170 },
@@ -78,6 +80,7 @@ var unchanged = [];
 var providers = [];
 
 export default function SkillListing() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const [providersTable, setProvidersTable] = React.useState([]);
@@ -145,7 +148,14 @@ export default function SkillListing() {
               certification_name: selectedCerName,
             },
           })
-          .then((res) => refresh());
+          .then((res) => {
+            if (!res.error) {
+              enqueueSnackbar("Certifcate Successfully Added", {
+                variant: "success",
+              });
+            }
+            refresh();
+          });
       } else {
         certificationService
           .editCertificates({
@@ -158,7 +168,11 @@ export default function SkillListing() {
             },
           })
           .then((res) => {
-            console.log(res);
+            if (!res.error) {
+              enqueueSnackbar("Certifcate Successfully Edited", {
+                variant: "success",
+              });
+            }
             refresh();
           });
       }
@@ -198,7 +212,11 @@ export default function SkillListing() {
         },
       })
       .then((res) => {
-        console.log(res);
+        if (!res.error) {
+          enqueueSnackbar("Certifcate Successfully Deleted", {
+            variant: "success",
+          });
+        }
         refresh();
       });
   };
@@ -219,7 +237,11 @@ export default function SkillListing() {
   }
 
   const exportCertificates = () => {
-    certificationService.export();
+    certificationService.export().then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   return (

@@ -30,6 +30,8 @@ import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import IconButton from "@material-ui/core/IconButton";
 
+import { useSnackbar } from "notistack";
+
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
   { id: "skillName", label: "Skill Name", minWidth: 100 },
@@ -76,6 +78,8 @@ const useStyles = makeStyles({
 });
 
 export default function StickyHeadTable() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -142,7 +146,11 @@ export default function StickyHeadTable() {
   };
 
   const expo = () => {
-    skillsService.export({ Filters });
+    skillsService.export({ Filters }).then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   const handleClickOpen = () => {

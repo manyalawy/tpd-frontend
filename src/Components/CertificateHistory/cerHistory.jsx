@@ -31,6 +31,8 @@ import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import IconButton from "@material-ui/core/IconButton";
 
+import { useSnackbar } from "notistack";
+
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
   { id: "cerName", label: "Certification Name", minWidth: 100 },
@@ -65,6 +67,8 @@ const useStyles = makeStyles({
 });
 
 export default function CerHistory() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -150,7 +154,11 @@ export default function CerHistory() {
   };
 
   const expo = () => {
-    certificationService.exportHistory({ Filters });
+    certificationService.exportHistory({ Filters }).then(() => {
+      enqueueSnackbar("Exported Succesfully", {
+        variant: "success",
+      });
+    });
   };
 
   const handleClickOpen = () => {
