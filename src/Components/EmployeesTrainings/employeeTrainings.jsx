@@ -22,9 +22,12 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
-import ExportIcon from "../assets/file-export-solid.svg";
 import trainingService from "../../_services/training.service";
 import employeeService from "../../_services/employee.service";
+
+import FilterIcon from "../assets/filter_alt-24px.svg";
+import ExportIcon from "../assets/file-export-solid.svg";
+import IconButton from "@material-ui/core/IconButton";
 
 import {
   MuiPickersUtilsProvider,
@@ -64,7 +67,7 @@ const useStyles = makeStyles({
   },
   buttons: {
     color: "black",
-    marginLeft: "90%",
+    marginLeft: "85%",
   },
   select: {
     width: "20px",
@@ -187,12 +190,28 @@ export default function StickyHeadTable() {
     <div>
       <h1 className={classes.title}>Employee Trainings </h1>
       <div className={classes.buttons}>
-        <Fab aria-label="filter" onClick={() => setOpen(true)}>
-          <FilterListIcon />
-        </Fab>
-        <Fab
+        <IconButton
+          color="inherit"
+          aria-label="filter"
+          edge="start"
+          style={{
+            backgroundColor: "#F6EC5A",
+            margin: "10px",
+            color: "#000000",
+          }}
+          onClick={() => setOpen(true)}
+        >
+          <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+        </IconButton>
+        <IconButton
+          color="inherit"
           aria-label="export"
-          className={classes.exportButton}
+          edge="start"
+          style={{
+            backgroundColor: "#084791",
+            margin: "10px",
+            color: "#ffffff",
+          }}
           onClick={expo}
         >
           <img
@@ -202,7 +221,7 @@ export default function StickyHeadTable() {
             }}
             src={ExportIcon}
           ></img>
-        </Fab>
+        </IconButton>
       </div>
       <Grid container justify="center" alignItems="center">
         <Paper className={classes.root}>

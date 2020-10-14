@@ -14,3 +14,9 @@
 .deleteModal {
   margin-top: 15rem;
 }
+
+.resourceTable {
+  background-color: white;
+  width: 90%;
+  margin-top: 3rem;
+}

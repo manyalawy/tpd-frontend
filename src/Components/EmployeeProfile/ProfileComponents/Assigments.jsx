@@ -183,7 +183,10 @@ export default function Assignments(props) {
       ) : (
         ""
       )}
-      <div className="row">
+      <div
+        className="row"
+        style={{ dispaly: "flex", justifyContent: "space-evenly" }}
+      >
         {assignments.map((assignment, i) => (
           <div className="col-md-3">
             <Card className={classes.root}>

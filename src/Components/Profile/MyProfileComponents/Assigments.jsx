@@ -80,7 +80,7 @@ export default function Assignments() {
   }, []);
 
   return (
-    <div>
+    <div style={{ margin: "70px 10%" }}>
       <h1 style={{ color: "White" }}>Current Assignments</h1>
       <Grid
         container
@@ -103,7 +103,10 @@ export default function Assignments() {
           Add assigment
         </Button> */}
       </Grid>
-      <div className="row">
+      <div
+        className="row"
+        style={{ dispaly: "flex", justifyContent: "space-evenly" }}
+      >
         {assignments.map((assignment, i) => (
           <div className="col-md-3">
             <Card className={classes.root}>

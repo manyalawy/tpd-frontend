@@ -26,7 +26,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
 import employeeService from "../../_services/employee.service";
 
+import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
+import IconButton from "@material-ui/core/IconButton";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -73,7 +75,7 @@ const rows = [
 
 const useStyles = makeStyles({
   root: {
-    width: "100%",
+    width: "90%",
     marginTop: "5rem",
   },
   container: {
@@ -84,6 +86,10 @@ const useStyles = makeStyles({
     marginTop: "5rem",
     marginLeft: "5rem",
     fontSize: " 60px",
+  },
+  buttons: {
+    color: "black",
+    marginLeft: "85%",
   },
   filtterButton: {
     backgroundColor: "white",
@@ -222,17 +228,28 @@ export default function StickyHeadTable() {
     <div>
       <h1 className={classes.title}>Empolyees</h1>
       <div className={classes.buttons}>
-        <Fab
-          className={classes.filtterButton}
-          color="primary"
+        <IconButton
+          color="inherit"
           aria-label="filter"
+          edge="start"
+          style={{
+            backgroundColor: "#F6EC5A",
+            margin: "10px",
+            color: "#000000",
+          }}
           onClick={() => setOpen(true)}
         >
-          <FilterListIcon />
-        </Fab>
-        <Fab
+          <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+        </IconButton>
+        <IconButton
+          color="inherit"
           aria-label="export"
-          className={classes.exportButton}
+          edge="start"
+          style={{
+            backgroundColor: "#084791",
+            margin: "10px",
+            color: "#ffffff",
+          }}
           onClick={expo}
         >
           <img
@@ -242,7 +259,7 @@ export default function StickyHeadTable() {
             }}
             src={ExportIcon}
           ></img>
-        </Fab>
+        </IconButton>
       </div>
       <Grid container justify="center" alignItems="center">
         <Paper className={classes.root}>

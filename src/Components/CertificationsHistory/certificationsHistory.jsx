@@ -23,9 +23,12 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
-import ExportIcon from "../assets/file-export-solid.svg";
 import certificationService from "../../_services/certification.service";
 import employeeService from "../../_services/employee.service";
+
+import FilterIcon from "../assets/filter_alt-24px.svg";
+import ExportIcon from "../assets/file-export-solid.svg";
+import IconButton from "@material-ui/core/IconButton";
 
 const columns = [
   { id: "employeeName", label: "Employee Name", minWidth: 100 },
@@ -58,14 +61,10 @@ const useStyles = makeStyles({
   },
   buttons: {
     color: "black",
-    marginLeft: "90%",
+    marginLeft: "85%",
   },
   select: {
     width: "20px",
-  },
-  exportButton: {
-    color: "black",
-    marginLeft: "6px",
   },
 });
 

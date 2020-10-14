@@ -53,7 +53,7 @@ const useStyles = makeStyles({
   },
   searchBar: {
     backgroundColor: "white",
-    marginLeft: "70%",
+    marginLeft: "65%",
   },
   container: {
     maxHeight: 440,
@@ -255,8 +255,10 @@ export default function SkillListing() {
           edge="start"
           style={{
             backgroundColor: "#084791",
-            margin: "10px",
+            width: "56px",
+            height: "56px",
             color: "#ffffff",
+            marginLeft: "12px",
           }}
           onClick={() => exportCertificates()}
         >

@@ -27,6 +27,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import certificationService from "../../../_services/certification.service.js";
 import ImportExportIcon from "@material-ui/icons/ImportExport";
 
+import ExportIcon from "../../assets/file-export-solid.svg";
+import IconButton from "@material-ui/core/IconButton";
+
 const columns = [
   { id: "cerProv", label: "Certificate Provider", minWidth: 170 },
   { id: "actions", label: "Actions", minWidth: 170 },
@@ -220,13 +223,27 @@ export default function SkillListing() {
         >
           <AddIcon />
         </Fab>
-        <Fab
-          className={classes.filtterButton}
+        <IconButton
+          color="inherit"
           aria-label="filter"
+          edge="start"
+          className={classes.filtterButton}
+          style={{
+            backgroundColor: "#084791",
+            color: "#ffffff",
+            width: "56px",
+            height: "56px",
+          }}
           onClick={exportProviders}
         >
-          <ImportExportIcon />
-        </Fab>
+          <img
+            style={{
+              width: "24px",
+              margin: "auto",
+            }}
+            src={ExportIcon}
+          ></img>
+        </IconButton>
       </div>
       {/* </Box> */}
       <Grid container alignItems="center" justify="center">

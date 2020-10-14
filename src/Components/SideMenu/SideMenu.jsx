@@ -209,6 +209,9 @@ export default function SideMenu() {
           </IconButton>
           <Box display="flex" ml="auto">
             <img src={itworx} width={100}></img>
+            <Typography style={{ marginTop: "auto", fontSize: "small" }}>
+              TPD
+            </Typography>
           </Box>
           {/* Items on the right side of the navigation bar */}
           <Box display="flex" alignItems="center" ml="auto">

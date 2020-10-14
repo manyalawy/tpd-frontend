@@ -249,7 +249,7 @@ export default function Resource() {
   return (
     <div>
       <h1 className="resourceTitle">Resource Requests</h1>
-      <div className="float-right">
+      <div className="float-right" style={{ width: "21%" }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
