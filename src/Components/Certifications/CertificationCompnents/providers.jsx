@@ -223,7 +223,7 @@ export default function SkillListing() {
     <div>
       <h1 className={classes.title}>Certification Providers </h1>
       {/* <Box component="div" display="inline"> */}
-      <div style={{ display: "inline" }}>
+      <div style={{ display: "flex", marginRight: "10%" }}>
         <OutlinedInput
           onChange={(event) => handleSearch(event.target.value)}
           className={classes.searchBar}

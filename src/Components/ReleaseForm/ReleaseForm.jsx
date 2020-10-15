@@ -141,6 +141,7 @@ export default function ReleaseForm(props) {
       manager_name: selectedManager,
       employee_name: selectedEmployee,
       employee_title: selectedTitle,
+      employee_id: selectedId,
       function: selectedFunction,
       title: selectedTitle,
       release_date: dateInput,
