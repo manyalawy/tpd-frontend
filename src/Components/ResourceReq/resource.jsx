@@ -2,17 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import "./resource.css";
-import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import resourceService from "../../_services/resource-request.service";
 
 import IconButton from "@material-ui/core/IconButton";
 import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import Pagination from "@material-ui/lab/Pagination";
 import HistoryIcon from "@material-ui/icons/History";
 import Table from "@material-ui/core/Table";
@@ -25,11 +22,12 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import { accountProperties } from "../../_helpers";
 
-//Services
-import resourceRequestService from "../../_services/resource-request.service";
-import managerService from "../../_services/manager.service";
-import employeeService from "../../_services/employee.service";
-import skillService from "../../_services/skill.service";
+import {
+  resourceRequestService,
+  managerService,
+  employeeService,
+  skillService,
+} from "#Services";
 
 const useStyles = makeStyles({
   table: {

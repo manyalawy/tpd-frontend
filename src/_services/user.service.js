@@ -1,8 +1,6 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const userService = {
   login,
   logout,
   register,
@@ -13,20 +11,14 @@ export default {
 };
 
 function login(username, password) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_name: username, password }),
-  };
-
-  return fetch(`${apiUrl}/auth/signIn`, requestOptions)
-    .then(handleResponse)
-    .then((data) => {
+  return API.post(`auth/signIn`, { user_name: username, password }).then(
+    (data) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
       if (!data.error) localStorage.setItem("user", JSON.stringify(data.token));
 
       return data.token;
-    });
+    }
+  );
 }
 
 function logout() {
@@ -35,51 +27,24 @@ function logout() {
 }
 
 function getAll() {
-  const requestOptions = {
-    method: "GET",
-    headers: authHeader(),
-  };
-
-  return fetch(`${apiUrl}/users`, requestOptions).then(handleResponse);
+  return API.get(`users`);
 }
 
 function getById(id) {
-  const requestOptions = {
-    method: "GET",
-    headers: authHeader(),
-  };
-
-  return fetch(`${apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+  return API.get(`users/${id}`);
 }
 
 function register(user) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  };
-
-  return fetch(`${apiUrl}/users/register`, requestOptions).then(handleResponse);
+  return API.post(`users/register`, user);
 }
 
 function update(user) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  };
-
-  return fetch(`${apiUrl}/users/${user.id}`, requestOptions).then(
-    handleResponse
-  );
+  return API.put(`users/${user.id}`, user);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: authHeader(),
-  };
-
-  return fetch(`${apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+  return API.delete(`users/${id}`);
 }
+
+export default userService;

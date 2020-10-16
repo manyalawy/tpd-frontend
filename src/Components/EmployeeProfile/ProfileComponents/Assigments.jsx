@@ -1,4 +1,3 @@
-import { AssignmentSharp } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -19,14 +18,11 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 
 import { useSnackbar } from "notistack";
 
-//service
-import employeeService from "../../../_services/employee.service";
-import assignmentService from "../../../_services/assignment.service";
+import { employeeService, assignmentService } from "#Services";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import "date-fns";

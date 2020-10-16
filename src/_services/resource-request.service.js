@@ -1,8 +1,6 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const resourceRequestService = {
   getAll,
   getById,
   create,
@@ -15,120 +13,48 @@ export default {
 };
 
 function addAction(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/resource-request/action`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`resource-request/action`, body);
 }
 
 function exportAllByManager(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(
-    `${apiUrl}/resource-request/manager/exportAll`,
-    requestOptions
-  ).then((res) => {
-    res.text().then((text) => FileDownload(text, "ResourceRequests.csv"));
+  return API.post(`resource-request/manager/exportAll`, body).then((res) => {
+    FileDownload(res, "ResourceRequests.csv");
   });
 }
 
 function getAllByManager(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(
-    `${apiUrl}/resource-request/manager/getAll`,
-    requestOptions
-  ).then(handleResponse);
+  return API.post(`resource-request/manager/getAll`, body);
 }
 
 function getAll(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/resource-request/all`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`resource-request/all`, body);
 }
 
 function getById(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/resource-request/one`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`resource-request/one`, body);
 }
 
 function create(resourceRequest) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ ResourceRequest: resourceRequest }),
-  };
-
-  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`resource-request`, { ResourceRequest: resourceRequest });
 }
 
 function update(resourceRequest) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ ResourceRequest: resourceRequest }),
-  };
-
-  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.put(`resource-request`, { ResourceRequest: resourceRequest });
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(reference_number) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ResourceRequest: { reference_number: reference_number },
-    }),
-  };
-
-  return fetch(`${apiUrl}/resource-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.delete(`resource-request`, {
+    ResourceRequest: { reference_number: reference_number },
+  });
 }
 
 function _export(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/resource-request/exportAll`, requestOptions).then(
-    (res) => {
-      res.text().then((text) => FileDownload(text, "ResourceRequests.csv"));
-    }
-  );
+  return API.post(`resource-request/exportAll`, body).then((res) => {
+    FileDownload(res, "ResourceRequests.csv");
+  });
 }
+
+export default resourceRequestService;

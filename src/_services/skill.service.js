@@ -1,8 +1,6 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const skillService = {
   getAllCategories,
   getAllSubcategories,
   getAllSkills,
@@ -21,150 +19,70 @@ export default {
 
 function _exportTrackings(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(`${apiUrl}/skill/tracking/export`, requestOptions).then(
-    (res) => {
-      res
-        .text()
-        .then((text) => FileDownload(text, "EmployeesSkillTracking.csv"));
-    }
-  );
+  return API.post(`skill/tracking/export`, body).then((res) => {
+    FileDownload(res, "EmployeesSkillTracking.csv");
+  });
 }
 
 function getSkillTrackings(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/skill/tracking`, requestOptions).then(handleResponse);
+  return API.post(`skill/tracking`, body);
 }
 
 function getAllSubcategories(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/skill/subcategories`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`skill/subcategories`, body);
 }
 
 function getAllCategories() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/skill/categories`, requestOptions).then(
-    handleResponse
-  );
+  return API.get(`skill/categories`);
 }
 
 function getAllSkills() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+  return API.get(`skill/`);
 }
 
 function addSkill(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+  return API.post(`skill/`, body);
 }
 
 function editSkill(body) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+  return API.put(`skill/`, body);
 }
 
 function editEmployeeSkill(body) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+  return API.put(`skill/employee`, body);
 }
 
 function deleteSkill(body) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-  return fetch(`${apiUrl}/skill/`, requestOptions).then(handleResponse);
+  return API.delete(`skill/`, body);
 }
 
 function addEmployeeSkill(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+  return API.post(`skill/employee`, body);
 }
 
 function getSkillHistory(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/skill/history`, requestOptions).then(handleResponse);
+  return API.post(`skill/history`, body);
 }
 
 function deleteEmployeeSkill(body) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-  return fetch(`${apiUrl}/skill/employee`, requestOptions).then(handleResponse);
+  return API.delete(`skill/employee`, body);
 }
 
 function _export(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(`${apiUrl}/skill/history/export`, requestOptions).then((res) => {
-    res.text().then((text) => FileDownload(text, "Skills.csv"));
+  return API.post(`skill/history/export`, body).then((res) => {
+    FileDownload(res, "Skills.csv");
   });
 }
 
 function exportAllSkills(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(`${apiUrl}/skill/all/export`, requestOptions).then((res) => {
-    res.text().then((text) => FileDownload(text, "Skills.csv"));
+  return API.post(`skill/all/export`, body).then((res) => {
+    FileDownload(res, "Skills.csv");
   });
 }
+
+export default skillService;

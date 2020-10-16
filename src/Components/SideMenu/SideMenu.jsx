@@ -17,7 +17,6 @@ import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import PeopleIcon from "@material-ui/icons/People";
 import Collapse from "@material-ui/core/Collapse";
 import AssessmentIcon from "@material-ui/icons/Assessment";
-import PsychologyIcon from "./assets/psychology-white-24dp.svg";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import profile from "./assets/profile.png";
@@ -28,10 +27,9 @@ import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import userServices from "../../_services/user.service";
+import { userService } from "#Services";
 import { accountProperties } from "../../_helpers";
 import { useSnackbar } from "notistack";
-import Release from "../ReleaseReq/ReleaseReq.jsx";
 import PersonIcon from "@material-ui/icons/Person";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 
@@ -143,7 +141,7 @@ export default function SideMenu() {
   const [accountName, setAccountName] = React.useState("");
 
   let logout = () => {
-    userServices.logout();
+    userService.logout();
     history.push("/login");
   };
 

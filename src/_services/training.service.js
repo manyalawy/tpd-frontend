@@ -1,34 +1,20 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default { getAllEmployeeTrainings, exportEmployeeTrainings };
+const trainingService = {
+  getAllEmployeeTrainings,
+  exportEmployeeTrainings,
+};
 
 function getAllEmployeeTrainings(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/training/employeesTrainings`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`training/employeesTrainings`, body);
 }
 
 function exportEmployeeTrainings(body) {
   const FileDownload = require("js-file-download");
 
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(
-    `${apiUrl}/training/employeesTrainings/export`,
-    requestOptions
-  ).then((res) => {
-    res.text().then((text) => FileDownload(text, "EmployeeTrainings.csv"));
+  return API.post(`training/employeesTrainings/export`, body).then((res) => {
+    FileDownload(res, "EmployeeTrainings.csv");
   });
 }
+
+export default trainingService;

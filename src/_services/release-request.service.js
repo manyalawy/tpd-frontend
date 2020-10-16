@@ -1,8 +1,6 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const releaseRequestService = {
   getAll,
   getById,
   create,
@@ -15,119 +13,49 @@ export default {
 };
 
 function addAction(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/release-request/action`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`release-request/action`, body);
 }
 
 function exportAllByManager(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(
-    `${apiUrl}/release-request/manager/exportAll`,
-    requestOptions
-  ).then((res) => {
-    res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
+  return API.post(`release-request/manager/exportAll`, body).then((res) => {
+    FileDownload(res, "ReleaseRequests.csv");
   });
 }
 
 function getAllByManager(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/release-request/manager/getAll`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`release-request/manager/getAll`, body);
 }
 
 function getAll(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/release-request/all`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`release-request/all`, body);
 }
 
 function getById(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/release-request/one`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`release-request/one`, body);
 }
 
 function create(releaseRequest) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
-  };
-
-  return fetch(`${apiUrl}/release-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`release-request`, { ReleaseRequest: releaseRequest });
 }
 
 function update(releaseRequest) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({ ReleaseRequest: releaseRequest }),
-  };
-
-  return fetch(`${apiUrl}/release-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.put(`release-request`, { ReleaseRequest: releaseRequest });
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(reference_number) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ReleaseRequest: { reference_number: reference_number },
-    }),
-  };
-
-  return fetch(`${apiUrl}/release-request`, requestOptions).then(
-    handleResponse
-  );
+  return API.delete(`release-request`, {
+    ReleaseRequest: { reference_number: reference_number },
+  });
 }
 
 function _export(body) {
   const FileDownload = require("js-file-download");
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
 
-  return fetch(`${apiUrl}/release-request/exportAll`, requestOptions).then(
-    (res) => {
-      res.text().then((text) => FileDownload(text, "ReleaseRequests.csv"));
-    }
-  );
+  return API.post(`release-request/exportAll`, body).then((res) => {
+    FileDownload(res, "ReleaseRequests.csv");
+  });
 }
+
+export default releaseRequestService;

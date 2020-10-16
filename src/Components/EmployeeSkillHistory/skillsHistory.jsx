@@ -13,18 +13,15 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import Fab from "@material-ui/core/Fab";
-import FilterListIcon from "@material-ui/icons/FilterList";
+
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Box from "@material-ui/core/Box";
-import skillsService from "../../_services/skill.service";
-import employeeService from "../../_services/employee.service";
+
+import { employeeService, skillService } from "#Services";
 
 import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
@@ -139,14 +136,14 @@ export default function StickyHeadTable() {
       ...filterFunction,
       ...filterTitle,
     };
-    skillsService.getSkillHistory({ Filters }).then((res) => {
+    skillService.getSkillHistory({ Filters }).then((res) => {
       setskillsHistory(res.Skills);
     });
     setOpen(false);
   };
 
   const expo = () => {
-    skillsService.export({ Filters }).then(() => {
+    skillService.export({ Filters }).then(() => {
       enqueueSnackbar("Exported Succesfully", {
         variant: "success",
       });
@@ -165,7 +162,7 @@ export default function StickyHeadTable() {
     document.getElementById("selectSkills").value = null;
     document.getElementById("selectFunction").value = null;
     document.getElementById("selectTitle").value = null;
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
+    skillService.getSkillHistory({ Filters: {} }).then((res) => {
       setskillsHistory(res.Skills);
     });
     setOpen(false);
@@ -184,11 +181,11 @@ export default function StickyHeadTable() {
       settitles(res.Titles);
     });
 
-    skillsService.getAllSkills().then((res) => {
+    skillService.getAllSkills().then((res) => {
       setSkills(res.Skills);
     });
 
-    skillsService.getSkillHistory({ Filters: {} }).then((res) => {
+    skillService.getSkillHistory({ Filters: {} }).then((res) => {
       setskillsHistory(res.Skills);
     });
   }, []);

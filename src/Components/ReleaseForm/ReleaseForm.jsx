@@ -5,10 +5,12 @@ import "./ReleaseForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-//Services
-import releaseRequestService from "../../_services/release-request.service";
-import managerService from "../../_services/manager.service";
-import employeeService from "../../_services/employee.service";
+import {
+  releaseRequestService,
+  managerService,
+  employeeService,
+} from "#Services";
+
 import { accountProperties } from "../../_helpers";
 
 import { useSnackbar } from "notistack";

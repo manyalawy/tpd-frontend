@@ -1,7 +1,9 @@
-export * from "./user.service";
-export * from "./resource-request.service";
-export * from "./release-request.service";
-export * from "./manager.service";
-export * from "./employee.service";
-export * from "./skill.service";
-export * from "./certification.service";
+export { default as userService } from "./user.service";
+export { default as resourceRequestService } from "./resource-request.service";
+export { default as releaseRequestService } from "./release-request.service";
+export { default as managerService } from "./manager.service";
+export { default as employeeService } from "./employee.service";
+export { default as skillService } from "./skill.service";
+export { default as certificationService } from "./certification.service";
+export { default as trainingService } from "./training.service";
+export { default as assignmentService } from "./assignment.service";

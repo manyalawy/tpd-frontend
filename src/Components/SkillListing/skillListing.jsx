@@ -23,13 +23,12 @@ import EditIcon from "@material-ui/icons/Edit";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
-import skillService from "../../_services/skill.service";
+import { skillService } from "#Services";
 
 import IconButton from "@material-ui/core/IconButton";
 import ExportIcon from "../assets/file-export-solid.svg";
 
 import DeleteIcon from "@material-ui/icons/Delete";
-import { parse } from "date-fns";
 
 import { useSnackbar } from "notistack";
 

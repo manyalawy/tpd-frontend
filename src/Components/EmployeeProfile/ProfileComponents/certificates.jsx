@@ -1,8 +1,7 @@
 import React from "react";
 import "../Profile.css";
 
-//service
-import employeeService from "../../../_services/employee.service";
+import { employeeService } from "#Services";
 
 export default function Certificates(props) {
   const [certificates, setCertificates] = React.useState([]);

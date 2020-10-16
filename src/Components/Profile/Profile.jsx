@@ -5,10 +5,9 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import BasicInfo from "./MyProfileComponents/BasicInfo.jsx";
 
 import Container from "@material-ui/core/Container";
@@ -16,8 +15,7 @@ import Skills from "./MyProfileComponents/skills.jsx";
 import Certificates from "./MyProfileComponents/certificates";
 import Trainings from "./MyProfileComponents/Trainings";
 import Assigments from "./MyProfileComponents/Assigments.jsx";
-//service
-import employeeService from "../../_services/employee.service";
+import { employeeService } from "#Services";
 
 export default function Profile() {
   const theme = useTheme();

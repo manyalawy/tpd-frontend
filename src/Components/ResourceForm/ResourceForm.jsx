@@ -4,19 +4,19 @@ import { useHistory } from "react-router-dom";
 import "./ResourceForm.css";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { set, sub } from "date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 
-//Services
-import managerService from "../../_services/manager.service";
-import employeeService from "../../_services/employee.service";
-import skillService from "../../_services/skill.service";
-import resourceRequestService from "../../_services/resource-request.service";
+import {
+  resourceRequestService,
+  managerService,
+  employeeService,
+  skillService,
+} from "#Services";
+
 import { accountProperties } from "../../_helpers";
 
 import { useSnackbar } from "notistack";

@@ -1,7 +1,6 @@
 import React from "react";
 
-//service
-import employeeService from "../../../_services/employee.service";
+import { employeeService } from "#Services";
 
 export default function Trainings() {
   const [trainings, setTrainings] = React.useState([]);

@@ -24,8 +24,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
-import certificationService from "../../../_services/certification.service.js";
-import ImportExportIcon from "@material-ui/icons/ImportExport";
+
+import { certificationService } from "#Services";
 
 import ExportIcon from "../../assets/file-export-solid.svg";
 import IconButton from "@material-ui/core/IconButton";

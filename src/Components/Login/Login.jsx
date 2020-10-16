@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Logo from "./assets/ITWorx Flat Logo.png";
 import { useHistory, useLocation } from "react-router-dom";
-import userServices from "../../_services/user.service";
+import { userService } from "#Services";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +61,7 @@ export default function Login() {
   let { from } = location.state || { from: { pathname: "/" } };
 
   let login = () => {
-    userServices.login(userName, password).then(() => {
+    userService.login(userName, password).then(() => {
       history.replace(from);
     });
   };

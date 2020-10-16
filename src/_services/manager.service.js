@@ -1,16 +1,11 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const managerService = {
   getAll,
 };
 
 function getAll() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/manager/all`, requestOptions).then(handleResponse);
+  return API.post(`manager/all`);
 }
+
+export default managerService;

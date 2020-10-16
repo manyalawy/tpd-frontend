@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { accountProperties } from "../../../_helpers";
-//service
-import employeeService from "../../../_services/employee.service";
+import { employeeService } from "#Services";
 
 import "../Profile.css";
 

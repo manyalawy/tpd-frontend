@@ -22,10 +22,11 @@ import { accountProperties } from "../../_helpers";
 
 import "./ReleaseReq.css";
 
-//Services
-import releaseRequestService from "../../_services/release-request.service";
-import managerService from "../../_services/manager.service";
-import employeeService from "../../_services/employee.service";
+import {
+  releaseRequestService,
+  managerService,
+  employeeService,
+} from "#Services";
 
 import { useSnackbar } from "notistack";
 

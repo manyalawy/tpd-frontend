@@ -34,7 +34,7 @@ import MyAssignments from "./Components/Profile/MyProfileComponents/Assigments";
 import MyAssignmentsHistory from "./Components/AssignmentsHistory/AssignmentHistory";
 import ManagerTPDGuard from "./Components/Guards/ManagerTPDGuard";
 
-import { accountProperties } from "./_helpers";
+import { accountProperties } from "#Helpers";
 
 const theme = createMuiTheme({
   typography: {

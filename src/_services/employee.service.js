@@ -1,8 +1,6 @@
-import { authHeader, handleResponse } from "../_helpers";
+import { API } from "#Helpers";
 
-const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-
-export default {
+const employeeService = {
   getAll,
   getAllTitles,
   getAllFunctions,
@@ -24,177 +22,68 @@ export default {
 function exportAll(body) {
   const FileDownload = require("js-file-download");
 
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/employee-profile/all/export`, requestOptions).then(
-    (res) => {
-      res.text().then((text) => FileDownload(text, "Employees.csv"));
-    }
-  );
+  return API.post(`employee-profile/all/export`, body).then((res) => {
+    FileDownload(res, "Employees.csv");
+  });
 }
 
 function getAll(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/employee-profile/all`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`employee-profile/all`, body);
 }
 
 function getAllTitles() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/employee-profile/titles`, requestOptions).then(
-    handleResponse
-  );
+  return API.get(`employee-profile/titles`);
 }
 
 function getAllWorkgroups() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/employee-profile/workgroups`, requestOptions).then(
-    handleResponse
-  );
+  return API.get(`employee-profile/workgroups`);
 }
 
 function getMySkills() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/skill/my`, requestOptions).then(handleResponse);
+  return API.post(`skill/my`);
 }
 
 function getMyCertificates() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/certification/my`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`certification/my`);
 }
 function getMyTrainings() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/training/my`, requestOptions).then(handleResponse);
+  return API.post(`training/my`);
 }
 
 function getMyDetails() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/skill/my`, requestOptions).then(handleResponse);
+  return API.post(`skill/my`);
 }
 
 function getAllFunctions() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/employee-profile/functions`, requestOptions).then(
-    handleResponse
-  );
+  return API.get(`employee-profile/functions`);
 }
 
 function getMyAssignments() {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/assignment/my`, requestOptions).then(handleResponse);
+  return API.post(`assignment/my`);
 }
 
 function getEmployeeAssignmentHistory(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/assignment/history/empoloyee`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`assignment/history/empoloyee`, body);
 }
 
 function getEmployeeAssignments(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/assignment/employee`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`assignment/employee`, body);
 }
 
 function getAllNames() {
-  const requestOptions = {
-    method: "GET",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-  };
-
-  return fetch(`${apiUrl}/employee-profile/names`, requestOptions).then(
-    handleResponse
-  );
+  return API.get(`employee-profile/names`);
 }
 
 function getEmployeeSkills(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/skill/employee/all`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`skill/employee/all`, body);
 }
 
 function getEmployeeCertificates(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/certification/employee/all`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`certification/employee/all`, body);
 }
 
 function getEmployeeTrainings(body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(`${apiUrl}/training/employeeTrainings`, requestOptions).then(
-    handleResponse
-  );
+  return API.post(`training/employeeTrainings`, body);
 }
+
+export default employeeService;

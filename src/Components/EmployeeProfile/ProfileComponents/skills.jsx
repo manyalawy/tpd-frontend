@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-//service
-import employeeService from "../../../_services/employee.service";
+import { employeeService } from "#Services";
 
 export default function Skills(props) {
   const [skills, setSkills] = React.useState([]);

@@ -8,24 +8,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import Fab from "@material-ui/core/Fab";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import Box from "@material-ui/core/Box";
-import ExportIcon from "../assets/file-export-solid.svg";
 
-import employeeService from "../../_services/employee.service";
-import Assignments from "../Profile/MyProfileComponents/Assigments";
+import { employeeService } from "#Services";
 
 const columns = [
   { id: "workgroup", label: "Workgroup", minWidth: 100 },

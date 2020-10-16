@@ -12,18 +12,14 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import Fab from "@material-ui/core/Fab";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Box from "@material-ui/core/Box";
-import trainingService from "../../_services/training.service";
-import employeeService from "../../_services/employee.service";
+
+import { employeeService, trainingService } from "#Services";
 
 import FilterIcon from "../assets/filter_alt-24px.svg";
 import ExportIcon from "../assets/file-export-solid.svg";
@@ -32,7 +28,6 @@ import { useSnackbar } from "notistack";
 
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
