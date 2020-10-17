@@ -1,5 +1,8 @@
 import axios from "axios";
+
 import { authHeader } from "./";
+
+const axiosRetry = require("axios-retry");
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_API_URL,
@@ -16,5 +19,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use((response) => {
   return response.data;
 });
+
+axiosRetry(axiosInstance, { retries: 3 });
 
 export default axiosInstance;
