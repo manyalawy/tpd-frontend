@@ -4,8 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
-import FilterIcon from "../assets/filter_alt-24px.svg";
-import ExportIcon from "../assets/file-export-solid.svg";
 import EditIcon from "@material-ui/icons/Edit";
 import Pagination from "@material-ui/lab/Pagination";
 import HistoryIcon from "@material-ui/icons/History";
@@ -26,6 +24,9 @@ import { releaseRequestService, managerService, employeeService } from "#Service
 
 import { useSnackbar } from "notistack";
 
+import ExportIcon from "../assets/file-export-solid.svg";
+import FilterIcon from "../assets/filter_alt-24px.svg";
+
 const useStyles = makeStyles({
     table: {
         minWidth: 650
@@ -35,13 +36,13 @@ const useStyles = makeStyles({
 export default function ReleaseReq() {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
-    let history = useHistory();
-    //Handle Table
+    const history = useHistory();
+    // Handle Table
     const [releaseRequests, setReleaseRequests] = useState([]);
-    //Handle Delete
+    // Handle Delete
     const [idToDelete, setIdToDelete] = useState();
     const [deleted, setDeleted] = useState(false);
-    //Handle Filters
+    // Handle Filters
     const [filtered, setFiltered] = useState(false);
     const [managerFilterList, setManagerFilterList] = useState([]);
     const [selectedManager, setSelectedManager] = useState();
@@ -63,7 +64,7 @@ export default function ReleaseReq() {
 
     const [requestActions, setRequestActions] = useState([]);
 
-    //Once for all Filter Lists
+    // Once for all Filter Lists
     useEffect(() => {
         managerService.getAll().then((res) => {
             setManagerFilterList(res.managers);
@@ -79,7 +80,7 @@ export default function ReleaseReq() {
         });
     }, []);
 
-    //used for actions of a specific request
+    // used for actions of a specific request
     useEffect(() => {
         releaseRequestService
             .getById({ ReleaseRequest: { reference_number: idActions } })
@@ -92,7 +93,7 @@ export default function ReleaseReq() {
             });
     }, [idActions]);
 
-    //With every Update to re-render Table with filtration or after deletion
+    // With every Update to re-render Table with filtration or after deletion
     useEffect(() => {
         const managerFilterProperty = selectedManager ? { manager_name: selectedManager } : "";
         const titleFilterProperty = selectedTitle ? { employee_title: selectedTitle } : "";
@@ -128,7 +129,16 @@ export default function ReleaseReq() {
                     setReleaseRequests(res.ReleaseRequests);
                 });
         }
-    }, [deleted, filtered, selectedPage]);
+    }, [
+        deleted,
+        filtered,
+        selectedEmployee,
+        selectedFunction,
+        selectedManager,
+        selectedPage,
+        selectedStatus,
+        selectedTitle
+    ]);
 
     function resetFilter() {
         if (accountProperties().roles?.includes("TPD Team")) {
@@ -223,7 +233,7 @@ export default function ReleaseReq() {
                     }}
                     data-toggle="modal"
                     data-target="#releaseFilterModal">
-                    <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+                    <img style={{ width: "100%", height: "auto" }} src={FilterIcon} />
                 </IconButton>
                 <IconButton
                     color="inherit"
@@ -240,7 +250,8 @@ export default function ReleaseReq() {
                             width: "24px",
                             margin: "auto"
                         }}
-                        src={ExportIcon}></img>
+                        src={ExportIcon}
+                    />
                 </IconButton>
             </div>
 
@@ -307,6 +318,8 @@ export default function ReleaseReq() {
                                     <IconButton
                                         color="inherit"
                                         aria-label="open drawer"
+                                        data-toggle="modal"
+                                        data-target="#deleteRelease"
                                         edge="start"
                                         style={{
                                             backgroundColor: "#ffffff",
@@ -315,9 +328,7 @@ export default function ReleaseReq() {
                                         }}
                                         onClick={() =>
                                             setIdActions(releaseRequest.reference_number)
-                                        }
-                                        data-toggle="modal"
-                                        data-target="#deleteRelease">
+                                        }>
                                         <HistoryIcon />
                                     </IconButton>
                                 </td>
@@ -511,7 +522,7 @@ export default function ReleaseReq() {
                                     </TableHead>
                                     <TableBody>
                                         {requestActions.map((action) => (
-                                            <TableRow key={"test"}>
+                                            <TableRow key="test">
                                                 <TableCell component="th" scope="row">
                                                     {action.createdAt?.split("T")[0]}
                                                 </TableCell>

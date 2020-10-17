@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,7 +14,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
+
 import Fab from "@material-ui/core/Fab";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -23,14 +23,14 @@ import EditIcon from "@material-ui/icons/Edit";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import SearchIcon from "@material-ui/icons/Search";
-import { skillService } from "#Services";
 
 import IconButton from "@material-ui/core/IconButton";
-import ExportIcon from "../assets/file-export-solid.svg";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import { useSnackbar } from "notistack";
+import ExportIcon from "../assets/file-export-solid.svg";
+import { skillService } from "#Services";
 
 const columns = [
     { id: "skillName", label: "Skill Name", minWidth: 170 },
@@ -41,7 +41,7 @@ function createData(skill, id) {
     return { skill, id };
 }
 
-var rows = [];
+let rows = [];
 
 const useStyles = makeStyles({
     root: {
@@ -71,7 +71,7 @@ const useStyles = makeStyles({
         width: "20px"
     }
 });
-var unchanged = [];
+let unchanged = [];
 
 export default function SkillListing() {
     const { enqueueSnackbar } = useSnackbar();
@@ -164,10 +164,10 @@ export default function SkillListing() {
     };
     const handleSearch = (value) => {
         value = value.toLowerCase();
-        var newSkills = [];
+        const newSkills = [];
         for (let index = 0; index < unchanged.length; index++) {
             if (unchanged[index].skill.toLowerCase().includes(value)) {
-                var x = { skill: unchanged[index].skill, id: unchanged[index].id };
+                const x = { skill: unchanged[index].skill, id: unchanged[index].id };
                 newSkills.push(x);
             }
         }
@@ -239,7 +239,8 @@ export default function SkillListing() {
                             width: "29px",
                             margin: "auto"
                         }}
-                        src={ExportIcon}></img>
+                        src={ExportIcon}
+                    />
                 </IconButton>
             </div>
             {/* </Box> */}
