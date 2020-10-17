@@ -1,70 +1,70 @@
 .profilePic {
-  border-radius: 50%;
-  width: 10%;
+    border-radius: 50%;
+    width: 10%;
 
-  margin-top: 4rem;
+    margin-top: 4rem;
 }
 
 .profileName {
-  margin-top: 1rem;
-  color: white;
+    margin-top: 1rem;
+    color: white;
 }
 
 .profileTitle {
-  font-style: italic;
-  color: white;
-  font-weight: 100;
+    font-style: italic;
+    color: white;
+    font-weight: 100;
 }
 .profileBody {
-  background-color: white;
-  margin-top: 2rem;
-  margin-bottom: 0;
-  position: static;
+    background-color: white;
+    margin-top: 2rem;
+    margin-bottom: 0;
+    position: static;
 }
 
 .profile {
-  background-color: white;
+    background-color: white;
 }
 .basicInfoRow {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 .basicInfo {
-  margin-left: 10%;
-  margin-right: 10%;
+    margin-left: 10%;
+    margin-right: 10%;
 
-  height: 100vh;
+    height: 100vh;
 }
 /* -----------------skills and certifications------------------------- */
 .mySkills {
-  margin-top: 4rem;
+    margin-top: 4rem;
 }
 .addMySkill {
-  margin-top: 2rem;
+    margin-top: 2rem;
 }
 
 .invisible {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .MyCertifications {
-  margin-top: 6rem;
+    margin-top: 6rem;
 }
 
 .addMyCertification {
-  margin-top: 2rem;
-  background-color: #ac2225;
+    margin-top: 2rem;
+    background-color: #ac2225;
 }
 
 .certificationsTableHead {
-  background-color: #ac2225;
-  color: white;
+    background-color: #ac2225;
+    color: white;
 }
 
 .trainings {
-  margin-top: 6rem;
+    margin-top: 6rem;
 }
 
 .myTrainingsTitle {
-  margin-bottom: 5rem;
+    margin-bottom: 5rem;
 }

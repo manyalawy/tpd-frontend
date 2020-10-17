@@ -1,32 +1,32 @@
 .title {
-  color: white;
-  margin-top: 5rem;
-  margin-bottom: 7rem;
-  margin-left: 5%;
+    color: white;
+    margin-top: 5rem;
+    margin-bottom: 7rem;
+    margin-left: 5%;
 }
 
 .formHeaders {
-  margin-bottom: 5rem;
-  margin-top: 2rem;
+    margin-bottom: 5rem;
+    margin-top: 2rem;
 }
 
 .form {
-  margin-bottom: 5rem;
+    margin-bottom: 5rem;
 }
 
 .add {
-  margin-top: 2rem;
+    margin-top: 2rem;
 }
 
 .add {
-  background-color: #02438e;
+    background-color: #02438e;
 }
 .sub {
-  background-color: #02438e;
-  margin-top: 2rem;
-  margin-right: 1rem;
+    background-color: #02438e;
+    margin-top: 2rem;
+    margin-right: 1rem;
 }
 .canc {
-  background-color: #ac2225;
-  margin-top: 2rem;
+    background-color: #ac2225;
+    margin-top: 2rem;
 }

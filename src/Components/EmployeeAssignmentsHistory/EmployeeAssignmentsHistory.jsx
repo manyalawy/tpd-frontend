@@ -17,123 +17,127 @@ import Grid from "@material-ui/core/Grid";
 import { employeeService } from "#Services";
 
 const columns = [
-  { id: "workgroup", label: "Workgroup", minWidth: 100 },
-  { id: "costCenter", label: "Cost Center", minWidth: 100 },
-  { id: "managerName", label: "SDM Reporting Manager", minWidth: 100 },
+    { id: "workgroup", label: "Workgroup", minWidth: 100 },
+    { id: "costCenter", label: "Cost Center", minWidth: 100 },
+    { id: "managerName", label: "SDM Reporting Manager", minWidth: 100 },
 
-  { id: "percentage", label: "Allocation Percentage", minWidth: 100 },
-  { id: "startDate", label: "Start Date", minWidth: 100 },
-  { id: "releaseDate", label: "Release Date", minWidth: 100 },
+    { id: "percentage", label: "Allocation Percentage", minWidth: 100 },
+    { id: "startDate", label: "Start Date", minWidth: 100 },
+    { id: "releaseDate", label: "Release Date", minWidth: 100 }
 ];
 
 function createData(empName, tit, manName, last) {
-  return { empName, tit, manName, last };
+    return { empName, tit, manName, last };
 }
 
 const rows = [createData("India", "IN", "xjwn", "wnxewn")];
 
 const useStyles = makeStyles({
-  root: {
-    width: "90%",
-    marginTop: "5rem",
-  },
-  container: {
-    maxHeight: 440,
-  },
-  title: {
-    color: "white",
-    marginTop: "5rem",
-    marginLeft: "5rem",
-    fontSize: " 60px",
-  },
-  buttons: {
-    color: "black",
-    marginLeft: "90%",
-  },
-  select: {
-    width: "20px",
-  },
-  exportButton: {
-    color: "black",
-    marginLeft: "6px",
-  },
+    root: {
+        width: "90%",
+        marginTop: "5rem"
+    },
+    container: {
+        maxHeight: 440
+    },
+    title: {
+        color: "white",
+        marginTop: "5rem",
+        marginLeft: "5rem",
+        fontSize: " 60px"
+    },
+    buttons: {
+        color: "black",
+        marginLeft: "90%"
+    },
+    select: {
+        width: "20px"
+    },
+    exportButton: {
+        color: "black",
+        marginLeft: "6px"
+    }
 });
 
 export default function EmployeeAssignmentsHistory(props) {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [assignments, setAssignments] = React.useState([]);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const classes = useStyles();
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [assignments, setAssignments] = React.useState([]);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
-  React.useEffect(() => {
-    employeeService
-      .getEmployeeAssignmentHistory({ employee_id: props?.location?.state?.id })
-      .then((res) => {
-        setAssignments(res.Employee?.assignments);
-      });
-  }, []);
+    React.useEffect(() => {
+        employeeService
+            .getEmployeeAssignmentHistory({ employee_id: props?.location?.state?.id })
+            .then((res) => {
+                setAssignments(res.Employee?.assignments);
+            });
+    }, []);
 
-  return (
-    <div>
-      <h1 className={classes.title}>
-        {" "}
-        {props?.location?.state?.name} 's Assignments History
-      </h1>
+    return (
+        <div>
+            <h1 className={classes.title}>
+                {" "}
+                {props?.location?.state?.name} 's Assignments History
+            </h1>
 
-      <Grid container justify="center" alignItems="center">
-        <Paper className={classes.root}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align}>
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {assignments
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, i) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={i}>
-                        <TableCell>{row.workgroup}</TableCell>
-                        <TableCell>{row.cost_center}</TableCell>
-                        <TableCell>{row.sdm_reporting_manager}</TableCell>
-                        <TableCell>{row.allocation_percentage}</TableCell>
+            <Grid container justify="center" alignItems="center">
+                <Paper className={classes.root}>
+                    <TableContainer className={classes.container}>
+                        <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell key={column.id} align={column.align}>
+                                            {column.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {assignments
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, i) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={i}>
+                                                <TableCell>{row.workgroup}</TableCell>
+                                                <TableCell>{row.cost_center}</TableCell>
+                                                <TableCell>{row.sdm_reporting_manager}</TableCell>
+                                                <TableCell>{row.allocation_percentage}</TableCell>
 
-                        <TableCell>{row.start_date?.split("T")[0]}</TableCell>
-                        <TableCell>{row.release_date?.split("T")[0]}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Grid>
-    </div>
-  );
+                                                <TableCell>
+                                                    {row.start_date?.split("T")[0]}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {row.release_date?.split("T")[0]}
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Grid>
+        </div>
+    );
 }

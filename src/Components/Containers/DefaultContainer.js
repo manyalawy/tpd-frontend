@@ -28,98 +28,86 @@ import ManagerTPDGuard from "#Components/Guards/ManagerTPDGuard";
 import SideMenu from "#Components/SideMenu";
 
 const DefaultContainer = () => (
-  <>
-    <SideMenu />
-    {accountProperties().roles?.includes("TPD Team") ? (
-      <ManagerTPDGuard>
-        <Route exact path="/" component={Release} />
-      </ManagerTPDGuard>
-    ) : accountProperties().roles?.includes("Manager") ? (
-      <ManagerTPDGuard>
-        <Route exact path="/" component={Release} />
-      </ManagerTPDGuard>
-    ) : (
-      <>
-        <div style={{ margin: "40px" }}>
-          <Route exact path="/" component={MyAssignments} />
-        </div>
-      </>
-    )}
+    <>
+        <SideMenu />
+        {accountProperties().roles?.includes("TPD Team") ? (
+            <ManagerTPDGuard>
+                <Route exact path="/" component={Release} />
+            </ManagerTPDGuard>
+        ) : accountProperties().roles?.includes("Manager") ? (
+            <ManagerTPDGuard>
+                <Route exact path="/" component={Release} />
+            </ManagerTPDGuard>
+        ) : (
+            <>
+                <div style={{ margin: "40px" }}>
+                    <Route exact path="/" component={MyAssignments} />
+                </div>
+            </>
+        )}
 
-    <Route exact path="/profile" component={Profile} />
-    <Route exact path="/profile/trainings" component={MyTrainings} />
-    <Route exact path="/profile/skills" component={MySkills} />
-    <Route exact path="/profile/certifications" component={MyCertifications} />
-    <Route exact path="/profile/assignments" component={MyAssignments} />
-    <Route
-      exact
-      path="/profile/assignments/history"
-      component={MyAssignmentsHistory}
-    />
-    <TPDGuard>
-      <Route
-        exact
-        path="/profile/assignments-history"
-        component={AssignmentsHisotry}
-      />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/employee-profile" component={EmployeeProfile} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route
-        exact
-        path="/employee-profile/assignments-history"
-        component={EmployeeAssignementHistory}
-      />
-    </TPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/release-requests" component={Release} />
-    </ManagerTPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/release-requests/add" component={ReleaseForm} />
-    </ManagerTPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/release-requests/edit" component={ReleaseForm} />
-    </ManagerTPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/resource-requests" component={Resource} />
-    </ManagerTPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/resource-requests/add" component={ResourceForm} />
-    </ManagerTPDGuard>
-    <ManagerTPDGuard>
-      <Route exact path="/resource-requests/edit" component={ResourceForm} />
-    </ManagerTPDGuard>
-    <TPDGuard>
-      <Route exact path="/certifications-history" component={CerHistory} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/skill-tracking" component={SkillsTracking} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/skills-history" component={SkillsHistory} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/certifications-list" component={Certifications} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route
-        exact
-        path="/certification-providers"
-        component={CertificationProviders}
-      />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/skills-listing" component={SkillListing} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/employee-trainings" component={EmployeeTrainings} />
-    </TPDGuard>
-    <TPDGuard>
-      <Route exact path="/employees" component={Employees} />
-    </TPDGuard>
-  </>
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/profile/trainings" component={MyTrainings} />
+        <Route exact path="/profile/skills" component={MySkills} />
+        <Route exact path="/profile/certifications" component={MyCertifications} />
+        <Route exact path="/profile/assignments" component={MyAssignments} />
+        <Route exact path="/profile/assignments/history" component={MyAssignmentsHistory} />
+        <TPDGuard>
+            <Route exact path="/profile/assignments-history" component={AssignmentsHisotry} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/employee-profile" component={EmployeeProfile} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route
+                exact
+                path="/employee-profile/assignments-history"
+                component={EmployeeAssignementHistory}
+            />
+        </TPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/release-requests" component={Release} />
+        </ManagerTPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/release-requests/add" component={ReleaseForm} />
+        </ManagerTPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/release-requests/edit" component={ReleaseForm} />
+        </ManagerTPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/resource-requests" component={Resource} />
+        </ManagerTPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/resource-requests/add" component={ResourceForm} />
+        </ManagerTPDGuard>
+        <ManagerTPDGuard>
+            <Route exact path="/resource-requests/edit" component={ResourceForm} />
+        </ManagerTPDGuard>
+        <TPDGuard>
+            <Route exact path="/certifications-history" component={CerHistory} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/skill-tracking" component={SkillsTracking} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/skills-history" component={SkillsHistory} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/certifications-list" component={Certifications} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/certification-providers" component={CertificationProviders} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/skills-listing" component={SkillListing} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/employee-trainings" component={EmployeeTrainings} />
+        </TPDGuard>
+        <TPDGuard>
+            <Route exact path="/employees" component={Employees} />
+        </TPDGuard>
+    </>
 );
 
 export default DefaultContainer;

@@ -4,7 +4,7 @@
  */
 
 const Guard = (props) => {
-  return props.condition ? props.children : null;
+    return props.condition ? props.children : null;
 };
 
 export default Guard;

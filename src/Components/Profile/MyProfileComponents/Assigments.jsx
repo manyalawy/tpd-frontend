@@ -9,125 +9,115 @@ import Grid from "@material-ui/core/Grid";
 import { employeeService } from "#Services";
 
 const useStyles = makeStyles({
-  root: {
-    width: "300px",
-    marginTop: "3rem",
-    marginBottom: "3rem",
-    backgroundColor: "#f8f8ff",
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-  content: {
-    fontSize: "15px",
-    marginTop: "1rem",
-    marginBottom: "1rem",
-  },
-  addButton: {
-    marginTop: "2rem",
-    marginBottom: "2rem",
-  },
-  form: {
-    marginLeft: "2rem",
-    marginTop: "2rem",
-  },
-  date: {
-    marginLeft: "2rem",
-    marginTop: "2rem",
-    width: "170px",
-  },
+    root: {
+        width: "300px",
+        marginTop: "3rem",
+        marginBottom: "3rem",
+        backgroundColor: "#f8f8ff"
+    },
+    bullet: {
+        display: "inline-block",
+        margin: "0 2px",
+        transform: "scale(0.8)"
+    },
+    title: {
+        fontSize: 14
+    },
+    pos: {
+        marginBottom: 12
+    },
+    content: {
+        fontSize: "15px",
+        marginTop: "1rem",
+        marginBottom: "1rem"
+    },
+    addButton: {
+        marginTop: "2rem",
+        marginBottom: "2rem"
+    },
+    form: {
+        marginLeft: "2rem",
+        marginTop: "2rem"
+    },
+    date: {
+        marginLeft: "2rem",
+        marginTop: "2rem",
+        width: "170px"
+    }
 });
 export default function Assignments() {
-  let history = useHistory();
+    let history = useHistory();
 
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [assignments, setAssignments] = React.useState([]);
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+    const [assignments, setAssignments] = React.useState([]);
 
-  //fetch User Assignments
-  React.useEffect(() => {
-    employeeService.getMyAssignments().then((res) => {
-      setAssignments(res.Employee?.assignments);
-    });
-  }, []);
+    //fetch User Assignments
+    React.useEffect(() => {
+        employeeService.getMyAssignments().then((res) => {
+            setAssignments(res.Employee?.assignments);
+        });
+    }, []);
 
-  return (
-    <div style={{ margin: "70px 10%" }}>
-      <h1 style={{ color: "White" }}>Current Assignments</h1>
-      <Grid
-        container
-        alignItems="flex-start"
-        justify="flex-end"
-        direction="row"
-      >
-        <Button
-          className={classes.addButton}
-          variant="contained"
-          onClick={() => history.push("/profile/assignments-history")}
-        >
-          View History
-        </Button>
-        {/* <Button
+    return (
+        <div style={{ margin: "70px 10%" }}>
+            <h1 style={{ color: "White" }}>Current Assignments</h1>
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <Button
+                    className={classes.addButton}
+                    variant="contained"
+                    onClick={() => history.push("/profile/assignments-history")}>
+                    View History
+                </Button>
+                {/* <Button
           className={classes.addButton}
           variant="contained"
           onClick={handleClickOpen}
         >
           Add assigment
         </Button> */}
-      </Grid>
-      <div
-        className="row"
-        style={{ dispaly: "flex", justifyContent: "space-evenly" }}
-      >
-        {assignments.map((assignment, i) => (
-          <div className="col-md-3">
-            <Card className={classes.root}>
-              <CardContent>
-                <Typography
-                  className={classes.title}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Assigment {i + 1}
-                </Typography>
+            </Grid>
+            <div className="row" style={{ dispaly: "flex", justifyContent: "space-evenly" }}>
+                {assignments.map((assignment, i) => (
+                    <div className="col-md-3">
+                        <Card className={classes.root}>
+                            <CardContent>
+                                <Typography
+                                    className={classes.title}
+                                    color="textSecondary"
+                                    gutterBottom>
+                                    Assigment {i + 1}
+                                </Typography>
 
-                <Typography className={classes.content}>
-                  Workgroup:{"     "}
-                  {assignment.workgroup}
-                </Typography>
-                <Typography className={classes.content}>
-                  Cost Center:{"     "}
-                  {assignment.cost_center}
-                </Typography>
-                <Typography className={classes.content}>
-                  SDM Manager:{"     "}
-                  {assignment.sdm_reporting_manager}
-                </Typography>
-                <Typography className={classes.content}>
-                  Allocation Percentage:{"     "}
-                  {assignment.allocation_percentage}
-                </Typography>
-                <Typography className={classes.content}>
-                  Start Date:{"     "}
-                  {assignment.start_date?.split("T")[0]}
-                </Typography>
-                <Typography className={classes.content}>
-                  Release Date:{"     "}
-                  {assignment.release_date?.split("T")[0]}
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
-        {/*  <Card className={classes.root}>
+                                <Typography className={classes.content}>
+                                    Workgroup:{"     "}
+                                    {assignment.workgroup}
+                                </Typography>
+                                <Typography className={classes.content}>
+                                    Cost Center:{"     "}
+                                    {assignment.cost_center}
+                                </Typography>
+                                <Typography className={classes.content}>
+                                    SDM Manager:{"     "}
+                                    {assignment.sdm_reporting_manager}
+                                </Typography>
+                                <Typography className={classes.content}>
+                                    Allocation Percentage:{"     "}
+                                    {assignment.allocation_percentage}
+                                </Typography>
+                                <Typography className={classes.content}>
+                                    Start Date:{"     "}
+                                    {assignment.start_date?.split("T")[0]}
+                                </Typography>
+                                <Typography className={classes.content}>
+                                    Release Date:{"     "}
+                                    {assignment.release_date?.split("T")[0]}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </div>
+                ))}
+                {/*  <Card className={classes.root}>
             <CardContent>
               <Typography
                 className={classes.title}
@@ -160,8 +150,8 @@ export default function Assignments() {
               </Button>
             </CardActions> 
           </Card>*/}
-      </div>
-      {/* <Dialog
+            </div>
+            {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -246,7 +236,7 @@ export default function Assignments() {
           </Button>
         </DialogActions>
       </Dialog> */}
-      {/* <Grid
+            {/* <Grid
         container
         alignItems="flex-start"
         justify="flex-end"
@@ -256,6 +246,6 @@ export default function Assignments() {
           View History
         </Button>
       </Grid> */}
-    </div>
-  );
+        </div>
+    );
 }

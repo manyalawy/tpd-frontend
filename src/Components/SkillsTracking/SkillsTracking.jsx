@@ -28,268 +28,262 @@ import IconButton from "@material-ui/core/IconButton";
 import { useSnackbar } from "notistack";
 
 const columns = [
-  { id: "employeeName", label: "Employee Name", minWidth: 100 },
-  { id: "title", label: "Title", minWidth: 100 },
-  { id: "managerName", label: "Manager Name", minWidth: 100 },
+    { id: "employeeName", label: "Employee Name", minWidth: 100 },
+    { id: "title", label: "Title", minWidth: 100 },
+    { id: "managerName", label: "Manager Name", minWidth: 100 },
 
-  { id: "lastUpdated", label: "Last Updated", minWidth: 100 },
+    { id: "lastUpdated", label: "Last Updated", minWidth: 100 }
 ];
 
 function createData(empName, tit, manName, last) {
-  return { empName, tit, manName, last };
+    return { empName, tit, manName, last };
 }
 
 const rows = [createData("India", "IN", "xjwn", "wnxewn")];
 
 const useStyles = makeStyles({
-  root: {
-    width: "90%",
-    marginTop: "5rem",
-    marginBottom: "100px",
-  },
-  container: {
-    maxHeight: 440,
-  },
-  title: {
-    color: "white",
-    marginTop: "5rem",
-    marginLeft: "5rem",
-    fontSize: " 60px",
-  },
-  buttons: {
-    color: "black",
-    marginLeft: "85%",
-  },
-  select: {
-    width: "20px",
-  },
+    root: {
+        width: "90%",
+        marginTop: "5rem",
+        marginBottom: "100px"
+    },
+    container: {
+        maxHeight: 440
+    },
+    title: {
+        color: "white",
+        marginTop: "5rem",
+        marginLeft: "5rem",
+        fontSize: " 60px"
+    },
+    buttons: {
+        color: "black",
+        marginLeft: "85%"
+    },
+    select: {
+        width: "20px"
+    }
 });
 
 export default function SkillsTracking() {
-  const { enqueueSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
-  const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [trackings, setTrackings] = React.useState([]);
-  // Filte options
-  const [employeesNames, setEmployeeNames] = React.useState([]);
+    const [open, setOpen] = React.useState(false);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const classes = useStyles();
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [trackings, setTrackings] = React.useState([]);
+    // Filte options
+    const [employeesNames, setEmployeeNames] = React.useState([]);
 
-  //filter values
-  const [selectedName, setselectedName] = React.useState(null);
-  const [selectedStatus, setselectedStatus] = React.useState(null);
+    //filter values
+    const [selectedName, setselectedName] = React.useState(null);
+    const [selectedStatus, setselectedStatus] = React.useState(null);
 
-  const namesOptions = {
-    options: employeesNames,
-    getOptionLabel: (option) => option,
-  };
-  const skillsStatus = {
-    options: statusOptions,
-    getOptionLabel: (option) => option,
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleReset = () => {
-    document.getElementById("selectName").value = "";
-    document.getElementById("selectSkillsStatus").value = "";
-    setselectedName("");
-    setselectedStatus("");
-    skillService.getSkillTrackings({ Filters: {} }).then((res) => {
-      setTrackings(res.Skills);
-    });
-  };
-
-  const handleFilter = () => {
-    var filterName = selectedName ? { name: selectedName } : "";
-    var filterStatus = selectedStatus ? { status: selectedStatus } : "";
-    const Filters = {
-      ...filterName,
-      ...filterStatus,
+    const namesOptions = {
+        options: employeesNames,
+        getOptionLabel: (option) => option
     };
-    skillService.getSkillTrackings({ Filters }).then((res) => {
-      setTrackings(res.Skills);
-    });
-    setOpen(false);
-  };
-
-  const expo = () => {
-    var filterName = selectedName ? { name: selectedName } : "";
-    var filterStatus = selectedStatus ? { status: selectedStatus } : "";
-    const Filters = {
-      ...filterName,
-      ...filterStatus,
+    const skillsStatus = {
+        options: statusOptions,
+        getOptionLabel: (option) => option
     };
-    skillService.exportSkillTracking({ Filters }).then(() => {
-      enqueueSnackbar("Exported Succesfully", {
-        variant: "success",
-      });
-    });
-  };
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-  React.useEffect(() => {
-    employeeService.getAllNames().then((res) => {
-      setEmployeeNames(res.Names);
-    });
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
-    skillService.getSkillTrackings({ Filters: {} }).then((res) => {
-      setTrackings(res.Skills);
-    });
-  }, []);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
-  return (
-    <div>
-      <h1 className={classes.title}>Employee Skills Tracking</h1>
-      <div className={classes.buttons}>
-        <IconButton
-          color="inherit"
-          aria-label="filter"
-          edge="start"
-          style={{
-            backgroundColor: "#F6EC5A",
-            margin: "10px",
-            color: "#000000",
-          }}
-          onClick={() => setOpen(true)}
-        >
-          <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
-        </IconButton>
-        <IconButton
-          color="inherit"
-          aria-label="export"
-          edge="start"
-          style={{
-            backgroundColor: "#084791",
-            margin: "10px",
-            color: "#ffffff",
-          }}
-          onClick={expo}
-        >
-          <img
-            style={{
-              width: "24px",
-              margin: "auto",
-            }}
-            src={ExportIcon}
-          ></img>
-        </IconButton>
-      </div>
-      <Grid container justify="center" alignItems="center">
-        <Paper className={classes.root}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align}>
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {trackings
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, i) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={i}>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.title}</TableCell>
-                        <TableCell>{row.direct_manager}</TableCell>
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleReset = () => {
+        document.getElementById("selectName").value = "";
+        document.getElementById("selectSkillsStatus").value = "";
+        setselectedName("");
+        setselectedStatus("");
+        skillService.getSkillTrackings({ Filters: {} }).then((res) => {
+            setTrackings(res.Skills);
+        });
+    };
 
-                        <TableCell>
-                          {row.LastUpdated?.split("T")[0]
-                            ? row.LastUpdated?.split("T")[0]
-                            : "Non-registered"}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Grid>
-      <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          Employee List Filter
-        </DialogTitle>
-        <DialogContent>
-          <Autocomplete
-            onChange={(event, value) => setselectedName(value)}
-            {...namesOptions}
-            id="selectName"
-            clearOnEscape
-            value={selectedName}
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Employee Name"
-                margin="normal"
-              />
-            )}
-          />
+    const handleFilter = () => {
+        var filterName = selectedName ? { name: selectedName } : "";
+        var filterStatus = selectedStatus ? { status: selectedStatus } : "";
+        const Filters = {
+            ...filterName,
+            ...filterStatus
+        };
+        skillService.getSkillTrackings({ Filters }).then((res) => {
+            setTrackings(res.Skills);
+        });
+        setOpen(false);
+    };
 
-          <Autocomplete
-            onChange={(event, value) => setselectedStatus(value)}
-            {...skillsStatus}
-            id="selectSkillsStatus"
-            clearOnEscape
-            value={selectedStatus}
-            renderInput={(params) => (
-              <TextField
-                style={{ width: 200 }}
-                className={classes.select}
-                {...params}
-                label="Skills Status"
-                margin="normal"
-              />
-            )}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleFilter} color="primary">
-            Filter
-          </Button>
-          <Button onClick={handleReset} color="primary" autoFocus>
-            Reset Filter
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+    const expo = () => {
+        var filterName = selectedName ? { name: selectedName } : "";
+        var filterStatus = selectedStatus ? { status: selectedStatus } : "";
+        const Filters = {
+            ...filterName,
+            ...filterStatus
+        };
+        skillService.exportSkillTracking({ Filters }).then(() => {
+            enqueueSnackbar("Exported Succesfully", {
+                variant: "success"
+            });
+        });
+    };
+
+    React.useEffect(() => {
+        employeeService.getAllNames().then((res) => {
+            setEmployeeNames(res.Names);
+        });
+
+        skillService.getSkillTrackings({ Filters: {} }).then((res) => {
+            setTrackings(res.Skills);
+        });
+    }, []);
+
+    return (
+        <div>
+            <h1 className={classes.title}>Employee Skills Tracking</h1>
+            <div className={classes.buttons}>
+                <IconButton
+                    color="inherit"
+                    aria-label="filter"
+                    edge="start"
+                    style={{
+                        backgroundColor: "#F6EC5A",
+                        margin: "10px",
+                        color: "#000000"
+                    }}
+                    onClick={() => setOpen(true)}>
+                    <img style={{ width: "100%", height: "auto" }} src={FilterIcon}></img>
+                </IconButton>
+                <IconButton
+                    color="inherit"
+                    aria-label="export"
+                    edge="start"
+                    style={{
+                        backgroundColor: "#084791",
+                        margin: "10px",
+                        color: "#ffffff"
+                    }}
+                    onClick={expo}>
+                    <img
+                        style={{
+                            width: "24px",
+                            margin: "auto"
+                        }}
+                        src={ExportIcon}></img>
+                </IconButton>
+            </div>
+            <Grid container justify="center" alignItems="center">
+                <Paper className={classes.root}>
+                    <TableContainer className={classes.container}>
+                        <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell key={column.id} align={column.align}>
+                                            {column.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {trackings
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, i) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={i}>
+                                                <TableCell>{row.name}</TableCell>
+                                                <TableCell>{row.title}</TableCell>
+                                                <TableCell>{row.direct_manager}</TableCell>
+
+                                                <TableCell>
+                                                    {row.LastUpdated?.split("T")[0]
+                                                        ? row.LastUpdated?.split("T")[0]
+                                                        : "Non-registered"}
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Grid>
+            <Dialog
+                fullScreen={fullScreen}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title">
+                <DialogTitle id="responsive-dialog-title">Employee List Filter</DialogTitle>
+                <DialogContent>
+                    <Autocomplete
+                        onChange={(event, value) => setselectedName(value)}
+                        {...namesOptions}
+                        id="selectName"
+                        clearOnEscape
+                        value={selectedName}
+                        renderInput={(params) => (
+                            <TextField
+                                style={{ width: 200 }}
+                                className={classes.select}
+                                {...params}
+                                label="Employee Name"
+                                margin="normal"
+                            />
+                        )}
+                    />
+
+                    <Autocomplete
+                        onChange={(event, value) => setselectedStatus(value)}
+                        {...skillsStatus}
+                        id="selectSkillsStatus"
+                        clearOnEscape
+                        value={selectedStatus}
+                        renderInput={(params) => (
+                            <TextField
+                                style={{ width: 200 }}
+                                className={classes.select}
+                                {...params}
+                                label="Skills Status"
+                                margin="normal"
+                            />
+                        )}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleFilter} color="primary">
+                        Filter
+                    </Button>
+                    <Button onClick={handleReset} color="primary" autoFocus>
+                        Reset Filter
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
 }
 
 const statusOptions = ["Last Updated", "Non-registered"];

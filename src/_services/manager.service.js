@@ -1,11 +1,11 @@
 import { API } from "#Helpers";
 
 const managerService = {
-  getAll,
+    getAll
 };
 
 function getAll() {
-  return API.post(`manager/all`);
+    return API.post(`manager/all`);
 }
 
 export default managerService;

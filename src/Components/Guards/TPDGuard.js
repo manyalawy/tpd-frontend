@@ -6,10 +6,8 @@ import Guard from "./guard";
 import { accountProperties } from "#Helpers";
 
 const TPDGuard = (props) => {
-  return (
-    <Guard condition={accountProperties().roles?.includes("TPD Team")}>
-      {props.children}
-    </Guard>
-  );
+    return (
+        <Guard condition={accountProperties().roles?.includes("TPD Team")}>{props.children}</Guard>
+    );
 };
 export default TPDGuard;

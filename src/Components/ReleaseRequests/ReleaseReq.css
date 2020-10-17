@@ -1,22 +1,22 @@
 .releaseFilter {
-  margin-top: 15rem;
+    margin-top: 15rem;
 }
 .table td {
-  text-align: center;
+    text-align: center;
 }
 
 .table th {
-  text-align: center;
+    text-align: center;
 }
 .a {
-  margin-right: 2px;
+    margin-right: 2px;
 }
 .deleteModal {
-  margin-top: 15rem;
+    margin-top: 15rem;
 }
 
 .resourceTable {
-  background-color: white;
-  width: 90%;
-  margin-top: 3rem;
+    background-color: white;
+    width: 90%;
+    margin-top: 3rem;
 }
