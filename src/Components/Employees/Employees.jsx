@@ -101,8 +101,8 @@ const useStyles = makeStyles({
   },
 });
 
-export default function StickyHeadTable() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+export default function Employees() {
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();

@@ -10,6 +10,7 @@ module.exports = {
         aliases: {
           "#Services": "./src/_services",
           "#Helpers": "./src/_helpers",
+          "#Components": "./src/Components",
         },
       },
     },

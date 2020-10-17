@@ -75,7 +75,7 @@ export default function Assignments(props) {
   //add assignment
   const [workgroup, setWorkgroup] = useState("");
   const [costcenter, setCostCenter] = useState("");
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [sdmManager, setSDMManager] = useState("");
 

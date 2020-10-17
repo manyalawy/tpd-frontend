@@ -23,7 +23,7 @@ import { employeeService, certificationService } from "#Services";
 import { useSnackbar } from "notistack";
 
 export default function Certificates() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = React.useState(false);
   const [cerId, setCerId] = React.useState("");

@@ -74,7 +74,7 @@ const useStyles = makeStyles({
 var unchanged = [];
 
 export default function SkillListing() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const [skillsTable, setSkillsTable] = React.useState([]);

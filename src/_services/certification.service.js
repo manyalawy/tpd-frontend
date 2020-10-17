@@ -48,11 +48,19 @@ function editEmployeeCertificate(body) {
 }
 
 function deleteProvider(body) {
-  return API.delete(`certification/provider`, body);
+  return API({
+    method: "Delete",
+    url: "certification/provider",
+    data: body,
+  });
 }
 
 function deleteEmployeeCertification(body) {
-  return API.delete(`certification/employee`, body);
+  return API({
+    method: "Delete",
+    url: "certification/employee",
+    data: body,
+  });
 }
 
 function _export() {
@@ -84,7 +92,11 @@ function addCertificate(body) {
 }
 
 function deleteCertificate(body) {
-  return API.delete(`certification/`, body);
+  return API({
+    method: "Delete",
+    url: "certification/",
+    data: body,
+  });
 }
 
 function certificateHistory(body) {

@@ -3,7 +3,7 @@
  */
 import React from "react";
 import Guard from "./guard";
-import { accountProperties } from "../../_helpers/accountProperties";
+import { accountProperties } from "#Helpers";
 
 const ManagerTPDGuard = (props) => {
   return (

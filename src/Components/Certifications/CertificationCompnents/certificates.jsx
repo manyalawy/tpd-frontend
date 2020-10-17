@@ -80,7 +80,7 @@ var unchanged = [];
 var providers = [];
 
 export default function SkillListing() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const [providersTable, setProvidersTable] = React.useState([]);

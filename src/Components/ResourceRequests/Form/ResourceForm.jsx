@@ -17,7 +17,7 @@ import {
   skillService,
 } from "#Services";
 
-import { accountProperties } from "../../_helpers";
+import { accountProperties } from "#Helpers";
 
 import { useSnackbar } from "notistack";
 
@@ -26,7 +26,7 @@ curr.setDate(curr.getDate() + 3);
 var date = curr.toISOString().substr(0, 10);
 
 export default function ResourceForm(props) {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   let history = useHistory();
 
   //handling inputs

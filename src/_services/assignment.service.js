@@ -7,7 +7,11 @@ const assignmentService = {
 };
 
 function deleteEmployeeAssignment(body) {
-  return API.delete(`assignment/`, body);
+  return API({
+    method: "Delete",
+    url: "assignment/",
+    data: body,
+  });
 }
 
 function addEmployeeAssignment(body) {

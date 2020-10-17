@@ -23,7 +23,7 @@ import { employeeService, skillService } from "#Services";
 import { useSnackbar } from "notistack";
 
 export default function Skills() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = React.useState(false);
   const [skillName, setSkillName] = React.useState();

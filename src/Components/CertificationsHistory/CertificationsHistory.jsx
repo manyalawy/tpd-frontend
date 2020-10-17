@@ -62,7 +62,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CerHistory() {
+export default function CertificationsHistory() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [open, setOpen] = React.useState(false);

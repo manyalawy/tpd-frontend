@@ -54,7 +54,11 @@ function editEmployeeSkill(body) {
 }
 
 function deleteSkill(body) {
-  return API.delete(`skill/`, body);
+  return API({
+    method: "Delete",
+    url: "skill/",
+    data: body,
+  });
 }
 
 function addEmployeeSkill(body) {
@@ -66,7 +70,11 @@ function getSkillHistory(body) {
 }
 
 function deleteEmployeeSkill(body) {
-  return API.delete(`skill/employee`, body);
+  return API({
+    method: "Delete",
+    url: "skill/employee",
+    data: body,
+  });
 }
 
 function _export(body) {

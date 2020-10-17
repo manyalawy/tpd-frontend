@@ -28,7 +28,7 @@ import Button from "@material-ui/core/Button";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { userService } from "#Services";
-import { accountProperties } from "../../_helpers";
+import { accountProperties } from "#Helpers";
 import { useSnackbar } from "notistack";
 import PersonIcon from "@material-ui/icons/Person";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideMenu() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   let history = useHistory();
   const classes = useStyles();
   const theme = useTheme();

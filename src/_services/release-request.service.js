@@ -45,8 +45,12 @@ function update(releaseRequest) {
 }
 
 function _delete(reference_number) {
-  return API.delete(`release-request`, {
-    ReleaseRequest: { reference_number: reference_number },
+  return API({
+    method: "Delete",
+    url: "release-request",
+    data: {
+      ReleaseRequest: { reference_number: reference_number },
+    },
   });
 }
 
